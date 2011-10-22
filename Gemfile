@@ -22,6 +22,11 @@ gem 'bcrypt-ruby', '~> 3.0.0'
 
 gem 'sqlite3', group: [:development, :test]
 
+group :development do
+  gem 'guard-test'
+  gem 'rb-fsevent', require: false
+end
+
 group :test do
   # Pretty printed test output
   gem 'turn', :require => false
