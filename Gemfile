@@ -2,9 +2,6 @@ source 'http://rubygems.org'
 
 gem 'rails', '3.1.1'
 
-# Bundle edge Rails instead:
-# gem 'rails', :git => 'git://github.com/rails/rails.git'
-
 # Gems used only for assets and not required in production environments by default.
 group :assets do
   gem 'sass-rails',   '~> 3.1.4'
@@ -24,7 +21,7 @@ gem 'sqlite3', group: [:development, :test]
 
 group :development do
   gem 'guard-test'
-  gem 'rb-fsevent', require: false
+  gem 'rb-fsevent', require: false if RUBY_PLATFORM =~ /darwin/i
 end
 
 group :test do
