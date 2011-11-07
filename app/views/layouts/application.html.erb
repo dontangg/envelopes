@@ -1,14 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Envelopes</title>
+  <title><%= yield(:title) + ' | ' if content_for?(:title)  %>Envelopes</title>
+  <meta name="viewport" content="width=device-width" />
+  <link href="http://fonts.googleapis.com/css?family=Open+Sans:light,regular&amp;v1" rel="stylesheet" type="text/css" />
   <%= stylesheet_link_tag    "application" %>
   <%= javascript_include_tag "application" %>
   <%= csrf_meta_tags %>
 </head>
 <body>
 
+<% if flash[:notice] %>
+  <div class='flash notice'><%= flash.notice %></div>
+<% end %>
+<% if flash[:alert] %>
+  <div class='flash alert'><%= flash.alert %></div>
+<% end %>
+
+<div id='page'>
 <%= yield %>
+</div>
 
 </body>
 </html>

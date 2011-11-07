@@ -1,0 +1,32 @@
+#page {
+  margin: 36px auto;
+  width: 90%;
+}
+
+.field, .actions {
+  clear: both;
+  padding: 0.5em 0;
+}
+
+h1, h2, h3, h4 {
+  font-weight: 300;
+}
+
+.flash {
+  text-align: center;
+  border-bottom: solid 1px #f00;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 1.5em;
+  padding: 2px;
+  
+  &.alert {
+    background-color: #f99;
+  }
+  
+  &.notice {
+    border-bottom-color: #ff0;
+    background-color: #ffc;
+  }
+}

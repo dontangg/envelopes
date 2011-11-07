@@ -1,0 +1,31 @@
+
+input {
+  padding: 1px 3px;
+  border: 1px solid #6d9c00;
+  border-radius: 0;
+  
+  &:focus {
+    outline: 0;
+    box-shadow: 0 0 3px rgba(109, 156, 0, 1.0);
+  }
+  
+  &:invalid {
+    border-color: #f77;
+    box-shadow: none;
+    
+    &:focus {
+      box-shadow: 0 0 3px #f00;
+    }
+  }
+}
+
+button, input[type=button], input[type=submit] {
+  padding: 2px 12px 3px;
+  border: 1px solid #983fd5;
+  background: #e0c5f2;
+  font-weight: 300;
+  
+  &:focus {
+    box-shadow: 0 0 3px rgba(152, 63, 213, 1.0);
+  }
+}
