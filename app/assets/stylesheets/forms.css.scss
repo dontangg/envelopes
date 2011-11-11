@@ -9,7 +9,7 @@ input {
     box-shadow: 0 0 3px rgba(109, 156, 0, 1.0);
   }
   
-  &:invalid {
+  &.invalid {
     border-color: #f77;
     box-shadow: none;
     
