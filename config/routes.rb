@@ -1,9 +1,11 @@
 Envelopes::Application.routes.draw do
+  resources :envelopes, only: [:index, :show]
+
   get 'login' => 'sessions#new'
   post 'login' => 'sessions#create'
   get 'logout' => 'sessions#destroy'
   
-  root to: 'sessions#new'
+  root to: 'envelopes#index'
   
   # Sample of regular route:
   #   match 'products/:id' => 'catalog#view'

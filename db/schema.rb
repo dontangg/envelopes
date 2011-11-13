@@ -11,7 +11,18 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111022044153) do
+ActiveRecord::Schema.define(:version => 20111112223457) do
+
+  create_table "envelopes", :force => true do |t|
+    t.string   "name"
+    t.integer  "user_id"
+    t.boolean  "income"
+    t.boolean  "unassigned"
+    t.integer  "parent_envelope_id"
+    t.string   "expense"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "users", :force => true do |t|
     t.string   "email"
