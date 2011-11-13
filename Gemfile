@@ -21,7 +21,7 @@ gem 'sqlite3', group: [:development, :test]
 
 group :development do
   gem 'guard-test'
-  gem 'rb-fsevent', require: false if RUBY_PLATFORM =~ /darwin/i
+  gem 'rb-fsevent', require: false #if RUBY_PLATFORM =~ /darwin/i
 end
 
 group :test do
