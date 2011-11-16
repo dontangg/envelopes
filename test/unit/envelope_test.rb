@@ -55,4 +55,16 @@ class EnvelopeTest < ActiveSupport::TestCase
     
     assert_equal "#{envelope.id}-available-cash", envelope.to_param
   end
+  
+  test "transaction scope returns all transactions for this envelope" do
+    fuel_envelope = envelopes(:fuel)
+    assert_equal 1, fuel_envelope.transactions.size
+    
+    auto_envelope = envelopes(:auto)
+    assert_equal 0, auto_envelope.transactions.size
+    
+    
+    auto_envelope = envelopes(:available_cash)
+    assert_equal 1, auto_envelope.transactions.size
+  end
 end

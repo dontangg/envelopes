@@ -1,0 +1,28 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+ancestry:
+  posted_at: 2011-11-15
+  payee: Ancestry.com
+  original_payee: 2345 Ancestry.com 1234
+  amount: 9.99
+  to_envelope: available_cash
+  unique_id: 2011-11-15~2345 Ancestry.com 1234~9.99~false~
+  pending: false
+
+walmart:
+  posted_at: 2011-11-15
+  payee: WalMart
+  original_payee: 1203498675 WALMART
+  amount: 10.00
+  from_envelope: fuel
+  unique_id: 2011-11-15~1203498675 WALMART~10.0~false~
+  pending: false
+
+doxtek:
+  posted_at: 2011-11-15
+  payee: DoxTek
+  original_payee: 1203498675 DOXTEK
+  amount: 100.00
+  from_envelope: another_users_envelope
+  unique_id: 2011-11-15~1203498675 DOXTEK~100.0~false~
+  pending: false

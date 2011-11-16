@@ -13,4 +13,8 @@ class Envelope < ActiveRecord::Base
   def to_param
     "#{id}-#{name.parameterize}" if id
   end
+  
+  def transactions
+    Transaction.where(Transaction.arel_table[:from_envelope_id].eq(self.id).or(Transaction.arel_table[:to_envelope_id].eq(self.id)))
+  end
 end

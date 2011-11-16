@@ -26,7 +26,7 @@ end
 
 group :test do
   # Pretty printed test output
-  gem 'turn', :require => false
+  #gem 'turn', :require => false, :git => "git://github.com/TwP/turn.git"
 end
 
 gem 'pg', group: :production
