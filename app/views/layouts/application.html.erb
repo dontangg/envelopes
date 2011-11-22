@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width" />
   <link href="http://fonts.googleapis.com/css?family=Open+Sans:light,regular&amp;v1" rel="stylesheet" type="text/css" />
   <%= stylesheet_link_tag    "application" %>
+  <%= javascript_include_tag "application", async: true %>
   <%= csrf_meta_tags %>
 </head>
 <body>
@@ -20,6 +21,5 @@
 <%= yield %>
 </div>
 
-<%= javascript_include_tag "application" %>
 </body>
 </html>
