@@ -11,6 +11,7 @@ Envelopes::Application.configure do
   # The default is to disable Rails's static asset server (Apache or nginx will already do this)
   # Heroku Cedar stack doesn't run nginx, so we enable this (http://devcenter.heroku.com/articles/http-routing#gzipped_responses)
   config.serve_static_assets = true
+  config.static_cache_control = "public, max-age=29030400"
 
   # Compress JavaScripts and CSS
   config.assets.compress = true
