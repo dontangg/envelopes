@@ -17,6 +17,25 @@
 </head>
 <body>
 
+<% if current_user %>
+  <nav>
+    <ul class='account-nav'>
+      <li><%= current_user.email %></li>
+      <li><%= link_to 'logout', logout_url %></li>
+    </ul>
+    <ul class='main-nav'>
+      <li id='logo'>
+        <%= link_to root_url do %>
+          <h1>Envelopes</h1>
+        <% end %>
+      </li>
+      <li><%= link_to 'Dashboard' %></li>
+      <li><%= link_to 'Fill Envelopes' %></li>
+      <li><%= link_to 'Rules' %></li>
+    </ul>
+  </nav>
+<% end %>
+
 <% if flash[:notice] %>
   <div class='flash notice'><%= flash.notice %></div>
 <% end %>
