@@ -15,6 +15,7 @@ nav {
   }
   h1 {
     display: inline;
+    font-size: 14px;
   }
 }
 
@@ -23,7 +24,6 @@ nav {
 }
 
 #logo {
-  font-size: 14px;
   padding-left: 0;
 
   a {
@@ -51,18 +51,30 @@ a {
 
 .flash {
   text-align: center;
-  border-bottom: solid 1px #d0d0d0;
   position: absolute;
   top: 0;
   width: 100%;
-  height: 1.5em;
-  padding: 2px;
+  
+  nav+& {
+    top: 28px;
+  }
+  
+  div {
+    padding: 2px 5px;
+    display: inline-block;
+    height: 1.5em;
+    box-shadow: 0 0 5px #999;
+  }
   
   &.alert {
-    color: #fc3f4d;
+    div {
+      background-color: #f99;
+    }
   }
   
   &.notice {
-    
+    div {
+      background-color: #ffc;
+    }
   }
 }
