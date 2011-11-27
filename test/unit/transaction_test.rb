@@ -13,7 +13,7 @@ class TransactionTest < ActiveSupport::TestCase
     assert_equal 2, txns.size
   end
   
-  test "an envelope_id must be present before saving" do
+  test "envelope_id must be present before saving" do
     txn = Transaction.new payee: "t", original_payee: "tt", posted_at: Date.today, amount: 1.0
     txn.save
     
