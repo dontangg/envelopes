@@ -1,27 +1,18 @@
 class Transaction < ActiveRecord::Base
-  scope :recent, where("posted_at >= ?", Date.today - 1.month)
-  default_scope :order => 'posted_at DESC'
+  default_scope order(arel_table[:posted_at].desc)
+  scope :recent, where(arel_table[:posted_at].gteq(Date.today - 1.month))
   
-  validates_presence_of :posted_at, :payee, :original_payee, :amount
+  validates_presence_of :posted_at, :payee, :original_payee, :amount, :envelope_id
   validates_uniqueness_of :unique_id, :allow_nil => true
-  validate :one_envelope_id_must_be_present
   
   before_save :strip_payee
   
-  belongs_to :to_envelope, :class_name => "Envelope"
-  belongs_to :from_envelope, :class_name => "Envelope"
-  
-  def one_envelope_id_must_be_present
-    if from_envelope_id.blank? && to_envelope_id.blank?
-      errors.add(:from_envelope_id, " or to_envelope_id must be present")
-      errors.add(:to_envelope_id, " or from_envelope_id must be present")
-    end
-  end
+  belongs_to :envelope
+  has_one :associated_transaction, class_name: 'Transaction', foreign_key: 'associated_transaction_id'
   
   def self.owned_by(user_id)
-    envelope_ids = Envelope.owned_by(user_id).select(:id).map(&:id)
-    
-    where(self.arel_table[:from_envelope_id].in(envelope_ids).or(self.arel_table[:to_envelope_id].in(envelope_ids)))
+    envelopes_table = Envelope.arel_table
+    where(self.arel_table[:envelope_id].in(envelopes_table.project(envelopes_table[:id]).where(envelopes_table[:user_id].eq(user_id))))
   end
   
   def strip_payee

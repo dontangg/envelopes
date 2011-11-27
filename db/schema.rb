@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111124061607) do
+ActiveRecord::Schema.define(:version => 20111126155602) do
 
   create_table "envelopes", :force => true do |t|
     t.string   "name"
@@ -29,17 +29,17 @@ ActiveRecord::Schema.define(:version => 20111124061607) do
     t.string   "payee"
     t.string   "original_payee"
     t.decimal  "amount"
-    t.integer  "from_envelope_id"
-    t.integer  "to_envelope_id"
+    t.integer  "envelope_id"
+    t.integer  "associated_transaction_id"
     t.string   "unique_id"
     t.boolean  "pending"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "transactions", ["from_envelope_id"], :name => "index_transactions_on_from_envelope_id"
+  add_index "transactions", ["associated_transaction_id"], :name => "index_transactions_on_to_envelope_id"
+  add_index "transactions", ["envelope_id"], :name => "index_transactions_on_from_envelope_id"
   add_index "transactions", ["posted_at"], :name => "index_transactions_on_posted_at"
-  add_index "transactions", ["to_envelope_id"], :name => "index_transactions_on_to_envelope_id"
 
   create_table "users", :force => true do |t|
     t.string   "email"
