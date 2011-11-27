@@ -29,7 +29,9 @@ class Envelope < ActiveRecord::Base
     sum_function = Arel::Nodes::NamedFunction.new('SUM', [tt[:amount]])
     aggregation = Arel::Nodes::NamedFunction.new('COALESCE', [sum_function, 0], 'total_amount')
     
-    select([et[Arel.star], aggregation]).joins(Arel::Nodes::OuterJoin.new(tt, Arel::Nodes::On.new(et[:id].eq(tt[:envelope_id])))).group(envelopes_columns)
+    select([et[Arel.star], aggregation])
+      .joins(Arel::Nodes::OuterJoin.new(tt, Arel::Nodes::On.new(et[:id].eq(tt[:envelope_id]))))
+      .group(envelopes_columns)
     #sql = et.project(et[Arel.star], aggregation)
     #        .join(tt, Arel::Nodes::OuterJoin).on(et[:id].eq(tt[:envelope_id]))#.where(et[:user_id].eq(user_id))
     #        .group(*envelopes_columns)
