@@ -32,11 +32,5 @@ class Envelope < ActiveRecord::Base
     select([et[Arel.star], aggregation])
       .joins(Arel::Nodes::OuterJoin.new(tt, Arel::Nodes::On.new(et[:id].eq(tt[:envelope_id]))))
       .group(envelopes_columns)
-    #sql = et.project(et[Arel.star], aggregation)
-    #        .join(tt, Arel::Nodes::OuterJoin).on(et[:id].eq(tt[:envelope_id]))#.where(et[:user_id].eq(user_id))
-    #        .group(*envelopes_columns)
-    #        .order(et[:name]).to_sql
-
-    #scoped.find_by_sql(sql)
   end
 end
