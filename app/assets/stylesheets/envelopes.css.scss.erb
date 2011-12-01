@@ -1,0 +1,98 @@
+// Place all the styles related to the Envelopes controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+#dashboard {
+  
+  ul {
+    list-style: none;
+    padding: 0;
+    
+    a {
+      display: block;
+      text-decoration: none;
+      padding: 3px 20px 3px 10px;
+      margin-left: -10px;
+      margin-right: -15px;
+      
+      &:hover {
+        background: #f1f1f1 url(<%= asset_path('pen_12x12.png') %>) no-repeat 261px 7px;
+      }
+    }
+  }
+  
+  li {
+    .name {
+      display: block;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      padding-right: 5px;
+    }
+    .amount {
+      float: right;
+      text-align: right;
+      font-size: 90%;
+    }
+  }
+  
+  > ul {
+    /* For CSS columns
+    -webkit-column-count: 4;
+    -webkit-column-gap:   10px;
+    -moz-column-count:    4;
+    -moz-column-gap:      10px;
+    column-count:         4;
+    column-gap:           10px; */
+    
+    > li {
+      font-size: 21px;
+      font-weight: 300;
+      padding-bottom: 20px;
+      > a {
+        color: #000;
+        > .amount {
+          display: none;
+        }
+        > .name {
+          padding-right: 0;
+        }
+      }
+      > ul {
+        font-weight: normal;
+        border-top: solid 1px #d0d0d0;
+        > li {
+          font-size: 16px;
+          > ul {
+            border-top: dotted 1px #d0d0d0;
+            padding-bottom: 5px;
+            > li {
+              font-size: 12px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.envelope-group {
+  /* For CSS columns
+  display: inline-block;
+  width: 100%; */
+
+  float: left;
+  width: 250px;
+}
+
+/* For CSS columns
+@media (max-width: 850px) {
+  #dashboard > ul {
+    
+    -moz-column-count:    3;
+    -webkit-column-count: 3;
+    column-count:         3;
+    
+  }
+}
+*/
