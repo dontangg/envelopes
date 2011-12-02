@@ -5,3 +5,38 @@
 #
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
+
+case Rails.env
+when "development"
+
+  puts "-- creating users"
+
+  test_user = User.create email: 'test@gmail.com', password: BCrypt::Password.create('pass')
+
+
+  puts "-- creating envelopes"
+
+  auto_envelope = Envelope.create name: 'Auto', user: test_user
+  fuel_envelope = Envelope.create name: "Fuel", user: test_user, parent_envelope: auto_envelope
+  auto_maintenance_envelope = Envelope.create name: "Maintenance", user: test_user, parent_envelope: auto_envelope
+
+  food_envelope = Envelope.create name: 'Food', user: test_user
+  eating_out_envelope = Envelope.create name: "Eating Out", user: test_user, parent_envelope: food_envelope
+  groceries_maintenance_envelope = Envelope.create name: "Groceries", user: test_user, parent_envelope: food_envelope
+
+  gifts_envelope = Envelope.create name: 'Gifts & Donations', user: test_user
+  birthdays_envelope = Envelope.create name: 'Birthdays', user: test_user, parent_envelope: gifts_envelope
+  Envelope.create name: "Don", user: test_user, parent_envelope: birthdays_envelope
+  Envelope.create name: "Mandi", user: test_user, parent_envelope: birthdays_envelope
+  Envelope.create name: "Robbie", user: test_user, parent_envelope: birthdays_envelope
+  Envelope.create name: "Luke", user: test_user, parent_envelope: birthdays_envelope
+  Envelope.create name: "Others", user: test_user, parent_envelope: birthdays_envelope
+  holidays_envelope = Envelope.create name: 'Holidays', user: test_user, parent_envelope: gifts_envelope
+  Envelope.create name: "Christmas", user: test_user, parent_envelope: holidays_envelope
+  Envelope.create name: "Easter", user: test_user, parent_envelope: holidays_envelope
+  Envelope.create name: "Halloween", user: test_user, parent_envelope: holidays_envelope
+
+  subscriptions_envelope = Envelope.create name: 'Subscriptions', user: test_user
+  domains_envelope = Envelope.create name: 'Domains', user: test_user, parent_envelope: subscriptions_envelope
+  netflix_envelope = Envelope.create name: 'Netflix', user: test_user, parent_envelope: subscriptions_envelope
+end
