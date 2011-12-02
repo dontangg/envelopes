@@ -4,7 +4,7 @@
 
 $ ->
   $('#dashboard > ul').masonry
-    itemSelector: '.envelope-group',
+    itemSelector: '#dashboard > ul > li',
     columnWidth: 250,
     gutterWidth: 40,
     isAnimated: true

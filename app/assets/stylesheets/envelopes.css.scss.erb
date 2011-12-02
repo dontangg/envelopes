@@ -46,6 +46,11 @@
     column-gap:           10px; */
     
     > li {
+      /* For CSS columns
+      display: inline-block;
+      width: 100%; */
+      float: left;
+      width: 250px;
       font-size: 21px;
       font-weight: 300;
       padding-bottom: 20px;
@@ -76,23 +81,12 @@
   }
 }
 
-.envelope-group {
-  /* For CSS columns
-  display: inline-block;
-  width: 100%; */
-
-  float: left;
-  width: 250px;
-}
-
 /* For CSS columns
 @media (max-width: 850px) {
   #dashboard > ul {
-    
     -moz-column-count:    3;
     -webkit-column-count: 3;
     column-count:         3;
-    
   }
 }
 */

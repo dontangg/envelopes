@@ -20,6 +20,13 @@ when "development"
   fuel_envelope = Envelope.create name: "Fuel", user: test_user, parent_envelope: auto_envelope
   auto_maintenance_envelope = Envelope.create name: "Maintenance", user: test_user, parent_envelope: auto_envelope
 
+  bills_envelope = Envelope.create name: 'Bills', user: test_user
+  car_insurance_envelope = Envelope.create name: "Car Insurance", user: test_user, parent_envelope: bills_envelope
+  student_loans_envelope = Envelope.create name: "Student Loans", user: test_user, parent_envelope: bills_envelope
+  life_insurance_envelope = Envelope.create name: "Life Insurance", user: test_user, parent_envelope: bills_envelope
+  mortgage_envelope = Envelope.create name: "Mortgage", user: test_user, parent_envelope: bills_envelope
+  credit_card_envelope = Envelope.create name: "Credit Card", user: test_user, parent_envelope: bills_envelope
+
   food_envelope = Envelope.create name: 'Food', user: test_user
   eating_out_envelope = Envelope.create name: "Eating Out", user: test_user, parent_envelope: food_envelope
   groceries_maintenance_envelope = Envelope.create name: "Groceries", user: test_user, parent_envelope: food_envelope

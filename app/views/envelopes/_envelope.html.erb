@@ -1,11 +1,11 @@
-<li<%= " class='#{klass}'" if klass %>>
-  <a href='#'>
+<li>
+  <a href='<%= envelope_path(envelope) %>'>
     <span class='amount'><%= number_to_currency(envelope.total_amount) %></span>
     <span class='name' title='<%= envelope.name %>'><%= envelope.name %></span>
   </a>
   <% unless child_envelopes[envelope.id].empty? %>
     <ul>
-      <%= render partial: 'envelope', collection: child_envelopes[envelope.id], as: :envelope, locals: {child_envelopes: child_envelopes, klass: nil} %>
+      <%= render partial: 'envelope', collection: child_envelopes[envelope.id], as: :envelope, locals: {child_envelopes: child_envelopes} %>
     </ul>
   <% end %>
 </li>
