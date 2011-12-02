@@ -8,7 +8,7 @@ class TransactionTest < ActiveSupport::TestCase
   end
   
   test "owned_by returns transactions in envelopes owned by the right user" do
-    txns = Transaction.owned_by(1)
+    txns = Transaction.owned_by(users(:jim))
     
     assert_equal 2, txns.size
   end
@@ -20,7 +20,22 @@ class TransactionTest < ActiveSupport::TestCase
     assert !txn.valid?
   end
   
-  test "transactions are ordered by posted_at, then payee, then amount" do
-    pending "finish this"
+  test "transactions are ordered by posted_at, then original payee, then amount" do
+    transaction0 = Transaction.new original_payee: 'bbb', amount: 2, posted_at: Date.parse('Dec 25, 2011')
+    transaction1 = Transaction.new original_payee: 'bbb', amount: 3, posted_at: Date.parse('Dec 25, 2011')
+    transaction2 = Transaction.new original_payee: 'ccc', amount: 2, posted_at: Date.parse('Dec 25, 2011')
+    transaction3 = Transaction.new original_payee: 'bbb', amount: 2, posted_at: Date.parse('Dec 26, 2011')
+
+    # Mix them up
+    transactions = [transaction0, transaction1, transaction2, transaction3].sort_by! { Random.rand }
+
+    # Sort them
+    transactions.sort!
+
+    assert_equal transaction0, transactions[0]
+    assert_equal transaction1, transactions[1]
+    assert_equal transaction2, transactions[2]
+    assert_equal transaction3, transactions[3]
+    assert_not_equal transaction1, transactions[0]
   end
 end

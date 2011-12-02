@@ -4,6 +4,6 @@ jim:
   email: jim@example.com
   password_digest: <%= BCrypt::Password.create('jimpass') %>
 
-two:
-  email: MyString
-  password_digest: MyString
+someone:
+  email: someone@example.com
+  password_digest: <%= BCrypt::Password.create('a pass') %>

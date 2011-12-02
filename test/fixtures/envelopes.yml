@@ -2,28 +2,28 @@
 
 available_cash:
   name: Available Cash
-  user_id: 1
+  user: jim
   income: true
   unassigned: false
   expense: 
 
 unassigned:
   name: Unassigned
-  user_id: 1
+  user: jim
   income: false
   unassigned: true
   expense: 
 
 auto:
   name: Auto
-  user_id: 1
+  user: jim
   income: false
   unassigned: false
   expense:
 
 fuel:
   name: Fuel
-  user_id: 1
+  user: jim
   income: false
   unassigned: false
   parent_envelope: auto
@@ -31,6 +31,6 @@ fuel:
 
 another_users_envelope:
   name: Another users's envelope
-  user_id: 2
+  user: someone
   income: false
   unassigned: false

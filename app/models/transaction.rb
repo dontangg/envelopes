@@ -11,6 +11,7 @@ class Transaction < ActiveRecord::Base
   has_one :associated_transaction, class_name: 'Transaction', foreign_key: 'associated_transaction_id'
   
   def self.owned_by(user_id)
+    user_id = user_id.id if user_id.respond_to? :id
     envelopes_table = Envelope.arel_table
     where(self.arel_table[:envelope_id].in(envelopes_table.project(envelopes_table[:id]).where(envelopes_table[:user_id].eq(user_id))))
   end

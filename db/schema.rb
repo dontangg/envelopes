@@ -37,8 +37,8 @@ ActiveRecord::Schema.define(:version => 20111126155602) do
     t.datetime "updated_at"
   end
 
-  add_index "transactions", ["associated_transaction_id"], :name => "index_transactions_on_to_envelope_id"
-  add_index "transactions", ["envelope_id"], :name => "index_transactions_on_from_envelope_id"
+  add_index "transactions", ["associated_transaction_id"], :name => "index_transactions_on_associated_transaction_id"
+  add_index "transactions", ["envelope_id"], :name => "index_transactions_on_envelope_id"
   add_index "transactions", ["posted_at"], :name => "index_transactions_on_posted_at"
 
   create_table "users", :force => true do |t|
