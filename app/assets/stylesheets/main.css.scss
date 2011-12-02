@@ -1,5 +1,5 @@
 #page {
-  margin: 36px auto;
+  margin: 20px auto;
   width: 90%;
 }
 
@@ -7,7 +7,7 @@ nav {
   background: #f1f1f1;
   font-size: 12px;
   padding: 10px 5%;
-  box-shadow: 2px 2px 4px #ccc;
+  box-shadow: 0 2px 6px #ccc;
 
   li {
     display: inline;
@@ -17,6 +17,11 @@ nav {
     display: inline;
     font-size: 14px;
   }
+}
+
+header h1 {
+  display: inline;
+  padding-right: 15px;
 }
 
 .account-nav {

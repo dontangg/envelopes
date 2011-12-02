@@ -1,4 +1,13 @@
 <section id='dashboard'>
+  <!-- <section class='actions'>
+    <a href='#' class='manage button'>Manage</a>
+  </section> -->
+  
+  <header>
+    <h1>Dashboard</h1>
+    <small><a href='#' class='manage button'>Manage</a></small>
+  </header>
+  
   <ul>
     <%= render partial: 'envelope', collection: @parent_envelopes, as: :envelope, locals: {child_envelopes: @child_envelopes, klass: 'envelope-group'} %>
   </ul>
