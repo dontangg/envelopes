@@ -19,6 +19,33 @@ class Envelope < ActiveRecord::Base
   def total_amount
     @total_amount ||= read_attribute(:total_amount) || transactions.sum(:amount)
   end
+
+  def inclusive_total_amount(organized_envelopes = nil)
+    children = organized_envelopes.nil? ? self.child_envelopes : organized_envelopes[id]
+    children.inject(total_amount) {|sum, envelope| sum + envelope.inclusive_total_amount(organized_envelopes) }
+  end
+
+  def full_name(all_envelopes = nil)
+    get_envelope = lambda do |envelope_id|
+      if envelope_id
+        if all_envelopes
+          all_envelopes.select {|envelope| envelope.id == envelope_id}.first
+        else
+          Envelope.find(envelope_id)
+        end
+      end
+    end
+
+    name = nil
+    envelope = self
+    while envelope
+      name = ": #{name}" if name
+      name = envelope.name + name.to_s
+      envelope = get_envelope.call(envelope.parent_envelope_id)
+    end
+
+    name
+  end
   
   # A chainable scope that also returns the amount in the envelope
   def self.with_amounts

@@ -8,7 +8,7 @@
 <section id='envelope-details'>
   <header>
     <h1>
-      <%= @envelope.name %>
+      <%= @envelope.full_name(@all_envelopes) %>
       <span style='float:right;' class='<%= @envelope.total_amount < 0 ? "negative" : "positive" %>-number'>
         <%= number_to_currency(@envelope.total_amount) %>
       </span>

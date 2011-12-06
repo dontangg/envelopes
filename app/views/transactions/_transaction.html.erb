@@ -1,6 +1,7 @@
 <tr <%= cycle("", "class='alt'") %>>
   <td><%= transaction.posted_at.strftime('%b %d') %></td>
   <td><%= transaction.payee %></td>
-  <td><%= transaction.envelope.name %></td>
+  <%# If @all_envelopes is nil, it will just look up parent envelopes in the database. It will not fail. %>
+  <td><%= transaction.envelope.full_name(@all_envelopes) %></td>
   <td class='amount'><%= number_to_currency(transaction.amount) %></td>
 </tr>
