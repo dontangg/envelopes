@@ -3,9 +3,9 @@
     <span class='amount'><%= number_to_currency(envelope.total_amount) %></span>
     <span class='name' title='<%= envelope.name %>'><%= envelope.name %></span>
   </a>
-  <% unless child_envelopes[envelope.id].empty? %>
+  <% unless envelopes[envelope.id].empty? %>
     <ul>
-      <%= render partial: 'envelope', collection: child_envelopes[envelope.id], as: :envelope, locals: {child_envelopes: child_envelopes} %>
+      <%= render partial: 'envelope', collection: envelopes[envelope.id], as: :envelope, locals: {envelopes: envelopes} %>
     </ul>
   <% end %>
 </li>

@@ -1,16 +1,17 @@
 class EnvelopesController < ApplicationController
   def index
-    all_envelopes = Envelope.owned_by(current_user_id).all_with_amounts
+    all_envelopes = Envelope.owned_by(current_user_id).with_amounts
     
-    @parent_envelopes = []
-    @child_envelopes = Hash.new { |hash, key| hash[key] = [] }
-    all_envelopes.each do |envelope|
-      envelope_array = envelope.parent_envelope_id ? @child_envelopes[envelope.parent_envelope_id] : @parent_envelopes
-      envelope_array.push(envelope)
-    end
+    @envelopes = Envelope.organize(all_envelopes)
   end
 
   def show
+    all_envelopes = Envelope.owned_by(current_user_id).with_amounts
+    
+    @envelopes = Envelope.organize(all_envelopes)
+    @envelope = all_envelopes.select { |envelope| envelope.id == params[:id].to_i }.first
+    
+    @transactions = @envelope.transactions.recent
   end
 
 end

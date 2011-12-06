@@ -3,11 +3,11 @@
   width: 90%;
 }
 
-nav {
+nav#header-nav {
   background: #f1f1f1;
   font-size: 12px;
   padding: 10px 5%;
-  box-shadow: 0 2px 6px #ccc;
+  box-shadow: 0 0 6px #ccc;
 
   li {
     display: inline;
@@ -52,6 +52,14 @@ a {
   &:hover {
     text-decoration: underline;
   }
+}
+
+.positive-number {
+  color: #6d9c00;
+}
+
+.negative-number {
+  color: #fc3f4d;
 }
 
 .flash {
