@@ -5,6 +5,6 @@
   </header>
   
   <ul>
-    <%= render partial: 'envelope', collection: @parent_envelopes, as: :envelope, locals: {child_envelopes: @child_envelopes} %>
+    <%= render partial: 'envelope', collection: @envelopes[nil], as: :envelope, locals: {envelopes: @envelopes} %>
   </ul>
 </section>

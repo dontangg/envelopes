@@ -20,7 +20,8 @@ class Envelope < ActiveRecord::Base
     @total_amount ||= read_attribute(:total_amount) || transactions.sum(:amount)
   end
   
-  def self.all_with_amounts
+  # A chainable scope that also returns the amount in the envelope
+  def self.with_amounts
     et = Envelope.arel_table
     tt = Transaction.arel_table
     
@@ -32,5 +33,18 @@ class Envelope < ActiveRecord::Base
     select([et[Arel.star], aggregation])
       .joins(Arel::Nodes::OuterJoin.new(tt, Arel::Nodes::On.new(et[:id].eq(tt[:envelope_id]))))
       .group(envelopes_columns)
+  end
+  
+  # Returns a Hash with all the envelopes organized. eg:
+  #
+  #   nil   => [array of all envelopes with parent_envelope_id = nil]
+  #   1     => [array of envelopes with parent_envelope_id = 1]
+  def self.organize(all_envelopes)
+    envelopes = Hash.new { |hash, key| hash[key] = [] }
+    all_envelopes.each do |envelope|
+      envelopes[envelope.parent_envelope_id].push(envelope)
+    end
+    
+    envelopes
   end
 end
