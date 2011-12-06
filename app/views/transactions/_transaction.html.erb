@@ -1,0 +1,6 @@
+<tr <%= cycle("", "class='alt'") %>>
+  <td><%= transaction.posted_at.strftime('%b %d') %></td>
+  <td><%= transaction.payee %></td>
+  <td><%= transaction.envelope.name %></td>
+  <td class='amount'><%= number_to_currency(transaction.amount) %></td>
+</tr>
