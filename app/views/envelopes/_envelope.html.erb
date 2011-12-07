@@ -1,11 +1,11 @@
 <li>
   <a href='<%= envelope_path(envelope) %>'>
-    <span class='amount'><%= number_to_currency(envelope.inclusive_total_amount(envelopes)) %></span>
+    <span class='amount'><%= number_to_currency(envelope.inclusive_total_amount(organized_envelopes)) %></span>
     <span class='name' title='<%= envelope.name %>'><%= envelope.name %></span>
   </a>
-  <% unless envelopes[envelope.id].empty? %>
+  <% unless organized_envelopes[envelope.id].empty? %>
     <ul>
-      <%= render partial: 'envelope', collection: envelopes[envelope.id], as: :envelope, locals: {envelopes: envelopes} %>
+      <%= render partial: 'envelope', collection: organized_envelopes[envelope.id], as: :envelope, locals: {organized_envelopes: organized_envelopes} %>
     </ul>
   <% end %>
 </li>
