@@ -122,7 +122,7 @@
   }
 }
 
-#envelope-details {
+#envelope_details {
   padding: 0 2%;
   float: left;
   width: 60%;
@@ -161,7 +161,8 @@
         width: 95%;
         background-color: transparent;
         border-color: transparent;
-        
+        border-collapse: separate; /* needed for IE to display box-shadow */
+
         &:hover, &:focus {
           border-color: #6d9c00;
         }
@@ -170,9 +171,9 @@
   }
 }
 
-#envelope-aside {
+#envelope_aside {
   float: left;
-  width: 19%;
+  width: 18.5%;
   
   ul {
     list-style: none;
@@ -184,7 +185,7 @@
   }
 }
 
-#date-range-picker {
+#date_range_picker {
   float: right;
   position: relative;
   padding-bottom: 5px;
@@ -206,22 +207,48 @@
     position: absolute;
     right: 0;
     top: 25px;
-    font-size: 10px;
     border: 1px solid #d0d0d0;
-    padding: 5px;
+    padding: 20px;
     background-color: #fff;
     box-shadow: 0 0 5px #999;
+    white-space: nowrap;
+    font-size: 14px;
     
     .start {
-      float: left;
+      font-size: 10px;
+      display: inline-block;
     }
     .end {
-      float: left;
+      font-size: 10px;
+      display: inline-block;
       padding-left: 5px;
+    }
+    .actions {
+      padding: 20px 0 0;
+      text-align: right;
+      vertical-align: middle;
+
+      a {
+        margin-right: 15px;
+      }
     }
   }
   
   .ui-widget-content {
     border: 0;
+  }
+  .ui-state-active {
+    background: #6d9c00;
+    border-color: #2d5c00;
+    color: #fff;
+  }
+  .ui-datepicker table {
+    margin: 0;
+  }
+  .ui-helper-clearfix:after {
+    display: none;
+  }
+  .ui-widget {
+    font-family: "Open Sans", Helvetica, Arial;
   }
 }

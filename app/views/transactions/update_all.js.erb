@@ -1,0 +1,4 @@
+var html = "<%= escape_javascript render(partial: 'transactions/list_transactions', locals: { start_date: @start_date, end_date: @end_date, envelope: @envelope, transactions: @transactions }) %>"
+
+$('#update_all_transactions').replaceWith(html);
+setupDatePicker();

@@ -1,13 +1,14 @@
 #page {
-  margin: 20px auto;
+  margin: 2% auto;
   width: 90%;
+  overflow: auto;
 }
 
-nav#header-nav {
+nav#header_nav {
   background: #f1f1f1;
   font-size: 12px;
   padding: 10px 5%;
-  box-shadow: 0 0 6px #ccc;
+  box-shadow: 0 0 6px #aaa;
 
   li {
     display: inline;
@@ -28,7 +29,7 @@ header h1 {
   float: right;
 }
 
-#logo {
+.logo {
   padding-left: 0;
 
   a {

@@ -15,8 +15,11 @@ class EnvelopesController < ApplicationController
     # A Hash with all the envelopes organized by parent_envelope_id
     @organized_envelopes = Envelope.organize(@all_envelopes)
     
+    @start_date = params[:start_date].try(:to_date) || Date.today - 1.month
+    @end_date = params[:end_date].try(:to_date) || Date.today
+
     # An array of transactions in this envelope
-    @transactions = @envelope.all_transactions(@organized_envelopes).recent
+    @transactions = @envelope.all_transactions(@organized_envelopes).starting_at(@start_date).ending_at(@end_date)
   end
 
 end

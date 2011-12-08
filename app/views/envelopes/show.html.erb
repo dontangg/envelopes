@@ -5,7 +5,7 @@
     </ul>
   </nav>
 </section>
-<section id='envelope-details'>
+<section id='envelope_details'>
   <header>
     <h1>
       <%= @envelope.full_name(@all_envelopes) %>
@@ -14,18 +14,12 @@
       </span>
     </h1>
   </header>
-  <div id='date-range-picker'>
-    <div class='current'>Nov 20, 2011 - Dec 20, 2011</div>
-    <div class='popup'>
-      <div class='start'></div>
-      <div class='end'></div>
-    </div>
-  </div>
-  <table class='transactions'>
-    <%= render @transactions %>
-  </table>
+
+  
+  <%= render partial: 'transactions/list_transactions', locals: { start_date: @start_date, end_date: @end_date, envelope: @envelope, transactions: @transactions } %>
+
 </section>
-<section id='envelope-aside'>
+<section id='envelope_aside'>
   <ul class='actions'>
     <li><a href='#' class='button transfer'>Transfer Money</a></li>
   </ul>
