@@ -1,7 +1,13 @@
-<tr <%= cycle("", "class='alt'") %>>
-  <td><%= transaction.posted_at.strftime('%b %d') %></td>
-  <td><%= transaction.payee %></td>
-  <%# If @all_envelopes is nil, it will just look up parent envelopes in the database. It will not fail. %>
-  <td><%= transaction.envelope.full_name(@all_envelopes) %></td>
-  <td class='amount'><%= number_to_currency(transaction.amount) %></td>
-</tr>
+<%= fields_for "transaction[]", transaction do |f| %>
+  <tr <%= cycle("", "class='alt'") %>>
+    <td class='posted-at'><%= transaction.posted_at.strftime('%b %d') %></td>
+    <td class='payee'><%= f.text_field :payee, title: transaction.original_payee %></td>
+    <%# If @all_envelopes is nil, it will just look up parent envelopes in the database. It will not fail. %>
+    <td class='envelope'><%= transaction.envelope.full_name(@all_envelopes) %></td>
+    <% if transaction.unique_id %>
+      <td class='amount'><%= number_to_currency(transaction.amount) %></td>
+    <% else %>
+      <td class='amount'><%= f.text_field :amount, value: number_to_currency(transaction.amount) %></td>
+    <% end %>
+  </tr>
+<% end %>

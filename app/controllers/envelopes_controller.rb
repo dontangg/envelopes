@@ -16,7 +16,7 @@ class EnvelopesController < ApplicationController
     @organized_envelopes = Envelope.organize(@all_envelopes)
     
     # An array of transactions in this envelope
-    @transactions = @envelope.transactions.recent
+    @transactions = @envelope.all_transactions(@organized_envelopes).recent
   end
 
 end

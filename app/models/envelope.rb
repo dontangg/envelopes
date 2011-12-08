@@ -26,6 +26,8 @@ class Envelope < ActiveRecord::Base
   end
 
   def full_name(all_envelopes = nil)
+    return @full_name if @full_name
+    
     get_envelope = lambda do |envelope_id|
       if envelope_id
         if all_envelopes
@@ -44,7 +46,7 @@ class Envelope < ActiveRecord::Base
       envelope = get_envelope.call(envelope.parent_envelope_id)
     end
 
-    name
+    @full_name = name
   end
   
   # A chainable scope that also returns the amount in the envelope
@@ -60,6 +62,20 @@ class Envelope < ActiveRecord::Base
     select([et[Arel.star], aggregation])
       .joins(Arel::Nodes::OuterJoin.new(tt, Arel::Nodes::On.new(et[:id].eq(tt[:envelope_id]))))
       .group(envelopes_columns)
+  end
+  
+  def self.all_child_envelope_ids(envelope_id, organized_envelopes = nil)
+    children = organized_envelopes ? organized_envelopes[envelope_id] : Envelope.where(parent_envelope_id: envelope_id)
+    all_child_ids = []
+    children.each do |child|
+      all_child_ids << all_child_envelope_ids(child.id, organized_envelopes)
+    end
+    (all_child_ids << children).flatten!
+  end
+  
+  def all_transactions(organized_envelopes = nil)
+    all_child_envelope_ids = Envelope.all_child_envelope_ids(self.id, organized_envelopes) << self.id
+    Transaction.where(envelope_id: all_child_envelope_ids)
   end
   
   # Returns a Hash with all the envelopes organized. eg:
