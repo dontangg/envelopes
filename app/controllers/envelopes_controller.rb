@@ -2,7 +2,7 @@ class EnvelopesController < ApplicationController
   def index
     all_envelopes = Envelope.owned_by(current_user_id).with_amounts
     
-    @envelopes = Envelope.organize(all_envelopes)
+    @organized_envelopes = Envelope.organize(all_envelopes)
   end
 
   def show
@@ -13,7 +13,7 @@ class EnvelopesController < ApplicationController
     @envelope = @all_envelopes.select { |envelope| envelope.id == params[:id].to_i }.first
 
     # A Hash with all the envelopes organized by parent_envelope_id
-    @envelopes = Envelope.organize(@all_envelopes)
+    @organized_envelopes = Envelope.organize(@all_envelopes)
     
     # An array of transactions in this envelope
     @transactions = @envelope.transactions.recent

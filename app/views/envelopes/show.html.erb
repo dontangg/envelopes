@@ -1,7 +1,7 @@
 <section id='sidebar'>
   <nav>
     <ul>
-      <%= render partial: 'envelope', collection: @envelopes[nil], as: :envelope, locals: {envelopes: @envelopes} %>
+      <%= render partial: 'envelope', collection: @organized_envelopes[nil], as: :envelope, locals: {organized_envelopes: @organized_envelopes} %>
     </ul>
   </nav>
 </section>
@@ -10,7 +10,7 @@
     <h1>
       <%= @envelope.full_name(@all_envelopes) %>
       <span style='float:right;' class='<%= @envelope.total_amount < 0 ? "negative" : "positive" %>-number'>
-        <%= number_to_currency(@envelope.total_amount) %>
+        <%= number_to_currency(@envelope.inclusive_total_amount(@organized_envelopes)) %>
       </span>
     </h1>
   </header>
