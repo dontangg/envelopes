@@ -1,0 +1,65 @@
+
+input {
+  padding: 3px 5px;
+  border: 1px solid #6d9c00;
+  border-radius: 0;
+  
+  &:focus {
+    outline: 0;
+    box-shadow: 0 0 3px rgba(109, 156, 0, 1.0);
+  }
+  
+  &.invalid {
+    border-color: #f77;
+    box-shadow: none;
+    
+    &:focus {
+      box-shadow: 0 0 3px #f00;
+    }
+  }
+}
+
+button, input[type=button], input[type=submit], .button {
+  display: inline-block;
+  background: #f1f1f1 none no-repeat 5px center;
+  color: #000;
+  padding: 3px 13px;
+  /* text-shadow: 1px 1px 0 #fff; */
+  border: 1px solid #bbb;
+  vertical-align: baseline;
+  cursor: default;
+  
+  &.manage {
+    background-image: url(<%= asset_path('cog_alt_12x12.png') %>);
+    padding-left: 22px;
+  }
+  
+  &.transfer {
+    background-image: url(<%= asset_path('loop_alt4_16x12.png') %>);
+    background-position: 10px center;
+    padding-left: 33px;
+  }
+  
+  &:hover {
+    background-color: #ddd;
+    text-decoration: none;
+  }
+
+  &:focus, &:hover {
+    box-shadow: 0 0 2px #888;
+    outline: 0;
+  }
+
+  &.primary {
+    border: 1px solid #983fd5;
+    background: #e0c5f2;
+    
+    &:hover, &:focus {
+      box-shadow: 0 0 3px rgba(152, 63, 213, 1.0);
+    }
+
+    &:hover {
+      background-color: #d0b5e2;
+    }
+  }
+}

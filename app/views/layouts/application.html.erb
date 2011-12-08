@@ -21,13 +21,13 @@
 <body>
 
 <% if current_user %>
-  <nav id='header-nav'>
+  <nav id='header_nav'>
     <ul class='account-nav'>
       <li><%= current_user.email %></li>
       <li><%= link_to 'logout', logout_url %></li>
     </ul>
     <ul class='main-nav'>
-      <li id='logo'>
+      <li class='logo'>
         <%= link_to root_url do %>
           <h1>Envelopes</h1>
         <% end %>

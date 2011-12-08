@@ -1,0 +1,19 @@
+<%= form_tag update_all_transactions_path, id: 'update_all_transactions', method: :put, remote: true do %>
+  <%= hidden_field_tag 'envelope_id', envelope.id %>
+  <div id='date_range_picker'>
+    <%= hidden_field_tag 'start_date', start_date %>
+    <%= hidden_field_tag 'end_date', end_date %>
+    <div class='current'><%= start_date.strftime("%b %e, %Y") %> - <%= end_date.strftime("%b %e, %Y") %></div>
+    <div class='popup'>
+      <div class='start' data-initial-date='<%= start_date %>'></div>
+      <div class='end' data-initial-date='<%= end_date %>'></div>
+      <div class='actions'>
+        <a href='#'>Cancel</a>
+        <button class='primary'>Filter</button>
+      </div>
+    </div>
+  </div>
+  <table class='transactions'>
+    <%= render transactions %>
+  </table>
+<% end %>
