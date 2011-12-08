@@ -50,3 +50,10 @@ $ ->
   if $('#date_range_picker').length > 0
     setupDatePicker()
   
+  $('.amount input').on 'blur', ->
+    $this = $(this)
+    value = $this.val().replace /[^-.0-9]/g, ""
+    value = parseFloat(value).toFixed 2
+    value = value.replace /([.0-9]+)/g, "$$$1"
+    $this.val value
+  
