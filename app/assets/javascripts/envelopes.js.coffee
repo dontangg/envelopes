@@ -57,3 +57,5 @@ $ ->
     value = value.replace /([.0-9]+)/g, "$$$1"
     $this.val value
   
+  $('select').selectToAutocomplete() # http://baymard.com/labs/country-selector
+  
