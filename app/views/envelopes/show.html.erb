@@ -14,8 +14,14 @@
       </span>
     </h1>
   </header>
-  
-  <table>
+  <div id='date-range-picker'>
+    <div class='current'>Nov 20, 2011 - Dec 20, 2011</div>
+    <div class='popup'>
+      <div class='start'></div>
+      <div class='end'></div>
+    </div>
+  </div>
+  <table class='transactions'>
     <%= render @transactions %>
   </table>
 </section>

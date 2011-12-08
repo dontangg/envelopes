@@ -5,6 +5,7 @@
 // the compiled file.
 //
 //= require jquery.masonry.min
+//= require jquery-ui-1.8.16.custom.min
 //= require jquery_ujs
 //= require main
 //= require_tree .

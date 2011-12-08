@@ -29,7 +29,6 @@
     }
     .amount {
       float: right;
-      text-align: right;
       font-size: 90%;
     }
   }
@@ -128,7 +127,11 @@
   float: left;
   width: 60%;
   
-  table {
+  header {
+    padding-bottom: 10px;
+  }
+  
+  table.transactions {
     width: 100%;
     font-size: 14px;
     
@@ -137,11 +140,32 @@
     }
     
     td {
-      padding: 2px 5px;
-    }
-    
-    .amount {
-      text-align: right;
+      padding: 2px 10px;
+      
+      &.posted-at {
+        width: 10%;
+        min-width: 50px;
+      }
+      &.payee {
+        width: 40%;
+      }
+      &.envelope {
+        width: 40%;
+      }
+      &.amount {
+        width: 10%;
+        min-width: 55px;
+      }
+      
+      input {
+        width: 95%;
+        background-color: transparent;
+        border-color: transparent;
+        
+        &:hover, &:focus {
+          border-color: #6d9c00;
+        }
+      }
     }
   }
 }
@@ -157,5 +181,47 @@
     a {
       display: block;
     }
+  }
+}
+
+#date-range-picker {
+  float: right;
+  position: relative;
+  padding-bottom: 5px;
+  
+  .current {
+    font-size: 12px;
+    color: #999;
+    padding: 1px 3px;
+    cursor: pointer;
+    border: 1px solid transparent;
+
+    &:hover {
+      border-color: #d0d0d0;
+    }
+  }
+  
+  .popup {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 25px;
+    font-size: 10px;
+    border: 1px solid #d0d0d0;
+    padding: 5px;
+    background-color: #fff;
+    box-shadow: 0 0 5px #999;
+    
+    .start {
+      float: left;
+    }
+    .end {
+      float: left;
+      padding-left: 5px;
+    }
+  }
+  
+  .ui-widget-content {
+    border: 0;
   }
 }
