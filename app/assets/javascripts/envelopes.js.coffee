@@ -17,7 +17,7 @@ cancelDatePicker = (event) ->
     $('#date_range_picker .end').datepicker('setDate', $('#date_range_picker .end').data('initialDate'))
     setCurrentDateRange()
 
-@setupDatePicker = ->
+@setupTransactionsList = ->
   $('#date_range_picker').click (event) ->
     event.stopPropagation()
     $(this).children('.popup').show()
@@ -28,17 +28,19 @@ cancelDatePicker = (event) ->
     event.stopPropagation()
     cancelDatePicker()
   
-  $.datepicker.setDefaults
+  $('#date_range_picker .start').datepicker
     onSelect: setCurrentDateRange
     dateFormat: 'yy-mm-dd'
-
-  $('#date_range_picker .start').datepicker
     altField: '#start_date'
     defaultDate: $('#date_range_picker .start').data('initialDate')
   $('#date_range_picker .end').datepicker
+    onSelect: setCurrentDateRange
+    dateFormat: 'yy-mm-dd'
     altField: '#end_date'
     defaultDate: $('#date_range_picker .end').data('initialDate')
   setCurrentDateRange()
+
+  $('select').selectToAutocomplete()
 
 $ ->
   $('#dashboard > ul').masonry
@@ -47,15 +49,14 @@ $ ->
     gutterWidth: 40,
     isAnimated: true
   
-  if $('#date_range_picker').length > 0
-    setupDatePicker()
+  if $('#transactions_list').length > 0
+    setupTransactionsList()
   
-  $('.amount input').on 'blur', ->
+  $(document).on('blur', '.amount input', ->
     $this = $(this)
     value = $this.val().replace /[^-.0-9]/g, ""
     value = parseFloat(value).toFixed 2
     value = value.replace /([.0-9]+)/g, "$$$1"
     $this.val value
-  
-  $('select').selectToAutocomplete() # http://baymard.com/labs/country-selector
+  )
   

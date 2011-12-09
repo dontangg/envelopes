@@ -55,10 +55,16 @@ THE SOFTWARE.
             attrs[key] = raw_attrs[i].nodeValue;
           }
         };
-        return $text_field.attr( attrs )
-          .val( $select_field.find('option:selected:first').text() )
-          .insertAfter( $select_field );
+        $text_field.attr( attrs );
       }
+      $text_field.blur(function() {
+        var valid_values = $select_field.find('option').map(function(i, option) { return $(option).text(); });
+        if ( !($text_field.val() in valid_values) ) {
+          $text_field.val( $select_field.find('option:selected:first').text() );
+        }
+      });
+      return $text_field.val( $select_field.find('option:selected:first').text() )
+        .insertAfter( $select_field );
     },
     extract_options: function( $select_field ) {
       var options = [];
@@ -159,7 +165,7 @@ THE SOFTWARE.
             matchers.push( matcher );
           }
         };
-
+        
         return $.grep( context.options, function( option ) {
           var partial_matches = 0;
           if ( context.settings['relevancy-sorting'] ) {
@@ -212,8 +218,8 @@ THE SOFTWARE.
             context.settings['handle_invalid_input']( context );
           }
         }
-  context.$select_field.change(); 
-     }
+        context.$select_field.change(); 
+      }
       // jQuery UI autocomplete settings & behavior
       context.$text_field.autocomplete({
         'minLength': 0,
