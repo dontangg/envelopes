@@ -158,11 +158,12 @@
         min-width: 55px;
       }
       
-      input {
+      input, select {
         width: 95%;
         background-color: transparent;
-        border-color: transparent;
+        border: 1px solid transparent;
         border-collapse: separate; /* needed for IE to display box-shadow */
+        -webkit-appearance: initial;
 
         &:hover, &:focus {
           border-color: #6d9c00;
@@ -252,4 +253,8 @@
   .ui-widget {
     font-family: "Open Sans", Helvetica, Arial;
   }
+}
+
+.ui-autocomplete {
+  font-size: 12px;
 }

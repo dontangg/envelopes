@@ -6,6 +6,7 @@
 //
 //= require jquery.masonry.min
 //= require jquery-ui-1.8.16.custom.min
+//= require jquery.select-to-autocomplete
 //= require jquery_ujs
 //= require main
 //= require_tree .
