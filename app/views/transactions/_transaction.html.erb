@@ -2,8 +2,7 @@
   <tr <%= cycle("", "class='alt'") %>>
     <td class='posted-at'><%= transaction.posted_at.strftime('%b %d') %></td>
     <td class='payee'><%= f.text_field :payee, title: transaction.original_payee %></td>
-    <%# If @all_envelopes is nil, it will just look up parent envelopes in the database. It will not fail. %>
-    <td class='envelope'><%= f.collection_select :envelope_id, @all_envelopes.sort_by {|envelope| envelope.full_name}, :id, :full_name %></td>
+    <td class='envelope'><%= f.collection_select :envelope_id, all_envelopes, :id, :full_name %></td>
     <% if transaction.unique_id %>
       <td class='amount'><%= number_to_currency(transaction.amount) %></td>
     <% else %>

@@ -85,9 +85,12 @@ class Envelope < ActiveRecord::Base
   def self.organize(all_envelopes)
     envelopes = Hash.new { |hash, key| hash[key] = [] }
     all_envelopes.each do |envelope|
+      envelope.full_name(all_envelopes) # Have each envelope figure out and memoize its full_name
       envelopes[envelope.parent_envelope_id].push(envelope)
     end
     
+    all_envelopes.sort! {|e1, e2| e1.full_name <=> e2.full_name }
+
     envelopes
   end
 end

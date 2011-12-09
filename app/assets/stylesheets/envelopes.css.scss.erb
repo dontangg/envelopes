@@ -131,7 +131,7 @@
     padding-bottom: 10px;
   }
   
-  table.transactions {
+  table#transactions_list {
     width: 100%;
     font-size: 14px;
     clear: both;
@@ -257,4 +257,29 @@
 
 .ui-autocomplete {
   font-size: 12px;
+}
+$jquery-ui-border-radius: 0;
+.ui-corner-all, .ui-corner-top, .ui-corner-left, .ui-corner-tl {
+  -moz-border-radius-topleft: $jquery-ui-border-radius;
+  -webkit-border-top-left-radius: $jquery-ui-border-radius;
+  -khtml-border-top-left-radius: $jquery-ui-border-radius;
+  border-top-left-radius: $jquery-ui-border-radius;
+}
+.ui-corner-all, .ui-corner-top, .ui-corner-right, .ui-corner-tr {
+  -moz-border-radius-topright: $jquery-ui-border-radius;
+  -webkit-border-top-right-radius: $jquery-ui-border-radius;
+  -khtml-border-top-right-radius: $jquery-ui-border-radius;
+  border-top-right-radius: $jquery-ui-border-radius;
+}
+.ui-corner-all, .ui-corner-bottom, .ui-corner-left, .ui-corner-bl {
+  -moz-border-radius-bottomleft: $jquery-ui-border-radius;
+  -webkit-border-bottom-left-radius: $jquery-ui-border-radius;
+  -khtml-border-bottom-left-radius: $jquery-ui-border-radius;
+  border-bottom-left-radius: $jquery-ui-border-radius;
+}
+.ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br {
+  -moz-border-radius-bottomright: $jquery-ui-border-radius;
+  -webkit-border-bottom-right-radius: $jquery-ui-border-radius;
+  -khtml-border-bottom-right-radius: $jquery-ui-border-radius;
+  border-bottom-right-radius: $jquery-ui-border-radius;
 }
