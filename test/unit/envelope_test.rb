@@ -56,15 +56,45 @@ class EnvelopeTest < ActiveSupport::TestCase
     assert_equal "#{envelope.id}-available-cash", envelope.to_param
   end
   
-  test "transaction scope returns all transactions for this envelope" do
-    fuel_envelope = envelopes(:fuel)
-    assert_equal 1, fuel_envelope.transactions.size
+  test "transactions scope returns all transactions for this envelope" do
+    food_envelope = envelopes(:food)
+    assert_equal 1, food_envelope.transactions.size
     
     auto_envelope = envelopes(:auto)
     assert_equal 0, auto_envelope.transactions.size
     
+    cash_envelope = envelopes(:available_cash)
+    assert_equal 1, cash_envelope.transactions.size
+  end
+  
+  test "total_amount returns sum of all transactions" do
+    cash_envelope = envelopes(:available_cash)
+    assert_equal 9.99, cash_envelope.total_amount
+  end
+
+  test "inclusive_total_amount returns sum of all transactions" do
+    food_envelope = envelopes(:food)
+    assert_equal -20.01, food_envelope.inclusive_total_amount
+  end
+
+  test "full_name returns this and parent envelope names separated by colons" do
+    food_envelope = envelopes(:food)
+    assert_equal "Food", food_envelope.full_name
     
-    auto_envelope = envelopes(:available_cash)
-    assert_equal 1, auto_envelope.transactions.size
+    groceries_envelope = envelopes(:groceries)
+    assert_equal "Food: Groceries", groceries_envelope.full_name
+  end
+  
+  test "all_child_envelope_ids returns an array of all child envelope ids" do
+    child_envelope_ids = Envelope.all_child_envelope_ids(envelopes(:gifts).id)
+    assert_equal [envelopes(:holidays).id, envelopes(:christmas).id, envelopes(:valentines).id], child_envelope_ids
+  end
+  
+  test "all_transactions returns all transactions for that envelope and all children" do
+    sql = envelopes(:gifts).all_transactions.to_sql
+    assert sql.include?(envelopes(:gifts).id.to_s)
+    assert sql.include?(envelopes(:holidays).id.to_s)
+    assert sql.include?(envelopes(:christmas).id.to_s)
+    assert sql.include?(envelopes(:valentines).id.to_s)
   end
 end

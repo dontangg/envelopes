@@ -14,8 +14,17 @@ walmart:
   payee: WalMart
   original_payee: 1203498675 WALMART
   amount: -10.00
-  envelope: fuel
+  envelope: groceries
   unique_id: 2011-11-15~1203498675 WALMART~10.0~false~
+  pending: false
+
+target:
+  posted_at: 2011-11-15
+  payee: Target
+  original_payee: 92648214 TARGET
+  amount: -10.01
+  envelope: food
+  unique_id: 2011-11-15~92648214 TARGET~10.01~false~
   pending: false
 
 doxtek:

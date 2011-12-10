@@ -29,6 +29,52 @@ fuel:
   parent_envelope: auto
   expense:
 
+food:
+  name: Food
+  user: jim
+  income: false
+  unassigned: false
+  expense:
+
+groceries:
+  name: Groceries
+  user: jim
+  income: false
+  unassigned: false
+  parent_envelope: food
+  expense:
+
+gifts:
+  name: "Gifts & Donations"
+  user: jim
+  income: false
+  unassigned: false
+  expense:
+
+holidays:
+  name: "Holidays"
+  user: jim
+  income: false
+  unassigned: false
+  parent_envelope: gifts
+  expense:
+
+christmas:
+  name: "Christmas"
+  user: jim
+  income: false
+  unassigned: false
+  parent_envelope: holidays
+  expense:
+
+valentines:
+  name: "Valentine's Day"
+  user: jim
+  income: false
+  unassigned: false
+  parent_envelope: holidays
+  expense:
+
 another_users_envelope:
   name: Another users's envelope
   user: someone
