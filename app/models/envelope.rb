@@ -66,11 +66,11 @@ class Envelope < ActiveRecord::Base
   
   def self.all_child_envelope_ids(envelope_id, organized_envelopes = nil)
     children = organized_envelopes ? organized_envelopes[envelope_id] : Envelope.where(parent_envelope_id: envelope_id)
-    all_child_ids = []
+    all_child_ids = children.map(&:id)
     children.each do |child|
       all_child_ids << all_child_envelope_ids(child.id, organized_envelopes)
     end
-    (all_child_ids << children).flatten!
+    all_child_ids.flatten
   end
   
   def all_transactions(organized_envelopes = nil)

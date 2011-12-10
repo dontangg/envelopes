@@ -46,6 +46,7 @@ when "development"
   Envelope.create name: "Christmas", user: test_user, parent_envelope: holidays_envelope
   Envelope.create name: "Easter", user: test_user, parent_envelope: holidays_envelope
   Envelope.create name: "Halloween", user: test_user, parent_envelope: holidays_envelope
+  Envelope.create name: "Valentine's Day", user: test_user, parent_envelope: holidays_envelope
 
   subscriptions_envelope = Envelope.create name: 'Subscriptions', user: test_user
   domains_envelope = Envelope.create name: 'Domains', user: test_user, parent_envelope: subscriptions_envelope

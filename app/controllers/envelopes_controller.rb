@@ -6,7 +6,7 @@ class EnvelopesController < ApplicationController
   end
 
   def show
-    # An array of all envelopes, used by transaction partial to get full envelope name
+    # An array of all envelopes, used by transaction partial to create envelopes dropdown
     @all_envelopes = Envelope.owned_by(current_user_id).with_amounts
 
     # The envelope the user is currently looking at

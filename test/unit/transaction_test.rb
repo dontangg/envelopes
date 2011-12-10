@@ -10,7 +10,7 @@ class TransactionTest < ActiveSupport::TestCase
   test "owned_by returns transactions in envelopes owned by the right user" do
     txns = Transaction.owned_by(users(:jim))
     
-    assert_equal 2, txns.size
+    assert_equal 3, txns.size
   end
   
   test "envelope_id must be present before saving" do
