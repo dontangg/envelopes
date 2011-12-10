@@ -20,6 +20,13 @@ class EnvelopesController < ApplicationController
 
     # An array of transactions in this envelope
     @transactions = @envelope.all_transactions(@organized_envelopes).starting_at(@start_date).ending_at(@end_date)
+    
+    funded = @envelope.funded_this_month.abs
+    spent = @envelope.spent_this_month.abs
+    max_spent_funded = [funded, spent].max
+    
+    @spent_percent = spent * 100 / max_spent_funded
+    @funded_percent = funded * 100 / max_spent_funded
   end
 
 end
