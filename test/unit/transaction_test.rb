@@ -9,8 +9,10 @@ class TransactionTest < ActiveSupport::TestCase
   
   test "owned_by returns transactions in envelopes owned by the right user" do
     txns = Transaction.owned_by(users(:jim))
-    
-    assert_equal 3, txns.size
+    jims_envelopes = Envelope.where(user_id: users(:jim).id).map(&:id)
+    txns.each do |transaction|
+      assert jims_envelopes.include?(transaction.envelope_id)
+    end
   end
   
   test "envelope_id must be present before saving" do
@@ -37,5 +39,12 @@ class TransactionTest < ActiveSupport::TestCase
     assert_equal transaction2, transactions[2]
     assert_equal transaction3, transactions[3]
     assert_not_equal transaction1, transactions[0]
+  end
+  
+  test "without_transfers excludes when unique_id is nil" do
+    transactions = Transaction.without_transfers
+    transactions.each do |transaction|
+      assert_not_nil transaction.unique_id
+    end
   end
 end

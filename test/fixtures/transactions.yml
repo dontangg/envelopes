@@ -27,6 +27,13 @@ target:
   unique_id: 2011-11-15~92648214 TARGET~10.01~false~
   pending: false
 
+fund_groceries:
+  posted_at: 2011-12-09
+  payee: Funded envelope
+  original_payee: Funded envelope
+  amount: 100
+  envelope: groceries
+
 doxtek:
   posted_at: 2011-11-15
   payee: DoxTek

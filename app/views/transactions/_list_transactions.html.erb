@@ -5,8 +5,14 @@
     <%= hidden_field_tag 'end_date', end_date %>
     <div class='current'><%= start_date.strftime("%b %e, %Y") %> - <%= end_date.strftime("%b %e, %Y") %></div>
     <div class='popup'>
-      <div class='start' data-initial-date='<%= start_date %>'></div>
-      <div class='end' data-initial-date='<%= end_date %>'></div>
+      <div>
+        <div class='start' data-initial-date='<%= start_date %>'></div>
+        <div class='end' data-initial-date='<%= end_date %>'></div>
+      </div>
+      <div class='options'>
+        <%= check_box_tag :show_transfers, 1, show_transfers %>
+        <%= label_tag :show_transfers, 'Show envelope transfers' %>
+      </div>
       <div class='actions'>
         <a href='#'>Cancel</a>
         <button class='primary'>Filter</button>
