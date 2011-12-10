@@ -17,7 +17,6 @@
     </h1>
   </header>
 
-  
   <%= render partial: 'transactions/list_transactions', locals: { start_date: @start_date, end_date: @end_date, envelope: @envelope, all_envelopes: @all_envelopes, transactions: @transactions } %>
 
 </section>
@@ -25,4 +24,17 @@
   <ul class='actions'>
     <li><a href='#' class='button transfer'>Transfer Money</a></li>
   </ul>
+  <div>
+    <h2><%= @end_date.strftime('%B') %></h2>
+    <table>
+      <tr>
+        <th>Spent</th>
+        <td><div class="chart-bar spent" title="$243.32" style="width:<%= @spent_percent %>%;"></div></td>
+      </tr>
+      <tr>
+        <th>Budget</th>
+        <td><div class="chart-bar budget" title="$600.00" style="width:<%= @funded_percent %>%;"></div></td>
+      </tr>
+    </table>
+  </div>
 </section>

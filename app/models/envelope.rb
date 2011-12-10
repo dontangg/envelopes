@@ -48,6 +48,31 @@ class Envelope < ActiveRecord::Base
 
     @full_name = name
   end
+
+  def funded_this_month
+    if @funded_this_month
+      @funded_this_month
+    else
+      where_clause = Transaction.arel_table[:amount].gt(0)
+        .and(Transaction.arel_table[:posted_at].gteq(Date.today.beginning_of_month))
+      @funded_this_month = all_transactions.where(where_clause).sum('amount')
+    end
+  end
+
+  def spent_this_month
+    if @spent_this_month
+      @spent_this_month
+    else
+      where_clause = Transaction.arel_table[:amount].lt(0)
+        .and(Transaction.arel_table[:posted_at].gteq(Date.today.beginning_of_month))
+      @spent_this_month = all_transactions.where(where_clause).sum('amount')
+    end
+  end
+
+  def all_transactions(organized_envelopes = nil)
+    all_child_envelope_ids = Envelope.all_child_envelope_ids(self.id, organized_envelopes) << self.id
+    Transaction.where(envelope_id: all_child_envelope_ids)
+  end
   
   # A chainable scope that also returns the amount in the envelope
   def self.with_amounts
@@ -71,11 +96,6 @@ class Envelope < ActiveRecord::Base
       all_child_ids << all_child_envelope_ids(child.id, organized_envelopes)
     end
     all_child_ids.flatten
-  end
-  
-  def all_transactions(organized_envelopes = nil)
-    all_child_envelope_ids = Envelope.all_child_envelope_ids(self.id, organized_envelopes) << self.id
-    Transaction.where(envelope_id: all_child_envelope_ids)
   end
   
   # Returns a Hash with all the envelopes organized. eg:
