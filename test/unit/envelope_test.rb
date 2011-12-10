@@ -74,7 +74,7 @@ class EnvelopeTest < ActiveSupport::TestCase
 
   test "inclusive_total_amount returns sum of all transactions" do
     food_envelope = envelopes(:food)
-    assert_equal -20.01, food_envelope.inclusive_total_amount
+    assert_equal 79.99, food_envelope.inclusive_total_amount.to_f
   end
 
   test "full_name returns this and parent envelope names separated by colons" do

@@ -13,9 +13,11 @@ class TransactionsController < ApplicationController
 
         @start_date = Date.parse(params[:start_date]) || Date.today - 1.month
         @end_date = Date.parse(params[:end_date]) || Date.today
+        @show_transfers = params[:show_transfers]
 
         # An array of transactions in this envelope
         @transactions = @envelope.all_transactions(@organized_envelopes).starting_at(@start_date).ending_at(@end_date)
+        @transactions = @transactions.without_transfers unless @show_transfers
       end
     end
   end

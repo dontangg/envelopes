@@ -4,6 +4,7 @@
 // It's not advisable to add code directly here, but if you do, it'll appear at the bottom of the
 // the compiled file.
 //
+//= require jquery
 //= require jquery.masonry.min
 //= require jquery-ui-1.8.16.custom.min
 //= require jquery.select-to-autocomplete
