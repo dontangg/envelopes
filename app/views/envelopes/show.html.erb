@@ -22,12 +22,12 @@
 </section>
 <section id='envelope_aside'>
   <ul class='actions'>
-    <li><a href='#' class='button transfer'>Transfer Money</a></li>
+    <li><a href='javascript:void(0)' class='button transfer'>Transfer Money</a></li>
   </ul>
   <div>
     <h2><%= @end_date.strftime('%B') %></h2>
     <table>
-      <tr><%# TODO: make graph change based on @end_date %>
+      <tr><%# TODO: make graph change based on @end_date and put amounts in tooltip %>
         <th>Spent</th>
         <td><div class="chart-bar spent" title="$243.32" style="width:<%= @spent_percent %>%;"></div></td>
       </tr>
@@ -38,3 +38,25 @@
     </table>
   </div>
 </section>
+
+<script id='transfer_modal' type='template'>
+  <h1>Transfer Money</h1>
+  <%= form_tag create_transfer_transactions_url, remote: true do %>
+    <div class="field">
+      <%= label_tag :transfer_from_id, 'Transfer from:' %>
+      <%= select_tag :transfer_from_id, options_from_collection_for_select(@all_envelopes, :id, :full_name, @envelope.id) %>
+    </div>
+    <div class="field">
+      <%= label_tag :transfer_to_id, 'Transfer to:' %>
+      <%= select_tag :transfer_to_id, options_from_collection_for_select(@all_envelopes, :id, :full_name, @envelope.id) %>
+    </div>
+    <div class="field amount">
+      <%= label_tag :transfer_amount, 'Amount:' %>
+      <%= text_field_tag :transfer_amount, nil, placeholder: '50.00' %>
+    </div>
+    <div class='actions'>
+      <a href='javascript:void(0)'>Cancel</a>
+      <%= submit_tag 'Transfer', class: 'primary' %>
+    </div>
+  <% end %>
+</script>

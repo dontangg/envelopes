@@ -3,7 +3,10 @@ Envelopes::Application.routes.draw do
   resources :envelopes, only: [:index, :show]
 
   resources :transactions, only: [] do
-    put 'update_all', on: :collection
+    collection do
+      put 'update_all'
+      post 'create_transfer'
+    end
   end
 
   get 'login' => 'sessions#new'
