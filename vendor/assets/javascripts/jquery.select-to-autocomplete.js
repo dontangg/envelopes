@@ -1,5 +1,5 @@
 /*
-Version: 1.0.4
+Version: 1.0.5
 
 Documentation: http://baymard.com/labs/country-selector#documentation
 
@@ -38,16 +38,16 @@ THE SOFTWARE.
     'relevancy-sorting-strict-match-value': 5,
     'relevancy-sorting-booster-attr': 'data-relevancy-booster',
     handle_invalid_input: function( context ) {
-      context.$text_field.val( '' );
+      context.$text_field.val( context.$select_field.find('option:selected:first').text() );
     },
     handle_select_field: function( $select_field ) {
       return $select_field.hide();
     },
-    insert_text_field: function( $select_field ) {
+    insert_text_field: function( context ) {
       var $text_field = $( "<input></input>" );
       if ( settings['copy-attributes-to-text-field'] ) {
         var attrs = {};
-        var raw_attrs = $select_field[0].attributes;
+        var raw_attrs = context.$select_field[0].attributes;
         for (var i=0; i < raw_attrs.length; i++) {
           var key = raw_attrs[i].nodeName;
           var value = raw_attrs[i].nodeValue;
@@ -58,13 +58,13 @@ THE SOFTWARE.
         $text_field.attr( attrs );
       }
       $text_field.blur(function() {
-        var valid_values = $select_field.find('option').map(function(i, option) { return $(option).text(); });
-        if ( !($text_field.val() in valid_values) ) {
-          $text_field.val( $select_field.find('option:selected:first').text() );
+        var valid_values = context.$select_field.find('option').map(function(i, option) { return $(option).text(); });
+        if ( !($text_field.val() in valid_values) && typeof settings['handle_invalid_input'] === 'function' ) {
+          settings['handle_invalid_input'](context);
         }
       });
-      return $text_field.val( $select_field.find('option:selected:first').text() )
-        .insertAfter( $select_field );
+      return $text_field.val( context.$select_field.find('option:selected:first').text() )
+        .insertAfter( context.$select_field );
     },
     extract_options: function( $select_field ) {
       var options = [];
@@ -125,27 +125,37 @@ THE SOFTWARE.
   
   var public_methods = {
     init: function( customizations ) {
-      settings = $.extend( settings, customizations );
       
-      return this.each(function(){
-        var $select_field = $(this);
+      if ( $.browser.msie && parseInt($.browser.version, 10) <= 7) {
         
-        var options = settings['extract_options']( $select_field );
-        var $text_field = settings['insert_text_field']( $select_field );
-        settings['handle_select_field']( $select_field );
+        return this;
         
-        var context = {
-          '$select_field': $select_field,
-          '$text_field': $text_field,
-          'options': options,
-          'settings': settings
-        };
-        if ( typeof settings['autocomplete-plugin'] === 'string' ) {
-          adapters[settings['autocomplete-plugin']]( context );
-        } else {
-          settings['autocomplete-plugin']( context );
-        }
-      });
+      } else {
+        
+        settings = $.extend( settings, customizations );
+
+        return this.each(function(){
+          var $select_field = $(this);
+          
+          var context = {
+            '$select_field': $select_field,
+            'options': settings['extract_options']( $select_field ),
+            'settings': settings
+          };
+
+          context['$text_field'] = settings['insert_text_field']( context );
+          
+          settings['handle_select_field']( $select_field );
+          
+          if ( typeof settings['autocomplete-plugin'] === 'string' ) {
+            adapters[settings['autocomplete-plugin']]( context );
+          } else {
+            settings['autocomplete-plugin']( context );
+          }
+        });
+        
+      }
+      
     }
   };
   
@@ -258,4 +268,4 @@ THE SOFTWARE.
     }    
   };
   
-})(jQuery);
+})(jQuery); 
