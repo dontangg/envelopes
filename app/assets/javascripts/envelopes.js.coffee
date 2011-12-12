@@ -54,10 +54,12 @@ $ ->
   
   $(document).on('blur', '.amount input', ->
     $this = $(this)
-    value = $this.val().replace /[^-.0-9]/g, ""
-    value = parseFloat(value).toFixed 2
-    value = value.replace /([.0-9]+)/g, "$$$1"
-    $this.val value
+    value = parseFloat $this.val().replace(/[^-.0-9]/g, "")
+    if isNaN(value)
+      $this.val ""
+    else
+      value = value.toFixed(2).replace /([.0-9]+)/g, "$$$1"
+      $this.val value
   )
   
   $('#envelope_aside .transfer').click ->
@@ -65,8 +67,10 @@ $ ->
       content: '#transfer_modal'
       width: 510
       className: 'transfer-modal'
-
-    $('.transfer-modal select').selectToAutocomplete()
-    $('.transfer-modal a').click ->
+    
+    modal = $('.transfer-modal')
+    modal.find('select').selectToAutocomplete()
+    modal.find('input[type=text], input:not([type])]').selectOnFocus()
+    modal.find('a').click ->
       hideModal()
   

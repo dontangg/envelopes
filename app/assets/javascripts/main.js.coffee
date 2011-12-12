@@ -10,21 +10,22 @@
   options = $.extend(defaults, options)
   
   overlay = $('#overlay')
-  overlay = $("<div id='overlay'></div>") unless overlay.length > 0
-  overlay.appendTo(document.body).css
+  overlay = $("<div id='overlay'></div>").appendTo(document.body) unless overlay.length > 0
+  overlay.show().css
     width: $(document).width()
     height: $(document).height()
     opacity: 0.6
   
   modal = $('#modal').removeClass()
-  modal = $("<section id='modal'></section>") unless modal.length > 0
+  modal = $("<section id='modal'></section>").appendTo(document.body) unless modal.length > 0
   modal.addClass(options['className']) if options['className']
-  modal.html $(options['content']).html()
-
-  modal.appendTo(document.body).css
-    top: 100
-    width: options['width']
-    marginLeft: - options['width'] / 2
+  modal
+    .html($(options['content']).html())
+    .show()
+    .css
+      top: 100
+      width: options['width']
+      marginLeft: - options['width'] / 2
   
   input = modal.find 'input:visible, select:visible'
   input[0].focus() if input.length > 0

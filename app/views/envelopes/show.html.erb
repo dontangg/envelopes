@@ -11,7 +11,7 @@
   <header>
     <h1>
       <%= @envelope.full_name(@all_envelopes) %>
-      <span style='float:right;' class='<%= @envelope.total_amount < 0 ? "negative" : "positive" %>-number'>
+      <span class='balance <%= @envelope.total_amount < 0 ? "negative" : "positive" %>-number'>
         <%= number_to_currency(@envelope.inclusive_total_amount(@organized_envelopes)) %>
       </span>
     </h1>
@@ -42,6 +42,7 @@
 <script id='transfer_modal' type='template'>
   <h1>Transfer Money</h1>
   <%= form_tag create_transfer_transactions_url, remote: true do %>
+    <%= hidden_field_tag 'current_envelope_id', @envelope.id %>
     <div class="field">
       <%= label_tag :transfer_from_id, 'Transfer from:' %>
       <%= select_tag :transfer_from_id, options_from_collection_for_select(@all_envelopes, :id, :full_name, @envelope.id) %>
@@ -52,7 +53,7 @@
     </div>
     <div class="field amount">
       <%= label_tag :transfer_amount, 'Amount:' %>
-      <%= text_field_tag :transfer_amount, nil, placeholder: '50.00' %>
+      <%= text_field_tag :transfer_amount, nil, placeholder: '$50.00' %>
     </div>
     <div class='actions'>
       <a href='javascript:void(0)'>Cancel</a>
