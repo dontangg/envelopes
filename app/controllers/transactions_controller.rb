@@ -1,4 +1,6 @@
 class TransactionsController < ApplicationController
+  include ActionView::Helpers::NumberHelper
+  
   def update_all
     
 
@@ -19,6 +21,23 @@ class TransactionsController < ApplicationController
         @transactions = @envelope.all_transactions(@organized_envelopes).starting_at(@start_date).ending_at(@end_date)
         @transactions = @transactions.without_transfers unless @show_transfers
       end
+    end
+  end
+  
+  def create_transfer
+    amount = params[:transfer_amount].scan(/[-0-9.]/).join.to_f
+    from_envelope = Envelope.find(params[:transfer_from_id])
+    to_envelope = Envelope.find(params[:transfer_to_id])
+    
+    from_txn_payee = "Transferred #{number_to_currency(amount)} to #{to_envelope.full_name}"
+    from_txn = Transaction.create posted_at: Date.today, payee: from_txn_payee, original_payee: from_txn_payee, envelope_id: from_envelope.id, amount: -amount
+    to_txn_payee = "Transferred #{number_to_currency(amount)} from #{from_envelope.full_name}"
+    to_txn = Transaction.create posted_at: Date.today, payee: to_txn_payee, original_payee: to_txn_payee, envelope_id: to_envelope.id, amount: amount, associated_transaction_id: from_txn.id
+    from_txn.associated_transaction_id = to_txn.id
+    from_txn.save
+    
+    respond_to do |format|
+      format.js
     end
   end
 end

@@ -60,3 +60,13 @@ $ ->
     $this.val value
   )
   
+  $('#envelope_aside .transfer').click ->
+    showModal
+      content: '#transfer_modal'
+      width: 510
+      className: 'transfer-modal'
+
+    $('.transfer-modal select').selectToAutocomplete()
+    $('.transfer-modal a').click ->
+      hideModal()
+  

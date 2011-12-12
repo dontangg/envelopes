@@ -256,7 +256,6 @@
     .actions {
       padding: 20px 0 0;
       text-align: right;
-      vertical-align: middle;
 
       a {
         margin-right: 15px;
@@ -310,4 +309,28 @@ $jquery-ui-border-radius: 0;
   -webkit-border-bottom-right-radius: $jquery-ui-border-radius;
   -khtml-border-bottom-right-radius: $jquery-ui-border-radius;
   border-bottom-right-radius: $jquery-ui-border-radius;
+}
+
+.transfer-modal {
+  label {
+    float: left;
+    width: 130px;
+  }
+  input[type=text], input:not([type]) {
+    width: 350px;
+  }
+  .amount {
+    text-align: left;
+    input {
+      text-align: left;
+    }
+  }
+  .actions {
+    padding: 20px 0 0;
+    text-align: right;
+
+    a {
+      margin-right: 15px;
+    }
+  }
 }
