@@ -26,15 +26,30 @@ class TransactionsController < ApplicationController
   
   def create_transfer
     amount = params[:transfer_amount].scan(/[-0-9.]/).join.to_f
-    from_envelope = Envelope.find(params[:transfer_from_id])
-    to_envelope = Envelope.find(params[:transfer_to_id])
-    
-    from_txn_payee = "Transferred #{number_to_currency(amount)} to #{to_envelope.full_name}"
-    from_txn = Transaction.create posted_at: Date.today, payee: from_txn_payee, original_payee: from_txn_payee, envelope_id: from_envelope.id, amount: -amount
-    to_txn_payee = "Transferred #{number_to_currency(amount)} from #{from_envelope.full_name}"
-    to_txn = Transaction.create posted_at: Date.today, payee: to_txn_payee, original_payee: to_txn_payee, envelope_id: to_envelope.id, amount: amount, associated_transaction_id: from_txn.id
-    from_txn.associated_transaction_id = to_txn.id
-    from_txn.save
+    if amount > 0
+      from_envelope = Envelope.find(params[:transfer_from_id])
+      to_envelope = Envelope.find(params[:transfer_to_id])
+      
+      from_txn_payee = "Transferred #{number_to_currency(amount)} to #{to_envelope.full_name}"
+      from_txn = Transaction.create posted_at: Date.today, payee: from_txn_payee, original_payee: from_txn_payee, envelope_id: from_envelope.id, amount: -amount
+      to_txn_payee = "Transferred #{number_to_currency(amount)} from #{from_envelope.full_name}"
+      to_txn = Transaction.create posted_at: Date.today, payee: to_txn_payee, original_payee: to_txn_payee, envelope_id: to_envelope.id, amount: amount, associated_transaction_id: from_txn.id
+      from_txn.associated_transaction_id = to_txn.id
+      from_txn.save
+
+      current_envelope = case params[:current_envelope_id].to_i
+      when from_envelope.id
+        from_envelope
+      when to_envelope.id
+        to_envelope
+      else
+        nil
+      end
+
+      @new_balance = current_envelope.total_amount if current_envelope
+    end
+
+    # TODO: update transactions if currently viewing envelope transfers
     
     respond_to do |format|
       format.js
