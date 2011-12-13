@@ -41,6 +41,12 @@ cancelDatePicker = (event) ->
   setCurrentDateRange()
 
   $('select').selectToAutocomplete()
+  
+  $('#transactions_list input').selectOnFocus()
+  
+  $('#transactions_list .payee input').autocomplete
+    source: "/transactions/suggest_payee"
+    minLength: 2
 
 $ ->
   $('#dashboard > ul').masonry

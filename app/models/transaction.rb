@@ -18,6 +18,16 @@ class Transaction < ActiveRecord::Base
     where(self.arel_table[:envelope_id].in(envelopes_table.project(envelopes_table[:id]).where(envelopes_table[:user_id].eq(user_id))))
   end
   
+  def self.payee_suggestions_for_user_id(user_id, term)
+    unscoped do
+      owned_by(user_id)
+        .where(arel_table[:payee].not_eq(arel_table[:original_payee]).and(arel_table[:payee].matches("%#{term}%")))
+        .select(arel_table[:payee])
+        .order(arel_table[:payee])
+        .order(arel_table[:posted_at].desc)
+    end
+  end
+  
   def strip_payee
     payee.strip!
   end
