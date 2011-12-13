@@ -2,7 +2,7 @@ class TransactionsController < ApplicationController
   include ActionView::Helpers::NumberHelper
   
   def update_all
-    
+    Transaction.update params[:transaction].keys, params[:transaction].values if params[:transaction]
 
     respond_to do |format|
       format.html { redirect_to envelope_url(params[:envelope_id], start_date: params[:start_date], end_date: params[:end_date]) }
