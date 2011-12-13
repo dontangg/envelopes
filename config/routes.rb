@@ -6,6 +6,7 @@ Envelopes::Application.routes.draw do
     collection do
       put 'update_all'
       post 'create_transfer'
+      get 'suggest_payee'
     end
   end
 

@@ -3,7 +3,7 @@
     <td class='posted-at'><%= transaction.posted_at.strftime('%b %d') %></td>
     <td class='payee'><%= f.text_field :payee, title: transaction.original_payee %></td>
     <td class='envelope'><%= f.collection_select :envelope_id, all_envelopes, :id, :full_name %></td>
-    <% if transaction.unique_id %>
+    <% if transaction.associated_transaction_id.nil? %>
       <td class='amount'><%= number_to_currency(transaction.amount) %></td>
     <% else %>
       <td class='amount'><%= f.text_field :amount, value: number_to_currency(transaction.amount) %></td>

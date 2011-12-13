@@ -24,6 +24,34 @@ class TransactionsController < ApplicationController
     end
   end
   
+  def suggest_payee
+    
+    term = params[:term].downcase
+    
+    all_transactions = Transaction.payee_suggestions_for_user_id(current_user_id, term)
+    
+    groups = [[], [], [], []]
+    
+    all_transactions.each do |transaction|
+      payee = transaction.payee
+      payee_downcase = payee.downcase
+      
+      if payee_downcase.starts_with?("^" + term)
+        groups[0] << payee
+      elsif payee_downcase.include?(" #{term}")
+        groups[1] << payee
+      elsif Regexp.escape(payee_downcase).match("\b" + term)
+        groups[2] << payee
+      else
+        groups[3] << payee
+      end
+    end
+    
+    words = groups.flatten.uniq.take(6)
+    
+    render json: words
+  end
+  
   def create_transfer
     amount = params[:transfer_amount].scan(/[-0-9.]/).join.to_f
     if amount > 0
