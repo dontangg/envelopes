@@ -1,5 +1,15 @@
 class TransactionsController < ApplicationController
   include ActionView::Helpers::NumberHelper
+
+  def update
+    @transaction = Transaction.find(params[:id])
+
+    if @transaction.update_attributes(params[:transaction])
+      head :ok
+    else
+      render json: @transaction.errors, status: :unprocessable_entity
+    end
+  end
   
   def update_all
     Transaction.update params[:transaction].keys, params[:transaction].values if params[:transaction]
