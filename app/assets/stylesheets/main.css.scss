@@ -91,14 +91,19 @@ th {
   width: 100%;
   
   nav+& {
-    top: 28px;
+    top: 25px;
   }
   
   div {
-    padding: 2px 5px;
+    padding: 5px 10px;
     display: inline-block;
-    height: 1.5em;
     box-shadow: 0 0 5px #999;
+  }
+
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
   }
   
   &.alert {
@@ -132,4 +137,9 @@ th {
   h1 {
     margin-top: 0;
   }
+}
+
+.autosave-status {
+  color: #999;
+  font-size: 12px;
 }

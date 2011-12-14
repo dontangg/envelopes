@@ -2,7 +2,7 @@ Envelopes::Application.routes.draw do
 
   resources :envelopes, only: [:index, :show]
 
-  resources :transactions, only: [] do
+  resources :transactions, only: [:update] do
     collection do
       put 'update_all'
       post 'create_transfer'

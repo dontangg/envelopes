@@ -1,4 +1,5 @@
 # Place all the behaviors and hooks related to the matching controller here.
+<% url = Envelopes::Application.routes.url_helpers %>
 
 setCurrentDateRange = ->
   startDate = $('#date_range_picker .start').datepicker('getDate')
@@ -45,7 +46,7 @@ cancelDatePicker = (event) ->
   $('#transactions_list input').selectOnFocus()
   
   $('#transactions_list .payee input').autocomplete
-    source: "/transactions/suggest_payee"
+    source: "<%= url.suggest_payee_transactions_path %>"
     minLength: 2
 
 $ ->
@@ -68,14 +69,8 @@ $ ->
       $this.val value
   )
   
-  saveTransaction = (event) ->
-    $this = $(this)
-    if ($this.val() != $this.data('saved-value'))
-      console.log('change')
-      true
-  
-  $('#envelope_details').on 'blur', '.payee input, .amount input', saveTransaction
-  $('#envelope_details').on 'change', 'select', saveTransaction
+  autosave '#envelope_details', 'blur', '.payee input, .amount input', "<%= CGI.unescape url.transaction_path('{id}') %>"
+  autosave '#envelope_details', 'change', 'select', "<%= CGI.unescape url.transaction_path('{id}') %>"
   
   $('#envelope_aside .transfer').click ->
     showModal
