@@ -68,6 +68,15 @@ $ ->
       $this.val value
   )
   
+  saveTransaction = (event) ->
+    $this = $(this)
+    if ($this.val() != $this.data('saved-value'))
+      console.log('change')
+      true
+  
+  $('#envelope_details').on 'blur', '.payee input, .amount input', saveTransaction
+  $('#envelope_details').on 'change', 'select', saveTransaction
+  
   $('#envelope_aside .transfer').click ->
     showModal
       content: '#transfer_modal'
