@@ -81,10 +81,10 @@ class TransactionsController < ApplicationController
       when to_envelope.id
         to_envelope
       else
-        nil
+        Envelope.find(params[:current_envelope_id])
       end
 
-      @new_balance = current_envelope.total_amount if current_envelope
+      @new_balance = current_envelope.inclusive_total_amount
     end
 
     # TODO: update transactions if currently viewing envelope transfers
