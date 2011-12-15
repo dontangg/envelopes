@@ -1,5 +1,7 @@
 Envelopes::Application.routes.draw do
 
+  resources :rules, only: [:index, :create, :update]
+
   resources :envelopes, only: [:index, :show]
 
   resources :transactions, only: [:update] do

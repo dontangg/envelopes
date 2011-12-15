@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  user_id: 1
+  search_text: MyString
+  replacement_text: MyString
+  envelope_id: 1
+  order: 1
+
+two:
+  user_id: 1
+  search_text: MyString
+  replacement_text: MyString
+  envelope_id: 1
+  order: 1
