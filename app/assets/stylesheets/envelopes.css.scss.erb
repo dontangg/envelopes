@@ -135,6 +135,19 @@
     }
   }
   
+  form {
+    position: relative;
+    min-height: 64px;
+    
+    .loading-overlay {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: #fff url(<%= asset_path('loading_64x64.gif') %>) no-repeat center center;
+      display: none;    
+    }
+  }
+  
   table#transactions_list {
     width: 100%;
     font-size: 14px;

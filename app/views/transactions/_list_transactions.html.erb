@@ -1,4 +1,5 @@
 <%= form_tag update_all_transactions_path, id: 'update_all_transactions', method: :put, remote: true do %>
+  <div class='loading-overlay'></div>
   <%= hidden_field_tag 'envelope_id', envelope.id %>
   <div id='date_range_picker'>
     <%= hidden_field_tag 'start_date', start_date %>

@@ -72,13 +72,29 @@ $ ->
   autosave '#envelope_details', 'blur', '.payee input, .amount input', "<%= CGI.unescape url.transaction_path('{id}') %>"
   autosave '#envelope_details', 'change', 'select', "<%= CGI.unescape url.transaction_path('{id}') %>"
   
+  $('#update_all_transactions')
+    .on('ajax:beforeSend', ->
+      cancelDatePicker()
+      $('#update_all_transactions .loading-overlay').css('opacity', 0.7).show()
+    ).on('ajax:error', (event, xhr, status, error) ->
+      showAlert error
+      $('#update_all_transactions .loading-overlay').hide()
+    )
+    
+  
   $('#envelope_aside .transfer').click ->
-    showModal
+    modal = showModal
       content: '#transfer_modal'
       width: 510
       className: 'transfer-modal'
     
-    modal = $('.transfer-modal')
+    modal.find('form').on('ajax:beforeSend', ->
+      modal.find('.loading').show()
+    ).on('ajax:error', (event, xhr, status, error) ->
+      showAlert error
+      modal.find('.loading').hide()
+    )
+    
     modal.find('select').selectToAutocomplete()
     modal.find('input[type=text], input:not([type])]').selectOnFocus()
     modal.find('a').click ->
