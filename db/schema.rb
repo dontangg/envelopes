@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111126155602) do
+ActiveRecord::Schema.define(:version => 20111215215024) do
 
   create_table "envelopes", :force => true do |t|
     t.string   "name"
@@ -23,6 +23,21 @@ ActiveRecord::Schema.define(:version => 20111126155602) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "envelopes", ["user_id"], :name => "index_envelopes_on_user_id"
+
+  create_table "rules", :force => true do |t|
+    t.integer  "user_id"
+    t.string   "search_text"
+    t.string   "replacement_text"
+    t.integer  "envelope_id"
+    t.integer  "order"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "rules", ["order"], :name => "index_rules_on_order"
+  add_index "rules", ["user_id"], :name => "index_rules_on_user_id"
 
   create_table "transactions", :force => true do |t|
     t.date     "posted_at"
