@@ -40,6 +40,7 @@
 </section>
 
 <script id='transfer_modal' type='template'>
+  <div class='loading'></div>
   <h1>Transfer Money</h1>
   <%= form_tag create_transfer_transactions_url, remote: true do %>
     <%= hidden_field_tag 'current_envelope_id', @envelope.id %>

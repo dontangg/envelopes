@@ -64,6 +64,7 @@ class TransactionsController < ApplicationController
   
   def create_transfer
     amount = params[:transfer_amount].scan(/[-0-9.]/).join.to_f
+
     if amount > 0
       from_envelope = Envelope.find(params[:transfer_from_id])
       to_envelope = Envelope.find(params[:transfer_to_id])

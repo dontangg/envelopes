@@ -29,6 +29,8 @@
   
   input = modal.find 'input:visible, select:visible'
   input[0].focus() if input.length > 0
+  
+  modal
 
 @autosave = (parentSelector, eventName, childSelector, url) ->
   changedCallback = (event) ->
@@ -78,6 +80,8 @@
         $this.addClass 'invalid'
 
         showAlert errorMessage
+        
+        $(parentSelector).find('.autosave-status').text 'There was an error saving the ' + modelName
 
   $(parentSelector).on eventName, childSelector, changedCallback
 
