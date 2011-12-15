@@ -11,7 +11,7 @@ class Transaction < ActiveRecord::Base
   after_save :check_associated_transaction
   
   belongs_to :envelope
-  has_one :associated_transaction, class_name: 'Transaction', foreign_key: 'associated_transaction_id'
+  belongs_to :associated_transaction, class_name: 'Transaction', foreign_key: 'associated_transaction_id'
   
   def self.owned_by(user_id)
     user_id = user_id.id if user_id.respond_to? :id
@@ -35,8 +35,8 @@ class Transaction < ActiveRecord::Base
   
   def check_associated_transaction
     if @amount_changed && self.associated_transaction_id.present?
-      if associated_transaction.amount != self.amount
-        associated_transaction.update_column(:amount, self.amount)
+      if associated_transaction.amount != -self.amount
+        associated_transaction.update_column(:amount, -self.amount)
       end
     end
   end
