@@ -8,6 +8,7 @@ class Transaction < ActiveRecord::Base
   validates_uniqueness_of :unique_id, :allow_nil => true
   
   before_save :strip_payee
+  after_save :check_associated_transaction
   
   belongs_to :envelope
   has_one :associated_transaction, class_name: 'Transaction', foreign_key: 'associated_transaction_id'
@@ -32,6 +33,14 @@ class Transaction < ActiveRecord::Base
     payee.strip!
   end
   
+  def check_associated_transaction
+    if @amount_changed && self.associated_transaction_id.present?
+      if associated_transaction.amount != self.amount
+        associated_transaction.update_column(:amount, self.amount)
+      end
+    end
+  end
+  
   def cleared?
     !pending?
   end
@@ -49,6 +58,13 @@ class Transaction < ActiveRecord::Base
     end
     
     result
+  end
+  
+  def amount=(new_amount)
+    if self.amount != new_amount
+      write_attribute(:amount, new_amount)
+      @amount_changed = true
+    end
   end
   
   def uniq_str
