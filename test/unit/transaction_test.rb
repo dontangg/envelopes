@@ -17,8 +17,8 @@ class TransactionTest < ActiveSupport::TestCase
   
   test "envelope_id must be present before saving" do
     txn = Transaction.new payee: "t", original_payee: "tt", posted_at: Date.today, amount: 1.0
-    txn.save
     
+    assert !txn.save
     assert !txn.valid?
   end
   
@@ -29,7 +29,7 @@ class TransactionTest < ActiveSupport::TestCase
     transaction3 = Transaction.new original_payee: 'bbb', amount: 2, posted_at: Date.parse('Dec 26, 2011')
 
     # Mix them up
-    transactions = [transaction0, transaction1, transaction2, transaction3].sort_by! { Random.rand }
+    transactions = [transaction0, transaction1, transaction2, transaction3].sort_by { Random.rand }
 
     # Sort them
     transactions.sort!
@@ -46,5 +46,17 @@ class TransactionTest < ActiveSupport::TestCase
     transactions.each do |transaction|
       assert_not_nil transaction.unique_id
     end
+  end
+
+  test "associated transaction amounts stay in sync" do
+    transfer_to = transactions(:transfer_to_food)
+    transfer_from = transfer_to.associated_transaction
+
+    assert transfer_to.amount == (transfer_from.amount * -1)
+
+    transfer_to.amount = 25
+    transfer_to.save
+
+    assert_equal -25, transfer_from.amount
   end
 end

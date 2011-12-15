@@ -58,7 +58,7 @@ class EnvelopeTest < ActiveSupport::TestCase
   
   test "transactions scope returns all transactions for this envelope" do
     food_envelope = envelopes(:food)
-    assert_equal 1, food_envelope.transactions.size
+    assert_equal 2, food_envelope.transactions.size
     
     auto_envelope = envelopes(:auto)
     assert_equal 0, auto_envelope.transactions.size

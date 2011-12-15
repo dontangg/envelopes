@@ -34,6 +34,22 @@ fund_groceries:
   amount: 100
   envelope: groceries
 
+transfer_to_food:
+  posted_at: 2011-12-15
+  payee: Transferred from groceries
+  original_payee: Transferred from groceries
+  amount: 5.20
+  envelope: food
+  associated_transaction_id: <%= ActiveRecord::Fixtures.identify(:transfer_from_groceries) %>
+
+transfer_from_groceries:
+  posted_at: 2011-12-15
+  payee: Transferred to food
+  original_payee: Transferred to food
+  amount: -5.20
+  envelope: groceries
+  associated_transaction_id: <%= ActiveRecord::Fixtures.identify(:transfer_to_food) %>
+
 doxtek:
   posted_at: 2011-11-15
   payee: DoxTek

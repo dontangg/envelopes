@@ -40,4 +40,33 @@ class TransactionsControllerTest < ActionController::TestCase
     assert_response :success
     assert_nil assigns(:new_balance)
   end
+
+  test "successful transaction update" do
+    txn = transactions(:walmart)
+
+    put :update, {
+      id: txn.id,
+      transaction: {payee: 'Wal-Mart'}
+    }
+
+    assert_response :success
+  end
+
+  test "failed transaction update" do
+    txn = transactions(:walmart)
+
+    put :update, {
+      id: txn.id,
+      transaction: {posted_at: nil}
+    }
+
+    assert_response :unprocessable_entity
+  end
+
+  test "payee suggestions" do
+    get :suggest_payee, {term: 'al'}
+
+    assert_response :success
+    assert @response.body.include?(transactions(:walmart).payee), transactions(:walmart).payee + " should be a suggestion for 'al'"
+  end
 end
