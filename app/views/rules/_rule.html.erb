@@ -1,0 +1,7 @@
+<%= fields_for "rule[]", rule do |f| %>
+  <tr<%= cycle("", " class='alt'") %>>
+    <td><%= f.text_field :search_text, 'data-saved-value' => rule.search_text %></td>
+    <td><%= f.text_field :replacement_text, 'data-saved-value' => rule.replacement_text %></td>
+    <td><%= f.collection_select :envelope_id, all_envelopes, :id, :full_name, {}, 'data-saved-value' => rule.envelope_id %></td>
+  </tr>
+<% end %>

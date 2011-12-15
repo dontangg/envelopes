@@ -59,4 +59,9 @@ when "development"
   Transaction.create payee: "Wendy's", original_payee: '20397235 WENDYS AS2385 OREM, UT', unique_id: 'WENDYS-3', posted_at: Date.today - 3.days, amount: -4.56, envelope: eating_out_envelope
   Transaction.create payee: "Funded envelope", original_payee: 'Funded envelope', posted_at: Date.today - 1.days, amount: 100, envelope: eating_out_envelope
   
+
+  puts "-- creating rules"
+  Rule.create search_text: "WALMART", replacement_text: "Wal-Mart", envelope: groceries_envelope, user: test_user, order: 1
+  Rule.create search_text: "COSTCO GAS", replacement_text: "CostCo Gas", envelope: fuel_envelope, user: test_user, order: 2
+  Rule.create search_text: "COSTCO", replacement_text: "CostCo", envelope: groceries_envelope, user: test_user, order: 3
 end
