@@ -38,12 +38,11 @@ class TransactionsController < ApplicationController
     
     term = params[:term].downcase
     
-    all_transactions = Transaction.payee_suggestions_for_user_id(current_user_id, term)
+    all_payees = Transaction.payee_suggestions_for_user_id(current_user_id, term, params[:original])
     
     groups = [[], [], [], []]
     
-    all_transactions.each do |transaction|
-      payee = transaction.payee
+    all_payees.each do |payee|
       payee_downcase = payee.downcase
       
       if payee_downcase.starts_with?("^" + term)

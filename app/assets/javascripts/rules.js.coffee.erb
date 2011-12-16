@@ -1,0 +1,14 @@
+# Place all the behaviors and hooks related to the matching controller here.
+<% url = Envelopes::Application.routes.url_helpers %>
+
+$ ->
+  $('select').selectToAutocomplete()
+  $('input[type=text], input:not([type])]').selectOnFocus()
+
+  $('.replacement-text input').autocomplete
+    source: "<%= url.suggest_payee_transactions_path %>"
+    minLength: 2
+  
+  $('.search-text input').autocomplete
+    source: "<%= url.suggest_payee_transactions_path %>?original=1"
+    minLength: 2

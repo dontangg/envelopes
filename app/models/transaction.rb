@@ -19,13 +19,19 @@ class Transaction < ActiveRecord::Base
     where(self.arel_table[:envelope_id].in(envelopes_table.project(envelopes_table[:id]).where(envelopes_table[:user_id].eq(user_id))))
   end
   
-  def self.payee_suggestions_for_user_id(user_id, term)
+  def self.payee_suggestions_for_user_id(user_id, term, original = nil)
     unscoped do
-      owned_by(user_id)
-        .where(arel_table[:payee].not_eq(arel_table[:original_payee]).and(arel_table[:payee].matches("%#{term}%")))
-        .select(arel_table[:payee])
-        .order(arel_table[:payee])
+      column = original ? arel_table[:original_payee] : arel_table[:payee]
+
+      relation = owned_by(user_id)
+        .where(column.matches("%#{term}%"))
+        .select(column)
+        .order(column)
         .order(arel_table[:posted_at].desc)
+      
+      relation = relation.where(arel_table[:payee].not_eq(arel_table[:original_payee])) unless original
+
+      relation.map(&column.name)
     end
   end
   
