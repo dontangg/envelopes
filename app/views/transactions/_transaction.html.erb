@@ -1,5 +1,5 @@
 <%= fields_for "transaction[]", transaction do |f| %>
-  <tr <%= cycle("", "class='alt'") %>>
+  <tr<%= cycle("", " class='alt'") %>>
     <td class='posted-at'><%= transaction.posted_at.strftime('%b %d') %></td>
     <td class='payee'><%= f.text_field :payee, title: transaction.original_payee, 'data-saved-value' => transaction.payee %></td>
     <td class='envelope'><%= f.collection_select :envelope_id, all_envelopes, :id, :full_name, {}, 'data-saved-value' => transaction.envelope_id %></td>

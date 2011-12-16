@@ -1,2 +1,16 @@
-<h1>Rules#index</h1>
-<p>Find me in app/views/rules/index.html.erb</p>
+<% title 'Rules' %>
+
+<section id='rules'>
+  <header>
+    <h1>Rules</h1>
+  </header>
+  
+  <table>
+    <tr>
+      <th>Search Text</th>
+      <th>Replacement Text</th>
+      <th>Envelope</th>
+    </tr>
+    <%= render partial: 'rules/rule', collection: @rules, locals: {all_envelopes: @all_envelopes} %>
+  </table>
+</section>

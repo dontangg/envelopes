@@ -1,6 +1,6 @@
 Envelopes::Application.routes.draw do
 
-  resources :rules, only: [:index, :create, :update]
+  resources :rules, only: [:index, :create, :update, :destroy]
 
   resources :envelopes, only: [:index, :show]
 
