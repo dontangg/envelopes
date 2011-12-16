@@ -13,4 +13,11 @@
     </tr>
     <%= render partial: 'rules/rule', collection: @rules, locals: {all_envelopes: @all_envelopes} %>
   </table>
+  <p class='autosave-status'></p>
+</section>
+
+<section id='rules_aside'>
+  <ul class='actions'>
+    <li><a href='javascript:void(0)' class='button new'>New Rule</a></li>
+  </ul>
 </section>
