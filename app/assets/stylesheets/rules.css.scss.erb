@@ -5,37 +5,48 @@
   width: 79%;
   padding-right: 2%;
   
-  table {
+  ul {
     width: 100%;
     font-size: 14px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
     
-    tr.alt {
-      background: #f1f1f1;
-    }
-    
-    tr:hover .destroy {
-      display: block;
+    li:not(.head) {
+      cursor: move;
     }
 
-    th {
-      padding: 5px 15px;
-      font-weight: 300;
+    li {
+      clear: both;
+      overflow: auto;
+
+      &.alt {
+        background: #f1f1f1;
+      }
+      &:hover .destroy {
+        display: block;
+      }
+      &.head {
+        padding: 5px 15px;
+        font-weight: 300;
+      }
     }
 
-    td {
+    div {
       padding: 2px 10px;
+      float: left;
       
-      &.actions {
+      &.rule-actions {
         min-width: 16px;
         text-align: right;
       }
       &.search-text, &.replacement-text, &.envelope {
-        width: 33%;
+        width: 31%;
       }
       
       .destroy {
-        background: url(<%= asset_path("trash_stroke_16x16.png") %>);
-        display: none;
+        background: url(<%= asset_path("trash_stroke_16x16.png") %>) no-repeat center center;
+        /* display: none;*/
         width: 16px;
         height: 16px;
       }
