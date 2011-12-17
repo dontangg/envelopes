@@ -72,6 +72,13 @@ $ ->
   autosave '#envelope_details', 'blur', '.payee input, .amount input', "<%= CGI.unescape url.transaction_path('{id}') %>"
   autosave '#envelope_details', 'change', 'select', "<%= CGI.unescape url.transaction_path('{id}') %>"
   
+  $('#envelope_details').on 'blur', '.amount input', ->
+    $this = $(this)
+    associated_transaction = $('#transaction_' + $this.data('associated-transaction-id'))
+    if associated_transaction.length > 0
+      newAmount = parseFloat($this.val().replace(/[^-.0-9]/g, "")) * -1
+      associated_transaction.find('.amount input').val(newAmount.toFixed(2).replace /([.0-9]+)/g, "$$$1")
+  
   $('#update_all_transactions')
     .on('ajax:beforeSend', ->
       cancelDatePicker()
