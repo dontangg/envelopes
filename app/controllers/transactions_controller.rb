@@ -3,6 +3,10 @@ class TransactionsController < ApplicationController
 
   def update
     transaction = Transaction.find(params[:id])
+    
+    if params[:transaction] && params[:transaction][:amount]
+      params[:transaction][:amount] = params[:transaction][:amount].scan(/[-0-9.]+/).join
+    end
 
     if transaction.update_attributes(params[:transaction])
       head :ok
@@ -12,7 +16,8 @@ class TransactionsController < ApplicationController
   end
   
   def update_all
-    Transaction.update params[:transaction].keys, params[:transaction].values if params[:transaction]
+    # If you do want to do this, make sure you remove the dollar sign so that it doesn't just save zeroes
+    #Transaction.update params[:transaction].keys, params[:transaction].values if params[:transaction]
 
     respond_to do |format|
       format.html { redirect_to envelope_url(params[:envelope_id], start_date: params[:start_date], end_date: params[:end_date]) }
@@ -62,7 +67,7 @@ class TransactionsController < ApplicationController
   end
   
   def create_transfer
-    amount = params[:transfer_amount].scan(/[-0-9.]/).join.to_f
+    amount = params[:transfer_amount].scan(/[-0-9.]+/).join.to_f
 
     if amount > 0
       from_envelope = Envelope.find(params[:transfer_from_id])
