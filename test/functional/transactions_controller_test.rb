@@ -46,10 +46,11 @@ class TransactionsControllerTest < ActionController::TestCase
 
     put :update, {
       id: txn.id,
-      transaction: {payee: 'Wal-Mart'}
+      transaction: {amount: '$0.88'}
     }
 
     assert_response :success
+    assert_equal 0.88, Transaction.find(txn.id).amount
   end
 
   test "failed transaction update" do
