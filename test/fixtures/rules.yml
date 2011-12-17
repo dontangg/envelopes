@@ -1,15 +1,15 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
 
-one:
-  user_id: 1
-  search_text: MyString
-  replacement_text: MyString
-  envelope_id: 1
-  order: 1
+walmart:
+  user: jim
+  search_text: WALMART
+  replacement_text: Walmart
+  envelope: groceries
+  order: 0
 
-two:
-  user_id: 1
-  search_text: MyString
-  replacement_text: MyString
-  envelope_id: 1
+costco_gas:
+  user: jim
+  search_text: COSCTO GAS
+  replacement_text: CostCo Gas
+  envelope: groceries
   order: 1
