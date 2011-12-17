@@ -46,7 +46,7 @@ cancelDatePicker = (event) ->
   $('#transactions_list input').selectOnFocus()
   
   $('#transactions_list .payee input').autocomplete
-    source: "<%= url.suggest_payee_transactions_path %>"
+    source: "<%= CGI.unescape url.suggest_payee_transactions_path %>"
     minLength: 2
 
 $ ->

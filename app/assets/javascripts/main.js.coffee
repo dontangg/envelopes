@@ -17,7 +17,13 @@
     opacity: 0.6
   
   modal = $('#modal').removeClass()
-  modal = $("<section id='modal'></section>").appendTo(document.body) unless modal.length > 0
+  unless modal.length > 0
+    modal = $("<section id='modal'></section>")
+      .appendTo(document.body)
+      .on('keyup', (event) ->
+        if event.which == $.ui.keyCode.ESCAPE
+          hideModal()
+      )
   modal.addClass(options['className']) if options['className']
   modal
     .html($(options['content']).html())
@@ -31,6 +37,21 @@
   input[0].focus() if input.length > 0
   
   modal
+
+@getTimeString = ->
+  now = new Date()
+  hour = now.getHours()
+  if hour > 12
+    hour -= 12
+    amPm = 'pm'
+  else
+    amPm = 'am'
+  minute = now.getMinutes()
+  minute = "0" + minute if minute < 10
+  second = now.getSeconds()
+  second = "0" + second if second < 10
+  
+  hour + ':' + minute + ':' + second + amPm
 
 @autosave = (parentSelector, eventName, childSelector, url) ->
   changedCallback = (event) ->
@@ -54,20 +75,8 @@
         $this.data('saved-value', ajaxData[modelName + '[' + attributeName + ']'])
         $this.removeClass 'invalid'
 
-        now = new Date()
-        hour = now.getHours()
-        if hour > 12
-          hour -= 12
-          amPm = 'pm'
-        else
-          amPm = 'am'
-        minute = now.getMinutes()
-        minute = "0" + minute if minute < 10
-        second = now.getSeconds()
-        second = "0" + second if second < 10
-
-        $(parentSelector).find('.autosave-status').text 'Saved at ' + hour + ':' + minute + ':' + second + amPm
-      .fail (jqXHR, textStatus, next, next2) ->
+        $(parentSelector).find('.autosave-status').text 'Saved at ' + getTimeString()
+      .fail (jqXHR) ->
         try
           errors = $.parseJSON(jqXHR.responseText)
           errorMessage = "The " + modelName + " wasn't saved!<ul>"
