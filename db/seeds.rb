@@ -61,7 +61,9 @@ when "development"
   
 
   puts "-- creating rules"
-  Rule.create search_text: "WALMART", replacement_text: "Wal-Mart", envelope: groceries_envelope, user: test_user, order: 1
-  Rule.create search_text: "COSTCO GAS", replacement_text: "CostCo Gas", envelope: fuel_envelope, user: test_user, order: 2
-  Rule.create search_text: "COSTCO", replacement_text: "CostCo", envelope: groceries_envelope, user: test_user, order: 3
+  Rule.create search_text: "WALMART", replacement_text: "Wal-Mart", envelope: groceries_envelope, user: test_user, order: 0
+  Rule.create search_text: "COSTCO GAS", replacement_text: "CostCo Gas", envelope: fuel_envelope, user: test_user, order: 1
+  Rule.create search_text: "COSTCO", replacement_text: "CostCo", envelope: groceries_envelope, user: test_user, order: 2
+  Rule.create search_text: "NETFLIX", replacement_text: "Netflix", envelope: netflix_envelope, user: test_user, order: 3
+  Rule.create search_text: "MORTGAGE", replacement_text: "Mortgage", envelope: mortgage_envelope, user: test_user, order: 4
 end

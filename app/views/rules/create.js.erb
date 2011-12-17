@@ -1,0 +1,21 @@
+<% url = Envelopes::Application.routes.url_helpers %>
+
+newItem = $("<%= escape_javascript(render partial: 'rules/rule', locals: {rule: @rule, all_envelopes: @all_envelopes}, status: :created) %>");
+newItem.hide();
+
+$('#rules ul').append(newItem);
+
+newItem.find('select').selectToAutocomplete()
+newItem.find('input[type=text], input:not([type])]').selectOnFocus()
+
+newItem.find('.replacement-text input').autocomplete
+  source: "<%= CGI.unescape url.suggest_payee_transactions_path %>"
+  minLength: 2
+
+newItem.find('.search-text input').autocomplete
+  source: "<%= CGI.unescape url.suggest_payee_transactions_path %>?original=1"
+  minLength: 2
+
+//setAltRowClass()
+hideModal();
+newItem.slideDown();

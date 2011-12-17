@@ -5,14 +5,17 @@
     <h1>Rules</h1>
   </header>
   
-  <ul>
-    <li class='head'>
-      <div>Search Text</div>
-      <div>Replacement Text</div>
-      <div>Envelope</div>
-    </li>
-    <%= render partial: 'rules/rule', collection: @rules, locals: {all_envelopes: @all_envelopes} %>
+  <table>
+    <tr>
+      <th class='search-text'><div>Search Text</div></th>
+      <th class='replacement-text'><div>Replacement Text</div></th>
+      <th class='envelope'><div>Envelope</div></th>
+      <th class='rule-actions'></th>
+    </tr>
   </table>
+  <ul>
+    <%= render partial: 'rules/rule', collection: @rules, locals: {all_envelopes: @all_envelopes} %>
+  </ul>
   <p class='autosave-status'></p>
 </section>
 
@@ -21,3 +24,27 @@
     <li><a href='javascript:void(0)' class='button new'>New Rule</a></li>
   </ul>
 </section>
+
+<script id='new_rule_modal' type='template'>
+  <div class='loading'></div>
+  <h1>New Rule</h1>
+  <%= form_for @new_rule, remote: true do |f| %>
+    <%= f.hidden_field :order %>
+    <div class="field">
+      <%= f.label :search_text, 'Search text:' %>
+      <%= f.text_field :search_text, placeholder: 'WALMART' %>
+    </div>
+    <div class="field">
+      <%= f.label :replacement_text, 'Replacement text:' %>
+      <%= f.text_field :replacement_text, placeholder: 'Wal-Mart' %>
+    </div>
+    <div class="field amount">
+      <%= f.label :envelope_id, 'Envelope:' %>
+      <%= f.collection_select(:envelope_id, @all_envelopes, :id, :full_name) %>
+    </div>
+    <div class='actions'>
+      <a href='javascript:void(0)'>Cancel</a>
+      <%= f.submit 'Save', class: 'primary' %>
+    </div>
+  <% end %>
+</script>
