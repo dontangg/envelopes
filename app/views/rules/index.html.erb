@@ -5,12 +5,12 @@
     <h1>Rules</h1>
   </header>
   
-  <table>
-    <tr>
-      <th>Search Text</th>
-      <th>Replacement Text</th>
-      <th>Envelope</th>
-    </tr>
+  <ul>
+    <li class='head'>
+      <div>Search Text</div>
+      <div>Replacement Text</div>
+      <div>Envelope</div>
+    </li>
     <%= render partial: 'rules/rule', collection: @rules, locals: {all_envelopes: @all_envelopes} %>
   </table>
   <p class='autosave-status'></p>

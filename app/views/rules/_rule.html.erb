@@ -1,8 +1,8 @@
 <%= fields_for "rule[]", rule do |f| %>
-  <tr<%= cycle(" class='alt'", "") %>>
-    <td class='search-text'><%= f.text_field :search_text, 'data-saved-value' => rule.search_text %></td>
-    <td class='replacement-text'><%= f.text_field :replacement_text, 'data-saved-value' => rule.replacement_text %></td>
-    <td class='envelope'><%= f.collection_select :envelope_id, all_envelopes, :id, :full_name, {}, 'data-saved-value' => rule.envelope_id %></td>
-    <td class='actions'><a href='javascript:void(0)' class='destroy' title='Remove this rule'></a></td>
-  </tr>
+  <li<%= cycle(" class='alt'", "") %>>
+    <div class='search-text'><%= f.text_field :search_text, 'data-saved-value' => rule.search_text %></div>
+    <div class='replacement-text'><%= f.text_field :replacement_text, 'data-saved-value' => rule.replacement_text %></div>
+    <div class='envelope'><%= f.collection_select :envelope_id, all_envelopes, :id, :full_name, {}, 'data-saved-value' => rule.envelope_id %></div>
+    <div class='rule-actions'><a href='javascript:void(0)' class='destroy' title='Remove this rule'></a></div>
+  </li>
 <% end %>
