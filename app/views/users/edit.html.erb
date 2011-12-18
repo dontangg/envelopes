@@ -1,0 +1,48 @@
+<% title 'Account' %>
+
+<section id='account'>
+  <header>
+    <h1>Account</h1>
+  </header>
+  
+  <% if @user.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@user.errors.count, "error") %> prohibited your changes from being saved:</h2>
+
+      <ul>
+      <% @user.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  
+  <%= form_for @user do |f| %>
+    <div class="field">
+      <%= f.label :email, 'Email:' %>
+      <%= f.email_field :email %>
+    </div>
+    <div class="field">
+      <%= f.label :password, 'Password:' %>
+      <%= f.password_field :password, placeholder: 'password' %>
+    </div>
+    <div class="field">
+      <%= f.label :password_confirmation, 'Confirm password:' %>
+      <%= f.password_field :password_confirmation, placeholder: 'password' %>
+    </div>
+    <div class="field">
+      <%= f.label :bank_id, 'Bank:' %>
+      <%= f.select :bank_id, @bank_options %>
+    </div>
+    <div class="field">
+      <%= f.label :bank_password, 'Bank password:' %>
+      <%= f.password_field :bank_password, placeholder: 'password' %>
+    </div>
+    <%# @user.bank_secret_questions %>
+    <p><small>Note: Passwords left blank will not be modified.</small></p>
+    <div class="field">
+      <%= f.submit "Save", class: 'primary' %>
+    </div>
+  <% end %>
+  
+</section>

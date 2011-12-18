@@ -11,6 +11,8 @@ Envelopes::Application.routes.draw do
       get 'suggest_payee'
     end
   end
+  
+  resources :users, only: [:edit, :update]
 
   get 'login' => 'sessions#new'
   post 'login' => 'sessions#create'
