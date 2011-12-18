@@ -19,6 +19,7 @@ class RulesController < ApplicationController
 
   def update
     rule = Rule.find(params[:id])
+    authorize! :update, rule
 
     if rule.update_attributes(params[:rule])
       head :ok
@@ -29,6 +30,7 @@ class RulesController < ApplicationController
 
   def destroy
     rule = Rule.find(params[:id])
+    authorize! :destroy, rule
 
     if rule.destroy
       head :ok

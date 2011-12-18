@@ -3,6 +3,7 @@ class TransactionsController < ApplicationController
 
   def update
     transaction = Transaction.find(params[:id])
+    authorize! :update, transaction
     
     if params[:transaction] && params[:transaction][:amount]
       params[:transaction][:amount] = params[:transaction][:amount].scan(/[-0-9.]+/).join
@@ -25,6 +26,7 @@ class TransactionsController < ApplicationController
         @all_envelopes = Envelope.owned_by(current_user_id)
 
         @envelope = @all_envelopes.select { |envelope| envelope.id == params[:envelope_id].to_i }.first
+        raise CanCan::AccessDenied.new("Not authorized!", :read, Envelope) unless @envelope
 
         @organized_envelopes = Envelope.organize(@all_envelopes)
 
@@ -72,6 +74,8 @@ class TransactionsController < ApplicationController
     if amount > 0
       from_envelope = Envelope.find(params[:transfer_from_id])
       to_envelope = Envelope.find(params[:transfer_to_id])
+      authorize! :update, from_envelope
+      authorize! :update, to_envelope
       
       from_txn_payee = "Transferred #{number_to_currency(amount)} to #{to_envelope.full_name}"
       from_txn = Transaction.create posted_at: Date.today, payee: from_txn_payee, original_payee: from_txn_payee, envelope_id: from_envelope.id, amount: -amount

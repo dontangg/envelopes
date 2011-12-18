@@ -2,6 +2,10 @@ class ApplicationController < ActionController::Base
   before_filter :authenticate
   protect_from_forgery
   
+  rescue_from CanCan::AccessDenied do |exception|
+    raise ActionController::RoutingError, exception.message
+  end
+  
   private
   
   def authenticate

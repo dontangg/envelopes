@@ -2,6 +2,10 @@ source 'http://rubygems.org'
 
 gem 'rails', '3.1.3'
 gem 'unicorn'
+gem 'jquery-rails'
+gem 'cancan'
+gem 'bcrypt-ruby', '~> 3.0.0' # To use ActiveModel has_secure_password
+# gem 'ruby-debug19', :require => 'ruby-debug' # To use debugger
 
 # Gems used only for assets and not required in production environments by default.
 group :assets do
@@ -9,14 +13,6 @@ group :assets do
   gem 'coffee-rails', '~> 3.1.1'
   gem 'uglifier',     '>= 1.0.3'
 end
-
-gem 'jquery-rails'
-
-# To use ActiveModel has_secure_password
-gem 'bcrypt-ruby', '~> 3.0.0'
-
-# To use debugger
-# gem 'ruby-debug19', :require => 'ruby-debug'
 
 gem 'sqlite3', group: [:development, :test]
 
