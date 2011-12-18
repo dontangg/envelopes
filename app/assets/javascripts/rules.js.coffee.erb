@@ -2,14 +2,14 @@
 <% url = Envelopes::Application.routes.url_helpers %>
 
 $ ->
-  $('select').selectToAutocomplete()
-  $('input[type=text], input:not([type])]').selectOnFocus()
+  $('#rules select').selectToAutocomplete()
+  $('#rules input[type=text], #rules input:not([type])]').selectOnFocus()
 
-  $('.replacement-text input').autocomplete
+  $('#rules .replacement-text input').autocomplete
     source: "<%= CGI.unescape url.suggest_payee_transactions_path %>"
     minLength: 2
   
-  $('.search-text input').autocomplete
+  $('#rules .search-text input').autocomplete
     source: "<%= CGI.unescape url.suggest_payee_transactions_path %>?original=1"
     minLength: 2
   

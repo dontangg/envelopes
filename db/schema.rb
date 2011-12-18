@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111215215024) do
+ActiveRecord::Schema.define(:version => 20111218052619) do
 
   create_table "envelopes", :force => true do |t|
     t.string   "name"
@@ -61,6 +61,9 @@ ActiveRecord::Schema.define(:version => 20111215215024) do
     t.string   "password_digest"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "bank_id"
+    t.string   "bank_password_cipher"
+    t.string   "bank_secret_questions"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true

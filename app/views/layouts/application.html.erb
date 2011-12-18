@@ -22,7 +22,7 @@
 <% if current_user %>
   <nav id='header_nav'>
     <ul class='account-nav'>
-      <li><%= current_user.email %></li>
+      <li><%= link_to current_user.email, edit_user_url(current_user_id) %></li>
       <li><%= link_to 'Log Out', logout_url %></li>
     </ul>
     <ul class='main-nav'>

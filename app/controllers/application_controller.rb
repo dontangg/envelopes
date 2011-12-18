@@ -24,5 +24,5 @@ class ApplicationController < ActionController::Base
     session[:user_id]
   end
   
-  helper_method :current_user
+  helper_method :current_user, :current_user_id
 end
