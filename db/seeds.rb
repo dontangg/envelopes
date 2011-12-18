@@ -12,10 +12,11 @@ when "development"
   puts "-- creating users"
 
   test_user = User.create email: 'test@gmail.com', password: 'pass'
+  test_user2 = User.create email: 'test2@gmail.com', password: 'pass'
 
 
   puts "-- creating envelopes"
-
+  
   auto_envelope = Envelope.create name: 'Auto', user: test_user
   fuel_envelope = Envelope.create name: "Fuel", user: test_user, parent_envelope: auto_envelope
   auto_maintenance_envelope = Envelope.create name: "Maintenance", user: test_user, parent_envelope: auto_envelope
@@ -52,6 +53,8 @@ when "development"
   domains_envelope = Envelope.create name: 'Domains', user: test_user, parent_envelope: subscriptions_envelope
   netflix_envelope = Envelope.create name: 'Netflix', user: test_user, parent_envelope: subscriptions_envelope
   
+  auto_envelope2 = Envelope.create name: 'Auto', user: test_user2
+  
   
   puts "-- creating transactions"
   Transaction.create payee: "Wal-Mart", original_payee: '20397235 WALMART AS2385 SPRINGVILLE, UT', unique_id: 'WALMART-3', posted_at: Date.today - 5.days, amount: -25.64, envelope: groceries_envelope
@@ -66,4 +69,6 @@ when "development"
   Rule.create search_text: "COSTCO", replacement_text: "CostCo", envelope: groceries_envelope, user: test_user, order: 2
   Rule.create search_text: "NETFLIX", replacement_text: "Netflix", envelope: netflix_envelope, user: test_user, order: 3
   Rule.create search_text: "MORTGAGE", replacement_text: "Mortgage", envelope: mortgage_envelope, user: test_user, order: 4
+  
+  Rule.create search_text: "USAA AUTO", replacement_text: "USAA Car Insurance", envelope: auto_envelope2, user: test_user2, order: 0
 end

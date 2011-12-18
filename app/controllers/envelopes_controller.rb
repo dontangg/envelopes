@@ -11,7 +11,8 @@ class EnvelopesController < ApplicationController
 
     # The envelope the user is currently looking at
     @envelope = @all_envelopes.select { |envelope| envelope.id == params[:id].to_i }.first
-
+    raise CanCan::AccessDenied.new("Not authorized!", :read, Envelope) unless @envelope
+    
     # A Hash with all the envelopes organized by parent_envelope_id
     @organized_envelopes = Envelope.organize(@all_envelopes)
     
