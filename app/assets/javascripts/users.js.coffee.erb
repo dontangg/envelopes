@@ -1,2 +1,17 @@
 $ ->
   $('#account input').selectOnFocus()
+
+  $('#account .new').on 'click', (event) ->
+    event.preventDefault()
+    newIndex = $('#account ul.questions li').length - 1
+    newItemHtml = $('#questions_template').text().replace /index/g, newIndex
+    $(newItemHtml)
+      .hide()
+      .insertBefore($(this).parent())
+      .slideDown()
+      .find('input').selectOnFocus()
+  
+  $('#account').on 'click', '.destroy', (event) ->
+    event.preventDefault()
+    $(this).parent().slideUp ->
+      $(this).remove()
