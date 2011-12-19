@@ -38,11 +38,23 @@
       <%= f.label :bank_password, 'Bank password:' %>
       <%= f.password_field :bank_password, placeholder: 'password' %>
     </div>
-    <div class="field">
-      <%= f.label :bank_password, 'Bank secret questions:' %>
-      <% @user.bank_secret_questions.each do |question, answer| %>
-        <%= question %> - <%= answer %>
-      <% end %>
+    <div class="field multi-line">
+      <%= f.label :bank_secret_questions, 'Bank secret questions:' %>
+      <ul class='questions'>
+
+        <% if @user.bank_secret_questions.present? %>
+          <% @user.bank_secret_questions.each_with_index do |question_answer, index| %>
+            <li>
+              <%= text_field_tag "question[#{index}]", question_answer[0], placeholder: "Question" %>
+              <%= text_field_tag "answer[#{index}]", question_answer[1], placeholder: "Answer" %>
+              <button class='destroy' title='Remove this question and its answer' ></button>
+            </li>
+          <% end %>
+        <% end %>
+
+        <li><button class='new'>New Question</button></li>
+      </ul>
+
     </div>
     <p><small>Note: Passwords left blank will not be modified.</small></p>
     <div class="field">
@@ -50,4 +62,11 @@
     </div>
   <% end %>
   
+  <script id='questions_template' type='template'>
+    <li>
+      <%= text_field_tag "question[index]", nil, placeholder: "Question" %>
+      <%= text_field_tag "answer[index]", nil, placeholder: "Answer" %>
+      <button href='javascript:void(0)' class='destroy' title='Remove this question and its answer' ></button>
+    </li>
+  </script>
 </section>

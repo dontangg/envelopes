@@ -57,6 +57,20 @@ button, input[type=button], input[type=submit], .button {
     outline: 0;
   }
 
+  &.destroy {
+    background: url(<%= asset_path("trash_stroke_16x16_light.png") %>) no-repeat center center;
+    border: 0;
+    box-shadow: 0;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    
+    &:hover {
+      box-shadow: none;
+      background-image: url(<%= asset_path("trash_stroke_16x16.png") %>);
+    }
+  }
+
   &.primary {
     border: 1px solid #983fd5;
     background: #e0c5f2;
