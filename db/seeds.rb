@@ -11,7 +11,7 @@ when "development"
 
   puts "-- creating users"
 
-  test_user = User.create email: 'test@gmail.com', password: 'pass'
+  test_user = User.create email: 'test@gmail.com', password: 'pass', bank_id: 'zions_bank', bank_username: 'bankUsernameTest', bank_secret_questions: { 'this is a question' => 'this is an answer', 'question2' => 'answer2' }
   test_user2 = User.create email: 'test2@gmail.com', password: 'pass'
 
 
