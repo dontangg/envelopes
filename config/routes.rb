@@ -2,7 +2,11 @@ Envelopes::Application.routes.draw do
 
   resources :rules, only: [:index, :create, :update, :destroy]
 
-  resources :envelopes, only: [:index, :show]
+  resources :envelopes, only: [:index, :show] do
+    collection do
+      get 'fill'
+    end
+  end
 
   resources :transactions, only: [:update] do
     collection do
