@@ -31,5 +31,9 @@ class EnvelopesController < ApplicationController
     @spent_percent = spent * 100 / max_spent_funded
     @funded_percent = funded * 100 / max_spent_funded
   end
+  
+  def fill
+    
+  end
 
 end
