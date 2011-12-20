@@ -35,6 +35,10 @@
       <%= f.select :bank_id, @bank_options %>
     </div>
     <div class="field">
+      <%= f.label :bank_username, 'Bank username:' %>
+      <%= f.text_field :bank_username, placeholder: 'username' %>
+    </div>
+    <div class="field">
       <%= f.label :bank_password, 'Bank password:' %>
       <%= f.password_field :bank_password, placeholder: 'password' %>
     </div>
