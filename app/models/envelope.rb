@@ -1,4 +1,6 @@
 class Envelope < ActiveRecord::Base
+  extend ActiveSupport::Memoizable
+  
   default_scope order(arel_table[:name])
   scope :owned_by, lambda { |user_id| where(user_id: user_id) }
   scope :income, where(income: true)
@@ -48,26 +50,30 @@ class Envelope < ActiveRecord::Base
 
     @full_name = name
   end
-
-  def funded_this_month
-    if @funded_this_month
-      @funded_this_month
-    else
-      where_clause = Transaction.arel_table[:amount].gt(0)
-        .and(Transaction.arel_table[:posted_at].gteq(Date.today.beginning_of_month))
-      @funded_this_month = all_transactions.where(where_clause).sum('amount')
-    end
+  
+  def amount_funded_this_month
+    amount_funded_between(Date.today.beginning_of_month, Date.today.end_of_month)
   end
 
-  def spent_this_month
-    if @spent_this_month
-      @spent_this_month
-    else
-      where_clause = Transaction.arel_table[:amount].lt(0)
-        .and(Transaction.arel_table[:posted_at].gteq(Date.today.beginning_of_month))
-      @spent_this_month = all_transactions.where(where_clause).sum('amount')
-    end
+  def amount_funded_between(start_date = Date.today.year, end_date = Date.today.month)
+    where_clause = Transaction.arel_table[:amount].gt(0)
+      .and(Transaction.arel_table[:posted_at].gteq(start_date))
+      .and(Transaction.arel_table[:posted_at].lteq(end_date))
+    all_transactions.where(where_clause).sum(:amount)
   end
+  memoize :amount_funded_between
+
+  def amount_spent_this_month
+    amount_spent_between(Date.today.beginning_of_month, Date.today.end_of_month)
+  end
+
+  def amount_spent_between(start_date = Date.today.year, end_date = Date.today.month)
+    where_clause = Transaction.arel_table[:amount].gt(0)
+      .and(Transaction.arel_table[:posted_at].gteq(start_date))
+      .and(Transaction.arel_table[:posted_at].lteq(end_date))
+    all_transactions.where(where_clause).sum(:amount)
+  end
+  memoize :amount_spent_between
 
   def all_transactions(organized_envelopes = nil)
     all_child_envelope_ids = Envelope.all_child_envelope_ids(self.id, organized_envelopes) << self.id
