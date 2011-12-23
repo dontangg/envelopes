@@ -351,3 +351,86 @@ $jquery-ui-border-radius: 0;
     }
   }
 }
+
+#fill_envelopes {
+  padding: 0 2% 0 0;
+  float: left;
+  width: 79%;
+  
+  header {
+    padding-bottom: 2%;
+  }
+  
+  .expandable > table td.name {
+    background: url(<%= asset_path("plus_alt_12x12.png") %>) no-repeat 5px center;
+  }
+  .collapsible > table td.name {
+    background: url(<%= asset_path("minus_alt_12x12.png") %>) no-repeat 5px center;
+  }
+  
+  .alt {
+    
+  }
+  
+  ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+    
+  form > ul > li {
+    
+    > table .name {
+      padding-left: 23px;
+    }
+    
+    > ul > li {
+      > table .name {
+        padding-left: 43px;
+      }
+      &.expandable > table td.name, &.collapsible > table td.name {
+        background-position: 23px center;
+      }
+    
+      > ul > li {
+        > table .name {
+          padding-left: 63px;
+        }
+      }
+    }
+  }
+
+  table {
+    width: 100%;
+    
+    &.header {
+      font-weight: 300;
+    }
+    
+    &:not(.header):hover {
+      background: #f1f1f1;
+    }
+    
+    .name {
+      width: 40%;
+    }
+    .balance, .budget, to-fund {
+      width: 15%;
+    }
+    .input {
+      width: 15%;
+      
+      input {
+        width: 85%;
+        
+        &:not(:focus) {
+          background: transparent;
+        }
+      }
+    }
+  }
+}
+#fill_aside {
+  float: left;
+  width: 18.5%;
+}

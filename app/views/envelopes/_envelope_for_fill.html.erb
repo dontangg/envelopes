@@ -1,0 +1,16 @@
+<li class="<%= organized_envelopes[envelope.id].present? ? "expandable" : nil %> <%= envelope.parent_envelope_id.nil? ? cycle("alt", "") : nil %>">
+  <table>
+    <tr>
+      <td class='name'><%= envelope.name %></td>
+      <td class='amount balance'><%= number_to_currency(envelope.inclusive_total_amount(organized_envelopes)) %></td>
+      <td class='amount budget'><%= number_to_currency(envelope.expense.try(:amount) || 0) %></td>
+      <td class='amount to-fund'><%= number_to_currency(envelope.amount_funded_this_month) %></td>
+      <td class='amount input'><%= text_field_tag "fill_envelope_#{envelope.id}", number_to_currency(0) %></td>
+    </tr>
+  </table>
+  <% unless organized_envelopes[envelope.id].empty? %>
+    <ul>
+      <%= render partial: 'envelope_for_fill', collection: organized_envelopes[envelope.id], as: :envelope, locals: {organized_envelopes: organized_envelopes} %>
+    </ul>
+  <% end %>
+</li>

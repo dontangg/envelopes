@@ -33,7 +33,9 @@ class EnvelopesController < ApplicationController
   end
   
   def fill
-    @all_envelopes = Envelope.owned_by(current_user_id).with_amounts
+    all_envelopes = Envelope.owned_by(current_user_id).with_amounts
+    
+    @organized_envelopes = Envelope.organize(all_envelopes)
   end
 
 end

@@ -12,6 +12,8 @@ class Envelope < ActiveRecord::Base
   has_many :child_envelopes, class_name: 'Envelope', foreign_key: 'parent_envelope_id'
   has_many :transactions
   
+  serialize :expense, Expense
+  
   # This overrides the default to_param method that just returns id
   # This causes our find method to still work because find calls to_i() on it which will just return the id
   def to_param
