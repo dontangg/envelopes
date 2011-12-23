@@ -4,22 +4,27 @@
     <h1>Fill Envelopes</h1>
   </header>
   
-  <ul>
-    <li></li>
-  </ul>
+  <%= form_tag do %>
+    <ul>
+      <li>
+        <table class='header'>
+          <tr>
+            <td class='name'>Envelope</td>
+            <td class='amount balance'>Balance</td>
+            <td class='amount budget'>Budget</td>
+            <td class='amount to-fund'>To Fund</td>
+            <td class='amount input'>Amount</td>
+          </tr>
+        </table>
+      </li>
+      <%= render partial: 'envelope_for_fill', collection: @organized_envelopes[nil], as: :envelope, locals: {organized_envelopes: @organized_envelopes} %>
+    </ul>
   
-  show each envelopes
-  - name of the envelope
-  - current total
-  - total monthly funding amount
-  - left to fund this month
+    <%= submit_tag "Fill", class: 'primary' %>
+    
+  <% end %>
   
-  detail view for an envelope
-  - last 3 transactions
-  - monthly amount (yearly amount)
-  - due date
-  - current funding (text field)
-  - all sub envelopes
-  
-  
+</section>
+<section id='fill_aside'>
+  Available Cash
 </section>
