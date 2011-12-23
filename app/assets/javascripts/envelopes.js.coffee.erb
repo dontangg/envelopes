@@ -59,16 +59,6 @@ $ ->
   if $('#transactions_list').length > 0
     setupTransactionsList()
   
-  $(document).on('blur', '.amount input', ->
-    $this = $(this)
-    value = parseFloat $this.val().replace(/[^-.0-9]/g, "")
-    if isNaN(value)
-      $this.val ""
-    else
-      value = value.toFixed(2).replace /([.0-9]+)/g, "$$$1"
-      $this.val value
-  )
-  
   autosave '#envelope_details', 'blur', '.payee input, .amount input', "<%= CGI.unescape url.transaction_path('{id}') %>"
   autosave '#envelope_details', 'change', 'select', "<%= CGI.unescape url.transaction_path('{id}') %>"
   
