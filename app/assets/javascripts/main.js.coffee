@@ -101,6 +101,25 @@
     .fadeOut ->
       $(this).remove()
 
+@getAmount = (amountStr) ->
+  parseFloat amountStr.replace(/[^-.0-9]/g, "")
+  
+@numberToCurrency = (number) ->
+  return "" if isNaN(number)
+  
+  valueStr = Math.abs(number).toFixed 2
+  
+  # The (?=) is a positive lookahead that will not be a part of the match, but still determines
+  # whether a match is made. Here a digit will be the match if it is followed by any number of sets
+  # of 3 digits that are followed by either a period or the end of the string. Then we replace that digit
+  # with that same digit plus a comma.
+  valueStr = valueStr.replace /(\d)(?=(\d{3})+(\.|$))/g, '$1,' if number >= 1000
+  
+  valueStr = "$" + valueStr
+  valueStr = "-" + valueStr if number < 0
+  
+  valueStr
+
 $ ->
   $('.flash').each (index, item) ->
     $(item)
@@ -110,17 +129,6 @@ $ ->
 
   $(document).on('blur', '.amount input', ->
     $this = $(this)
-    value = parseFloat $this.val().replace(/[^-.0-9]/g, "")
-    if isNaN(value)
-      $this.val ""
-    else
-      valueStr = value.toFixed 2
-      
-      # The (?=) is a positive lookahead that will not be a part of the match, but still determines
-      # whether a match is made. Here a digit will be the match if it is followed by any number of sets
-      # of 3 digits that are followed by either a period or the end of the string. Then we replace that digit
-      # with that same digit plus a comma.
-      valueStr = valueStr.replace /(\d)(?=(\d{3})+(\.|$))/g, '$1,' if value >= 1000
-      
-      $this.val "$" + valueStr
+    value = getAmount $this.val()
+    $this.val numberToCurrency(value)
   )

@@ -5,7 +5,7 @@
         <td class='search-text'><%= f.text_field :search_text, 'data-saved-value' => rule.search_text %></td>
         <td class='replacement-text'><%= f.text_field :replacement_text, 'data-saved-value' => rule.replacement_text %></td>
         <td class='envelope'><%= f.collection_select :envelope_id, all_envelopes, :id, :full_name, {}, 'data-saved-value' => rule.envelope_id %></td>
-        <td class='rule-actions'><button class='destroy' title='Remove this rule'></button></td>
+        <td class='rule-actions'><button class='destroy image-only' title='Remove this rule'></button></td>
       </tr>
     </table>
   </li>

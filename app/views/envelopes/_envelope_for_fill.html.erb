@@ -1,11 +1,25 @@
-<li class="<%= organized_envelopes[envelope.id].present? ? "expandable" : nil %> <%= envelope.parent_envelope_id.nil? ? cycle("alt", "") : nil %>">
+<li>
   <table>
     <tr>
-      <td class='name'><%= envelope.name %></td>
+      <td class='name'>
+        <% if organized_envelopes[envelope.id].empty? %>
+          <span class='image-only-spacer'></span>
+        <% else %>
+          <button class='collapse image-only' title='Expand'></button>
+        <% end %>
+        <%= envelope.name %>
+        <button class='info image-only' title='More information on this envelope'></button>
+      </td>
       <td class='amount balance'><%= number_to_currency(envelope.inclusive_total_amount(organized_envelopes)) %></td>
       <td class='amount budget'><%= number_to_currency(envelope.expense.try(:amount) || 0) %></td>
       <td class='amount to-fund'><%= number_to_currency(envelope.amount_funded_this_month) %></td>
-      <td class='amount input'><%= text_field_tag "fill_envelope_#{envelope.id}", number_to_currency(0) %></td>
+      <% if organized_envelopes[envelope.id].empty? %>
+        <td class='amount input'>
+          <%= text_field_tag "fill_envelope_#{envelope.id}", number_to_currency(0) %>
+        </td>
+      <% else %>
+        <td class='amount sum'><%= number_to_currency(0) %></td>
+      <% end %>
     </tr>
   </table>
   <% unless organized_envelopes[envelope.id].empty? %>
