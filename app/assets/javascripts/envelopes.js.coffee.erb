@@ -97,5 +97,41 @@ $ ->
     modal.find('a').click ->
       hideModal()
     
-  $('#fill_envelopes input[type=text]').selectOnFocus()
+  $('#fill_envelopes input[type=text]')
+    .selectOnFocus()
+    .on 'keyup', ->
+      $this = $(this)
+      
+      total = 0
+      parent = $this.parent().closest('ul')
+      parent.find('input').each (index, item) ->
+        total += getAmount(item.value) || 0
+      parent.prev().find('.sum').text(numberToCurrency(total))
+      
+      total = 0
+      grandParent = parent.parent().closest('ul')
+      grandParent.children().children('table').find('.sum').each (index, item) ->
+        total += getAmount($(item).text()) || 0
+      grandParent.prev().find('.sum').text(numberToCurrency(total))
+      
+      total = 0
+      $('#fill_envelopes input[type=text]').each (index, item) ->
+        total += getAmount(item.value) || 0
+      totalAllocation = numberToCurrency(total * -1)
+      totalAllocation = "-" + totalAllocation if total == 0
+      totalAllocation = "+" + totalAllocation if total < 0
+      $('#fill_aside .allocation').text(totalAllocation)
+      available = getAmount $('#fill_aside .available').text()
+      $('#fill_aside .remaining').text numberToCurrency(available - total)
+      
+  
+  $('#fill_envelopes .expand, #fill_envelopes .collapse').click (event) ->
+    event.preventDefault()
+    $this = $(this)
+    childEnvelopes = $this.closest('li').children('ul')
+    childEnvelopes.slideToggle ->
+      if childEnvelopes.is ':visible'
+        $this.removeClass('expand').addClass('collapse')
+      else
+        $this.removeClass('collapse').addClass('expand')
   

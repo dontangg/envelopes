@@ -57,17 +57,50 @@ button, input[type=button], input[type=submit], .button {
     outline: 0;
   }
 
-  &.destroy {
-    background: url(<%= asset_path("trash_stroke_16x16_light.png") %>) no-repeat center center;
+  &.image-only {
     border: 0;
     box-shadow: 0;
     width: 16px;
     height: 16px;
     cursor: pointer;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center bottom;
     
     &:hover {
       box-shadow: none;
+    }
+  }
+  
+  &.info {
+    background-image: url(<%= asset_path("info_6x12_light.png") %>);
+    
+    &:hover {
+      background-image: url(<%= asset_path("info_6x12.png") %>);
+    }
+  }
+
+  &.destroy {
+    background-image: url(<%= asset_path("trash_stroke_16x16_light.png") %>);
+    
+    &:hover {
       background-image: url(<%= asset_path("trash_stroke_16x16.png") %>);
+    }
+  }
+  
+  &.expand {
+    background-image: url(<%= asset_path("plus_alt_12x12_light.png") %>);
+    
+    &:hover {
+      background-image: url(<%= asset_path("plus_alt_12x12.png") %>);
+    }
+  }
+
+  &.collapse {
+    background-image: url(<%= asset_path("minus_alt_12x12_light.png") %>);
+
+    &:hover {
+      background-image: url(<%= asset_path("minus_alt_12x12.png") %>);
     }
   }
 
@@ -83,4 +116,10 @@ button, input[type=button], input[type=submit], .button {
       background-color: #d0b5e2;
     }
   }
+}
+
+.image-only-spacer {
+  width: 16px;
+  height: 16px;
+  display: inline-block;
 }
