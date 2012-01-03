@@ -110,8 +110,8 @@ $ ->
       
       total = 0
       grandParent = parent.parent().closest('ul')
-      grandParent.children().children('table').find('.sum').each (index, item) ->
-        total += getAmount($(item).text()) || 0
+      grandParent.find('input').each (index, item) ->
+        total += getAmount(item.value) || 0
       grandParent.prev().find('.sum').text(numberToCurrency(total))
       
       total = 0
