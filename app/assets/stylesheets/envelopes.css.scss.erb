@@ -367,20 +367,24 @@ $jquery-ui-border-radius: 0;
     list-style: none;
   }
   
-  form > ul > li {
+  form > ul {
+    padding-bottom: 15px;
     
-    > table .name {
-      padding-left: 3px;
-    }
+    > li {
     
-    > ul > li {
       > table .name {
-        padding-left: 28px;
+        padding-left: 3px;
       }
     
       > ul > li {
         > table .name {
-          padding-left: 53px;
+          padding-left: 28px;
+        }
+    
+        > ul > li {
+          > table .name {
+            padding-left: 53px;
+          }
         }
       }
     }
