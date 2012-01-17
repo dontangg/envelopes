@@ -14,7 +14,7 @@
     </tr>
   </table>
   <ul>
-    <%= render partial: 'rules/rule', collection: @rules, locals: {all_envelopes: @all_envelopes} %>
+    <%= render partial: 'rules/rule', collection: @rules, locals: {envelope_options_for_select: @envelope_options_for_select} %>
   </ul>
   <p class='autosave-status'></p>
 </section>
@@ -40,7 +40,7 @@
     </div>
     <div class="field amount">
       <%= f.label :envelope_id, 'Envelope:' %>
-      <%= f.collection_select(:envelope_id, @all_envelopes, :id, :full_name) %>
+      <%= f.select :envelope_id, @envelope_options_for_select %>
     </div>
     <div class='actions'>
       <a href='javascript:void(0)'>Cancel</a>

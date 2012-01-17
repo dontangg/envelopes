@@ -17,7 +17,7 @@
     </h1>
   </header>
 
-  <%= render partial: 'transactions/list_transactions', locals: { start_date: @start_date, end_date: @end_date, envelope: @envelope, all_envelopes: @all_envelopes, transactions: @transactions, show_transfers: @show_transfers } %>
+  <%= render partial: 'transactions/list_transactions', locals: { start_date: @start_date, end_date: @end_date, envelope: @envelope, transactions: @transactions, show_transfers: @show_transfers, envelope_options_for_select: @envelope_options_for_select } %>
 
 </section>
 <section id='envelope_aside'>

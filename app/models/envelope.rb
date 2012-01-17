@@ -31,23 +31,15 @@ class Envelope < ActiveRecord::Base
 
   def full_name(all_envelopes = nil)
     return @full_name if @full_name
-    
-    get_envelope = lambda do |envelope_id|
-      if envelope_id
-        if all_envelopes
-          all_envelopes.select {|envelope| envelope.id == envelope_id}.first
-        else
-          Envelope.find(envelope_id)
-        end
-      end
-    end
 
-    name = nil
-    envelope = self
-    while envelope
-      name = ": #{name}" if name
-      name = envelope.name + name.to_s
-      envelope = get_envelope.call(envelope.parent_envelope_id)
+    name = if parent_envelope_id.nil?
+      self.name
+    else
+      parent_envelope = all_envelopes ? all_envelopes.select {|envelope| envelope.id == self.parent_envelope_id}.first : Envelope.find(self.parent_envelope_id)
+    
+      parent_full_name = parent_envelope.full_name(all_envelopes)
+
+      "#{parent_full_name}: #{self.name}"
     end
 
     @full_name = name
@@ -70,7 +62,7 @@ class Envelope < ActiveRecord::Base
   end
 
   def amount_spent_between(start_date = Date.today.year, end_date = Date.today.month)
-    where_clause = Transaction.arel_table[:amount].gt(0)
+    where_clause = Transaction.arel_table[:amount].lt(0)
       .and(Transaction.arel_table[:posted_at].gteq(start_date))
       .and(Transaction.arel_table[:posted_at].lteq(end_date))
     all_transactions.where(where_clause).sum(:amount)
