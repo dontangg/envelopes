@@ -2,7 +2,7 @@
   <%= content_tag_for :tr, transaction, class: cycle("", "alt") do %>
     <td class='posted-at'><%= transaction.posted_at.strftime('%b %d') %></td>
     <td class='payee'><%= f.text_field :payee, title: transaction.original_payee, 'data-saved-value' => transaction.payee %></td>
-    <td class='envelope'><%= f.collection_select :envelope_id, all_envelopes, :id, :full_name, {}, 'data-saved-value' => transaction.envelope_id %></td>
+    <td class='envelope'><%= f.select :envelope_id, envelope_options_for_select, {}, 'data-saved-value' => transaction.envelope_id %></td>
     <td class='amount'>
       <% if transaction.associated_transaction_id.nil? %>
         <%= number_to_currency(transaction.amount) %>

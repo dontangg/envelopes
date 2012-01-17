@@ -3,7 +3,9 @@ class RulesController < ApplicationController
     @new_rule = Rule.new
     
     @rules = Rule.owned_by(current_user_id)
-    @all_envelopes = Envelope.owned_by(current_user_id).sort
+    
+    all_envelopes = Envelope.owned_by(current_user_id).sort
+    @envelope_options_for_select = all_envelopes.map {|envelope| [envelope.full_name(all_envelopes), envelope.id] }
   end
 
   def create
