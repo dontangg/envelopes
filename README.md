@@ -10,5 +10,6 @@ If you want to read more about this, read here: [http://blog.donwilson.net/2010/
 
 This site will only run on 1.9.2 or higher.
 
-1 Run `bundle`
-2 Run `foreman start` (or `rails s` if you're on Windows)
+1. Run `bundle`
+2. Run `foreman start` (or `rails s` if you're on Windows)
+3. Open `localhost:3000` in your browser
