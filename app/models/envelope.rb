@@ -13,6 +13,8 @@ class Envelope < ActiveRecord::Base
   has_many :transactions
   
   serialize :expense, Expense
+
+  attr_accessor :suggested_amount
   
   # This overrides the default to_param method that just returns id
   # This causes our find method to still work because find calls to_i() on it which will just return the id
@@ -137,5 +139,67 @@ class Envelope < ActiveRecord::Base
     all_envelopes.sort! {|e1, e2| e1.full_name <=> e2.full_name }
 
     envelopes
+  end
+
+  def self.calculate_suggestions(organized_envelopes, current_envelope = nil)
+    if current_envelope.nil?
+      organized_envelopes[nil].each {|envelope| calculate_suggestions(organized_envelopes, envelope) }
+    else
+      
+      # See if this envelope contains other envelopes
+      if organized_envelopes[current_envelope.id].blank?
+        if current_envelope.expense.nil?
+          current_envelope.suggested_amount = 0
+        else
+          if current_envelope.expense.frequency == :monthly
+            # If it is a monthly envelope, suggest the full amount
+            current_envelope.suggested_amount = current_envelope.expense.amount || 0
+          else
+            if current_envelope.expense.occurs_on.nil?
+              # If it is a yearly envelope without a date, suggest the full amount / 12
+              current_envelope.suggested_amount = (current_envelope.expense.amount || 0) / 12
+            else
+              # If it is a yearly envelope with a date, complicate :)
+              if current_envelope.suggested_amount.nil?
+                # Get all the envelopes with the same parent that are also yearly with a date
+                yearlies = []
+                organized_envelopes[current_envelope.id].each do |envelope|
+                  if envelope.expense.try(:frequency) == :yearly && envelope.expense.occurs_on.present?
+                    months = envelope.expense.month
+                    months += 12 if envelope.expense.month < Date.today.month
+                    months -= Date.today.month - 1
+                    yearlies << {
+                      sort_by_key: "%02d%02d" % [months, envelope.expense.day],
+                      number_of_months_before_due: months
+                      envelope: envelope
+                    }
+                  end
+                end
+
+                # Order the envelopes by which is due next
+                yearlies = yearlies.sort {|a, b| a.sort_by_key <=> b.sort_by_key }
+
+                # Figure out how much to distribute between all these envelopes
+                # For each envelope:
+                # * Add up all the envelope amounts up to the current envelope
+                # * Divide by twelve and take this number if is the highest so far
+
+                # Take that amount and suggest it for the first envelope due
+                # Take any extra and suggest it for the next envelope, etc.
+
+                current_envelope.suggested_amount = -1
+              end
+            end
+          end
+        end
+      else
+        # If the envelope has other envelopes, it can't have an expense, so its suggestion is the sum of its children's suggestions
+        current_envelope.suggested_amount = organized_envelopes[current_envelope.id].inject(0) do |sum, child_envelope|
+          sum + calculate_suggestions(organized_envelopes, child_envelope)
+        end
+      end
+
+      current_envelope.suggested_amount
+    end
   end
 end
