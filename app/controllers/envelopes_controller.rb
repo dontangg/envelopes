@@ -37,6 +37,7 @@ class EnvelopesController < ApplicationController
   
   def fill
     all_envelopes = Envelope.owned_by(current_user_id).with_amounts
+    Envelope.add_funded_this_month(all_envelopes, current_user_id)
     
     @organized_envelopes = Envelope.organize(all_envelopes)
   end

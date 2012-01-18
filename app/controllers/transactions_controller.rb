@@ -17,7 +17,7 @@ class TransactionsController < ApplicationController
   end
   
   def update_all
-    # If you do want to do this, make sure you remove the dollar sign so that it doesn't just save zeroes
+    # If you do want to do this, make sure you remove the dollar sign from the amount so that it doesn't just save zeroes
     #Transaction.update params[:transaction].keys, params[:transaction].values if params[:transaction]
 
     respond_to do |format|
@@ -29,6 +29,8 @@ class TransactionsController < ApplicationController
         raise CanCan::AccessDenied.new("Not authorized!", :read, Envelope) unless @envelope
 
         @organized_envelopes = Envelope.organize(@all_envelopes)
+        
+        @envelope_options_for_select = @all_envelopes.map {|envelope| [envelope.full_name(@all_envelopes), envelope.id] }
 
         @start_date = Date.parse(params[:start_date]) || Date.today - 1.month
         @end_date = Date.parse(params[:end_date]) || Date.today

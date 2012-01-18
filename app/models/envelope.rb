@@ -46,10 +46,15 @@ class Envelope < ActiveRecord::Base
   end
   
   def amount_funded_this_month
-    amount_funded_between(Date.today.beginning_of_month, Date.today.end_of_month)
+    @amount_funded_this_month ||= amount_funded_between(Date.today.beginning_of_month, Date.today.end_of_month)
+  end
+  
+  # This method is just to be able to populate 
+  def amount_funded_this_month=(amount)
+    @amount_funded_this_month = amount
   end
 
-  def amount_funded_between(start_date = Date.today.year, end_date = Date.today.month)
+  def amount_funded_between(start_date = Date.today.beginning_of_month, end_date = Date.today.end_of_month)
     where_clause = Transaction.arel_table[:amount].gt(0)
       .and(Transaction.arel_table[:posted_at].gteq(start_date))
       .and(Transaction.arel_table[:posted_at].lteq(end_date))
@@ -61,18 +66,13 @@ class Envelope < ActiveRecord::Base
     amount_spent_between(Date.today.beginning_of_month, Date.today.end_of_month)
   end
 
-  def amount_spent_between(start_date = Date.today.year, end_date = Date.today.month)
+  def amount_spent_between(start_date = Date.today.beginning_of_month, end_date = Date.today.end_of_month)
     where_clause = Transaction.arel_table[:amount].lt(0)
       .and(Transaction.arel_table[:posted_at].gteq(start_date))
       .and(Transaction.arel_table[:posted_at].lteq(end_date))
     all_transactions.where(where_clause).sum(:amount)
   end
   memoize :amount_spent_between
-
-  def all_transactions(organized_envelopes = nil)
-    all_child_envelope_ids = Envelope.all_child_envelope_ids(self.id, organized_envelopes) << self.id
-    Transaction.where(envelope_id: all_child_envelope_ids)
-  end
   
   # A chainable scope that also returns the amount in the envelope
   def self.with_amounts
@@ -87,6 +87,31 @@ class Envelope < ActiveRecord::Base
     select([et[Arel.star], aggregation])
       .joins(Arel::Nodes::OuterJoin.new(tt, Arel::Nodes::On.new(et[:id].eq(tt[:envelope_id]))))
       .group(envelopes_columns)
+  end
+  
+  def self.add_funded_this_month(envelopes, user_id)
+    et = Envelope.arel_table
+    tt = Transaction.arel_table
+    
+    envelopes_columns = Envelope.column_names.map {|column_name| et[column_name.to_sym] }
+    
+    sum_function = Arel::Nodes::NamedFunction.new('SUM', [tt[:amount]])
+    aggregation = Arel::Nodes::NamedFunction.new('COALESCE', [sum_function, 0], 'total_amount')
+    
+    envelopes2 = select([et[:id], aggregation])
+      .joins(Arel::Nodes::OuterJoin.new(tt, Arel::Nodes::On.new(et[:id].eq(tt[:envelope_id]))))
+      .where(tt[:amount].gt(0).and(tt[:posted_at].gteq(Date.today.beginning_of_month)).and(et[:user_id].eq(user_id)))
+      .group([et[:id]])
+    
+    envelopes.each do |env|
+      env2 = envelopes2.select {|envelope| envelope.id == env.id}.first
+      env.amount_funded_this_month = env2.nil? ? 0 : env2.total_amount
+    end
+  end
+
+  def all_transactions(organized_envelopes = nil)
+    all_child_envelope_ids = Envelope.all_child_envelope_ids(self.id, organized_envelopes) << self.id
+    Transaction.where(envelope_id: all_child_envelope_ids)
   end
   
   def self.all_child_envelope_ids(envelope_id, organized_envelopes = nil)
