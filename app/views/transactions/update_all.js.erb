@@ -1,4 +1,4 @@
-var html = "<%= escape_javascript render(partial: 'transactions/list_transactions', locals: { start_date: @start_date, end_date: @end_date, envelope: @envelope, all_envelopes: @all_envelopes, transactions: @transactions, show_transfers: @show_transfers }) %>"
+var html = "<%= escape_javascript render(partial: 'transactions/list_transactions', locals: { start_date: @start_date, end_date: @end_date, envelope: @envelope, envelope_options_for_select: @envelope_options_for_select, transactions: @transactions, show_transfers: @show_transfers }) %>"
 
 $('#update_all_transactions').replaceWith(html);
 setupTransactionsList();
