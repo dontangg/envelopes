@@ -40,6 +40,7 @@ class EnvelopesController < ApplicationController
     Envelope.add_funded_this_month(all_envelopes, current_user_id)
     
     @organized_envelopes = Envelope.organize(all_envelopes)
+    Envelope.calculate_suggestions(@organized_envelopes)
   end
 
 end

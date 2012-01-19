@@ -12,7 +12,9 @@
       </td>
       <td class='amount balance'><%= number_to_currency(envelope.inclusive_total_amount(organized_envelopes)) %></td>
       <td class='amount budget'><%= number_to_currency(envelope.expense.try(:amount) || 0) %></td>
-      <td class='amount to-fund' title='Already funded <%= number_to_currency(envelope.amount_funded_this_month) %> this month.'></td>
+      <td class='amount to-fund' title='Already funded <%= number_to_currency(envelope.amount_funded_this_month) %> this month.'>
+        <%= number_to_currency(envelope.suggested_amount) %>
+      </td>
       <% if organized_envelopes[envelope.id].empty? %>
         <td class='amount input'>
           <%= text_field_tag "fill_envelope_#{envelope.id}", number_to_currency(0) %>
