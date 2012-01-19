@@ -1,5 +1,12 @@
 class Expense
-  attr_accessor :amount
+
+  def amount
+    @amount || 0
+  end
+  
+  def amount=(new_amount)
+    @amount = new_amount
+  end
 
   # Can be either :yearly or :monthly
   attr_accessor :frequency
