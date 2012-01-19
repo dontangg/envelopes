@@ -153,11 +153,11 @@ class Envelope < ActiveRecord::Base
         else
           if current_envelope.expense.frequency == :monthly
             # If it is a monthly envelope, suggest the full amount
-            current_envelope.suggested_amount = current_envelope.expense.amount || 0
+            current_envelope.suggested_amount = current_envelope.expense.amount
           else
             if current_envelope.expense.occurs_on.nil?
               # If it is a yearly envelope without a date, suggest the full amount / 12
-              current_envelope.suggested_amount = (current_envelope.expense.amount || 0) / 12
+              current_envelope.suggested_amount = current_envelope.expense.amount / 12
             else
               # If it is a yearly envelope with a date, complicate :)
               if current_envelope.suggested_amount.nil?
@@ -170,24 +170,37 @@ class Envelope < ActiveRecord::Base
                     months -= Date.today.month - 1
                     yearlies << {
                       sort_by_key: "%02d%02d" % [months, envelope.expense.day],
-                      number_of_months_before_due: months
+                      number_of_months_before_due: months,
                       envelope: envelope
                     }
                   end
                 end
 
                 # Order the envelopes by which is due next
-                yearlies = yearlies.sort {|a, b| a.sort_by_key <=> b.sort_by_key }
+                yearlies = yearlies.sort {|a, b| a[:sort_by_key] <=> b[:sort_by_key] }
 
                 # Figure out how much to distribute between all these envelopes
                 # For each envelope:
                 # * Add up all the envelope amounts up to the current envelope
-                # * Divide by twelve and take this number if is the highest so far
+                # * Divide by the number of months left and take this number if is the highest so far
+                total_amount = 0
+                max_monthly = 0
+                yearlies.each do |yearly|
+                  total_amount += yearly[:envelope].expense.amount - yearly[:envelope].total_amount + yearly[:envelope].amount_funded_this_month
+                  max_monthly = [max_monthly, total_amount / yearly[:number_of_months_before_due]].max
+                end
 
                 # Take that amount and suggest it for the first envelope due
                 # Take any extra and suggest it for the next envelope, etc.
-
-                current_envelope.suggested_amount = -1
+                monthly_amount_left = max_monthly
+                yearlies.each do |yearly|
+                  amount_left = [yearly[:envelope].expense.amount - yearly[:envelope].total_amount, 0].max
+                  suggested_amount = [amount_left, monthly_amount_left].min
+                  
+                  monthly_amount_left -= suggested_amount
+                  yearly[:envelope].suggested_amount = suggested_amount
+                end
+                
               end
             end
           end
