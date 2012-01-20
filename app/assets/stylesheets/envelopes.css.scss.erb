@@ -42,6 +42,26 @@
     column-count:         4;
     column-gap:           10px; */
     
+    // To prevent jQuery/masonry.js from making the box around system envelopes look funny during transition
+    overflow-x: visible !important;
+    overflow-y: visible !important;
+    
+    .system {
+      background: #f1f1f1;
+      margin: 0 -10px 20px;
+      padding: 5px 10px;
+      
+      ul {
+        border: 0;
+        
+        a:hover {
+          padding: 3px 6px;
+          margin: 0 -6px;
+          background: #fff;
+        }
+      }
+    }
+    
     > li {
       /* For CSS columns
       display: inline-block;

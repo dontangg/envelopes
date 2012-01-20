@@ -5,7 +5,7 @@
 // the compiled file.
 //
 //= require jquery
-//= require jquery.masonry.min
+//= require jquery.masonry
 //= require jquery-ui-1.8.16.custom.min
 //= require jquery.select-to-autocomplete
 //= require jquery.select-on-focus

@@ -25,6 +25,10 @@ class Envelope < ActiveRecord::Base
   def total_amount
     @total_amount ||= read_attribute(:total_amount) || transactions.sum(:amount)
   end
+  
+  def total_amount=(new_amount)
+    @total_amount = new_amount
+  end
 
   def inclusive_total_amount(organized_envelopes = nil)
     children = organized_envelopes.nil? ? self.child_envelopes : organized_envelopes[id]
@@ -127,14 +131,25 @@ class Envelope < ActiveRecord::Base
   
   # Returns a Hash with all the envelopes organized. eg:
   #
+  #   'sys' => [array of income and unassigned envelopes]
   #   nil   => [array of all envelopes with parent_envelope_id = nil]
   #   1     => [array of envelopes with parent_envelope_id = 1]
   def self.organize(all_envelopes)
+    total_amount = 0
     envelopes = Hash.new { |hash, key| hash[key] = [] }
     all_envelopes.each do |envelope|
+      total_amount += envelope.total_amount
       envelope.full_name(all_envelopes) # Have each envelope figure out and memoize its full_name
-      envelopes[envelope.parent_envelope_id].push(envelope)
+      if envelope.income || envelope.unassigned
+        envelopes['sys'] << envelope
+      else
+        envelopes[envelope.parent_envelope_id] << envelope
+      end
     end
+    
+    env = Envelope.new(name: 'All Transactions', total_amount: total_amount)
+    env.id = 'all'
+    envelopes['sys'].unshift(env)
     
     all_envelopes.sort! {|e1, e2| e1.full_name <=> e2.full_name }
 
