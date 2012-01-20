@@ -115,8 +115,15 @@ class Envelope < ActiveRecord::Base
     end
   end
 
-  def all_transactions(organized_envelopes = nil)
-    all_child_envelope_ids = Envelope.all_child_envelope_ids(self.id, organized_envelopes) << self.id
+  def all_transactions(organized_envelopes)
+    if self.id == 0 # All Transactions envelope
+      all_child_envelope_ids = []
+      organized_envelopes[nil].each do |envelope|
+        all_child_envelope_ids.concat Envelope.all_child_envelope_ids(envelope.id, organized_envelopes)
+      end
+    else
+      all_child_envelope_ids = Envelope.all_child_envelope_ids(self.id, organized_envelopes) << self.id
+    end
     Transaction.where(envelope_id: all_child_envelope_ids)
   end
   
@@ -127,6 +134,13 @@ class Envelope < ActiveRecord::Base
       all_child_ids << all_child_envelope_ids(child.id, organized_envelopes)
     end
     all_child_ids.flatten
+  end
+
+  def self.all_envelope(total_amount = nil)
+    env = Envelope.new(name: 'All Transactions')
+    env.total_amount = total_amount if total_amount
+    env.id = 0
+    env
   end
   
   # Returns a Hash with all the envelopes organized. eg:
@@ -147,9 +161,7 @@ class Envelope < ActiveRecord::Base
       end
     end
     
-    env = Envelope.new(name: 'All Transactions', total_amount: total_amount)
-    env.id = 'all'
-    envelopes['sys'].unshift(env)
+    envelopes['sys'].unshift(all_envelope(total_amount))
     
     all_envelopes.sort! {|e1, e2| e1.full_name <=> e2.full_name }
 
