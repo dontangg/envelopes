@@ -47,4 +47,19 @@ class EnvelopesController < ApplicationController
     Envelope.calculate_suggestions(@organized_envelopes)
   end
 
+  def perform_fill
+    available_cash_envelope = Envelope.owned_by(current_user_id).income.first
+
+    params.each do |key, value|
+      match = /fill_envelope_(\d+)/.match(key)
+      if match && match.length == 2
+        to_envelope = Envelope.find(match[1])
+        authorize! :update, to_envelope
+        
+      end
+    end
+
+    redirect_to envelopes_url
+  end
+
 end
