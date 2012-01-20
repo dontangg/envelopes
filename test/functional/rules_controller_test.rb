@@ -18,7 +18,7 @@ class RulesControllerTest < ActionController::TestCase
     
     assert_not_nil assigns(:new_rule)
     assert_not_nil assigns(:rules)
-    assert_not_nil assigns(:all_envelopes)
+    assert_not_nil assigns(:envelope_options_for_select)
   end
 
   test "should create a new rule" do
@@ -35,7 +35,7 @@ class RulesControllerTest < ActionController::TestCase
     end
     
     assert_not_nil assigns(:rule)
-    assert_not_nil assigns(:all_envelopes)
+    assert_not_nil assigns(:envelope_options_for_select)
   end
 
   test "should update a rule" do
