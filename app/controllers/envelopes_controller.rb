@@ -9,12 +9,16 @@ class EnvelopesController < ApplicationController
     # An array of all envelopes, used by transaction partial to create envelopes dropdown
     @all_envelopes = Envelope.owned_by(current_user_id).with_amounts
 
-    # The envelope the user is currently looking at
-    @envelope = @all_envelopes.select {|envelope| envelope.id == params[:id].to_i }.first
-    raise CanCan::AccessDenied.new("Not authorized!", :read, Envelope) unless @envelope
-    
     # A Hash with all the envelopes organized by parent_envelope_id
     @organized_envelopes = Envelope.organize(@all_envelopes)
+
+    # The envelope the user is currently looking at
+    if params[:id].to_i == 0
+      @envelope = @organized_envelopes['sys'].select {|envelope| envelope.id == 0 }.first
+    else
+      @envelope = @all_envelopes.select {|envelope| envelope.id == params[:id].to_i }.first
+      raise CanCan::AccessDenied.new("Not authorized!", :read, Envelope) unless @envelope
+    end
 
     @envelope_options_for_select = @all_envelopes.map {|envelope| [envelope.full_name(@all_envelopes), envelope.id] }
     
