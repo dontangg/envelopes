@@ -5,6 +5,7 @@ Envelopes::Application.routes.draw do
   resources :envelopes, only: [:index, :show] do
     collection do
       get 'fill'
+      post 'fill' => 'envelopes#perform_fill', as: :perform_fill
     end
   end
 
