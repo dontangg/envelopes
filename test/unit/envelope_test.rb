@@ -91,7 +91,7 @@ class EnvelopeTest < ActiveSupport::TestCase
   end
   
   test "all_transactions returns all transactions for that envelope and all children" do
-    sql = envelopes(:gifts).all_transactions.to_sql
+    sql = envelopes(:gifts).all_transactions(nil).to_sql
     assert sql.include?(envelopes(:gifts).id.to_s)
     assert sql.include?(envelopes(:holidays).id.to_s)
     assert sql.include?(envelopes(:christmas).id.to_s)

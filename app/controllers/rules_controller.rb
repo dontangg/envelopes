@@ -13,7 +13,8 @@ class RulesController < ApplicationController
     @rule.user_id = current_user_id
     
     if @rule.save
-      @all_envelopes = Envelope.owned_by(current_user_id).sort
+      all_envelopes = Envelope.owned_by(current_user_id).sort
+      @envelope_options_for_select = all_envelopes.map {|envelope| [envelope.full_name(all_envelopes), envelope.id] }
     else
       render json: @rule.errors, status: :unprocessable_entity
     end

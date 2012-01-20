@@ -1,6 +1,6 @@
 <% url = Envelopes::Application.routes.url_helpers %>
 
-newItem = $("<%= escape_javascript(render partial: 'rules/rule', locals: {rule: @rule, all_envelopes: @all_envelopes}, status: :created) %>");
+newItem = $("<%= escape_javascript(render partial: 'rules/rule', locals: {rule: @rule, envelope_options_for_select: @envelope_options_for_select}, status: :created) %>");
 newItem.hide();
 
 $('#rules ul').append(newItem);
