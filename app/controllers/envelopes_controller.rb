@@ -45,6 +45,8 @@ class EnvelopesController < ApplicationController
     
     @organized_envelopes = Envelope.organize(all_envelopes)
     Envelope.calculate_suggestions(@organized_envelopes)
+    
+    @available_cash_envelope = @organized_envelopes['sys'].select {|envelope| envelope.income }.first
   end
 
   def perform_fill
@@ -53,9 +55,16 @@ class EnvelopesController < ApplicationController
     params.each do |key, value|
       match = /fill_envelope_(\d+)/.match(key)
       if match && match.length == 2
-        to_envelope = Envelope.find(match[1])
-        authorize! :update, to_envelope
+        amount = value.scan(/[-0-9.]+/).join.to_f
         
+        if amount > 0
+          to_envelope = Envelope.find(match[1])
+          authorize! :update, to_envelope
+        
+          from_txn_payee = "Filled envelope: #{to_envelope.full_name}"
+          to_txn_payee = "#{to_envelope.full_name} envelope filled"
+          Transaction.create_transfer(amount, available_cash_envelope.id, to_envelope.id, from_txn_payee, to_txn_payee)
+        end
       end
     end
 

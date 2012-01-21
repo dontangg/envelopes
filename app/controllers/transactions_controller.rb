@@ -29,10 +29,10 @@ class TransactionsController < ApplicationController
         @organized_envelopes = Envelope.organize(@all_envelopes)
 
         # The envelope the user is currently looking at
-        if params[:id].to_i == 0
+        if params[:envelope_id].to_i == 0
           @envelope = @organized_envelopes['sys'].select {|envelope| envelope.id == 0 }.first
         else
-          @envelope = @all_envelopes.select {|envelope| envelope.id == params[:id].to_i }.first
+          @envelope = @all_envelopes.select {|envelope| envelope.id == params[:envelope_id].to_i }.first
           raise CanCan::AccessDenied.new("Not authorized!", :read, Envelope) unless @envelope
         end
         
@@ -86,11 +86,8 @@ class TransactionsController < ApplicationController
       authorize! :update, to_envelope
       
       from_txn_payee = "Transferred #{number_to_currency(amount)} to #{to_envelope.full_name}"
-      from_txn = Transaction.create posted_at: Date.today, payee: from_txn_payee, original_payee: from_txn_payee, envelope_id: from_envelope.id, amount: -amount
       to_txn_payee = "Transferred #{number_to_currency(amount)} from #{from_envelope.full_name}"
-      to_txn = Transaction.create posted_at: Date.today, payee: to_txn_payee, original_payee: to_txn_payee, envelope_id: to_envelope.id, amount: amount, associated_transaction_id: from_txn.id
-      from_txn.associated_transaction_id = to_txn.id
-      from_txn.save
+      Transaction.create_transfer(amount, from_envelope.id, to_envelope.id, from_txn_payee, to_txn_payee)
 
       current_envelope = case params[:current_envelope_id].to_i
       when from_envelope.id

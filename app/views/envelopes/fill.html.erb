@@ -31,8 +31,8 @@
   </header>
   <table>
     <tr>
-      <th>Available Cash</th>
-      <td class='amount available'>$1,000.00</td>
+      <th><%= @available_cash_envelope.name %></th>
+      <td class='amount available'><%= number_to_currency(@available_cash_envelope.total_amount) %></td>
     </tr>
     <tr>
       <th>Allocation</th>
@@ -40,7 +40,7 @@
     </tr>
     <tr class='total'>
       <th>Remaining</th>
-      <td class='amount remaining'>$1,000.00</td>
+      <td class='amount remaining'><%= number_to_currency(@available_cash_envelope.total_amount) %></td>
     </tr>
   </table>
 </section>
