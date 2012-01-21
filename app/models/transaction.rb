@@ -35,6 +35,14 @@ class Transaction < ActiveRecord::Base
     end
   end
   
+  def self.create_transfer(amount, from_envelope_id, to_envelope_id, from_txn_payee, to_txn_payee)
+    from_txn = Transaction.create posted_at: Date.today, payee: from_txn_payee, original_payee: from_txn_payee, envelope_id: from_envelope_id, amount: -amount
+    to_txn = Transaction.create posted_at: Date.today, payee: to_txn_payee, original_payee: to_txn_payee, envelope_id: to_envelope_id, amount: amount, associated_transaction_id: from_txn.id
+
+    from_txn.associated_transaction_id = to_txn.id
+    from_txn.save
+  end
+  
   def strip_payee
     payee.strip!
   end

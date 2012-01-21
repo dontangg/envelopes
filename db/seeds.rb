@@ -63,7 +63,6 @@ when "development"
   Transaction.create payee: "Wal-Mart", original_payee: '20397235 WALMART AS2385 SPRINGVILLE, UT', unique_id: 'WALMART-3', posted_at: Date.today - 5.days, amount: -25.64, envelope: groceries_envelope
   Transaction.create payee: "Target", original_payee: '20397235 TARGET AS2385 OREM, UT', unique_id: 'TARGET-3', posted_at: Date.today - 4.days, amount: -39.29, envelope: groceries_envelope
   Transaction.create payee: "Wendy's", original_payee: '20397235 WENDYS AS2385 OREM, UT', unique_id: 'WENDYS-3', posted_at: Date.today - 3.days, amount: -4.56, envelope: eating_out_envelope
-  Transaction.create payee: "Funded envelope", original_payee: 'Funded envelope', posted_at: Date.today - 1.days, amount: 100, envelope: eating_out_envelope
   
 
   puts "-- creating rules"
