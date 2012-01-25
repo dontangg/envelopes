@@ -5,7 +5,7 @@ available_cash:
   user: jim
   income: true
   unassigned: false
-  expense: 
+  expense:
 
 unassigned:
   name: Unassigned
@@ -27,7 +27,7 @@ fuel:
   income: false
   unassigned: false
   parent_envelope: auto
-  expense:
+  expense: <%= Expense.new(amount: 120.0, frequency: :monthly).to_yaml.inspect %>
 
 food:
   name: Food
@@ -65,7 +65,7 @@ christmas:
   income: false
   unassigned: false
   parent_envelope: holidays
-  expense:
+  expense: <%= Expense.new(amount: 800.0, frequency: :yearly, occurs_on: { month: 12, day: 25 }).to_yaml.inspect %>
 
 valentines:
   name: "Valentine's Day"

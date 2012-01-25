@@ -1,12 +1,11 @@
 class Envelope < ActiveRecord::Base
-  extend ActiveSupport::Memoizable
   
   default_scope order(arel_table[:name])
   scope :owned_by, lambda { |user_id| where(user_id: user_id) }
   scope :income, where(income: true)
   scope :unassigned, where(unassigned: true)
   scope :generic, where(income: false, unassigned: false)
-  
+
   belongs_to :user
   belongs_to :parent_envelope, class_name: 'Envelope', foreign_key: 'parent_envelope_id'
   has_many :child_envelopes, class_name: 'Envelope', foreign_key: 'parent_envelope_id'
@@ -66,7 +65,6 @@ class Envelope < ActiveRecord::Base
       .and(Transaction.arel_table[:posted_at].lteq(end_date))
     all_transactions.where(where_clause).sum(:amount)
   end
-  memoize :amount_funded_between
 
   def amount_spent_this_month
     amount_spent_between(Date.today.beginning_of_month, Date.today.end_of_month)
@@ -78,7 +76,6 @@ class Envelope < ActiveRecord::Base
       .and(Transaction.arel_table[:posted_at].lteq(end_date))
     all_transactions.where(where_clause).sum(:amount)
   end
-  memoize :amount_spent_between
   
   # A chainable scope that also returns the amount in the envelope
   def self.with_amounts
@@ -115,8 +112,8 @@ class Envelope < ActiveRecord::Base
     end
   end
 
-  def all_transactions(organized_envelopes)
-    if self.id == 0 # All Transactions envelope
+  def all_transactions(organized_envelopes = nil)
+    if self.id == 0 && organized_envelopes.present? # All Transactions envelope
       all_child_envelope_ids = []
       organized_envelopes[nil].each do |envelope|
         all_child_envelope_ids.concat Envelope.all_child_envelope_ids(envelope.id, organized_envelopes)
@@ -235,7 +232,7 @@ class Envelope < ActiveRecord::Base
       else
         # If the envelope has other envelopes, it can't have an expense, so its suggestion is the sum of its children's suggestions
         current_envelope.suggested_amount = organized_envelopes[current_envelope.id].inject(0) do |sum, child_envelope|
-          sum + calculate_suggestions(organized_envelopes, child_envelope)
+          sum + (calculate_suggestions(organized_envelopes, child_envelope) || 0)
         end
       end
 
