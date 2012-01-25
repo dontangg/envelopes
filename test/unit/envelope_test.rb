@@ -97,4 +97,10 @@ class EnvelopeTest < ActiveSupport::TestCase
     assert sql.include?(envelopes(:christmas).id.to_s)
     assert sql.include?(envelopes(:valentines).id.to_s)
   end
+
+  test "amount_funded_this_month returns a sum of the positive transaction amounts" do
+    amount = envelopes(:groceries).amount_funded_this_month.to_f
+
+    assert_equal 100.0, amount
+  end
 end

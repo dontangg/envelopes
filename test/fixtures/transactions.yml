@@ -28,7 +28,7 @@ target:
   pending: false
 
 fund_groceries:
-  posted_at: 2011-12-09
+  posted_at: <%= Date.today %>
   payee: Funded envelope
   original_payee: Funded envelope
   amount: 100

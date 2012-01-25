@@ -39,7 +39,7 @@ class EnvelopesControllerTest < ActionController::TestCase
     assert_not_nil assigns(:envelope_options_for_select)
     assert_equal Date.today - 1.month, assigns(:start_date)
     assert_equal Date.today, assigns(:end_date)
-    assert_not_nil assigns(:show_transfers)
+    assert_nil assigns(:show_transfers)
     assert_not_nil assigns(:transactions)
   end
 
@@ -52,8 +52,17 @@ class EnvelopesControllerTest < ActionController::TestCase
   end
 
   test "should fill the envelopes with money" do
-    post :perform_fill
-    assert_response :success
+    auto_envelope = envelopes(:auto)
+    food_envelope = envelopes(:food)
+    
+    assert_difference("Transaction.count", 4) do
+      post :perform_fill, {
+        "fill_envelope_#{auto_envelope.id}" => '$1.23',
+        "fill_envelope_#{food_envelope.id}" => '$2.34'
+      }
+    end
+
+    assert_redirected_to controller: 'envelopes', action: 'index'
   end
 
 end
