@@ -187,13 +187,13 @@ class Envelope < ActiveRecord::Base
               if current_envelope.suggested_amount.nil?
                 # Get all the envelopes with the same parent that are also yearly with a date
                 yearlies = []
-                organized_envelopes[current_envelope.id].each do |envelope|
+                organized_envelopes[current_envelope.parent_envelope_id].each do |envelope|
                   if envelope.expense.try(:frequency) == :yearly && envelope.expense.occurs_on.present?
-                    months = envelope.expense.month
-                    months += 12 if envelope.expense.month < Date.today.month
+                    months = envelope.expense.occurs_on[:month]
+                    months += 12 if envelope.expense.occurs_on[:month] < Date.today.month
                     months -= Date.today.month - 1
                     yearlies << {
-                      sort_by_key: "%02d%02d" % [months, envelope.expense.day],
+                      sort_by_key: "%02d%02d" % [months, envelope.expense.occurs_on[:day]],
                       number_of_months_before_due: months,
                       envelope: envelope
                     }

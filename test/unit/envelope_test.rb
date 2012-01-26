@@ -103,4 +103,22 @@ class EnvelopeTest < ActiveSupport::TestCase
 
     assert_equal 100.0, amount
   end
+
+  test "calculate_suggestions should calculate predictable suggestions" do
+    jim = users(:jim)
+    all_envelopes = Envelope.owned_by(jim.id).with_amounts
+
+    organized_envelopes = Envelope.organize(all_envelopes)
+
+    Envelope.calculate_suggestions(organized_envelopes)
+
+    fuel_envelope = all_envelopes.select {|envelope| envelope.id == envelopes(:fuel).id }.first
+    auto_envelope = all_envelopes.select {|envelope| envelope.id == envelopes(:auto).id }.first
+    christmas_envelope = all_envelopes.select {|envelope| envelope.id == envelopes(:christmas).id }.first
+
+    assert_equal 120.0, fuel_envelope.suggested_amount
+    assert_equal 120.0, auto_envelope.suggested_amount
+    assert_equal 70.0, christmas_envelope.suggested_amount
+
+  end
 end
