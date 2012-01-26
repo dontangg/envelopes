@@ -2,7 +2,7 @@ Envelopes::Application.routes.draw do
 
   resources :rules, only: [:index, :create, :update, :destroy]
 
-  resources :envelopes, only: [:index, :show] do
+  resources :envelopes, only: [:index, :show, :create, :update] do
     collection do
       get 'fill'
       post 'fill' => 'envelopes#perform_fill', as: :perform_fill

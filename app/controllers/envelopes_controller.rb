@@ -71,4 +71,26 @@ class EnvelopesController < ApplicationController
     redirect_to envelopes_url
   end
 
+  def create
+    @envelope = Envelope.new(params[:envelope])
+    @envelope.user_id = current_user_id
+    
+    if @envelope.save
+
+    else
+      render json: @envelope.errors, status: :unprocessable_entity
+    end
+  end
+
+  def update
+    envelope = Envelope.find(params[:id])
+    authorize! :update, envelope
+
+    if envelope.update_attributes(params[:envelope])
+      head :ok
+    else
+      render json: envelope.errors, status: :unprocessable_entity
+    end
+  end
+
 end
