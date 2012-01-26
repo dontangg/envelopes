@@ -14,6 +14,20 @@ class Envelope < ActiveRecord::Base
   serialize :expense, Expense
 
   attr_accessor :suggested_amount
+
+  def initialize(args = nil)
+    # Make sure that the expense object is created correctly if it is passed as a Hash
+    args[:expense] = Expense.new(args[:expense]) if args && args[:expense]
+    super
+  end
+
+  def expense=(new_expense)
+    if new_expense.is_a?(Hash)
+      super(Expense.new(new_expense))
+    else
+      super
+    end
+  end
   
   # This overrides the default to_param method that just returns id
   # This causes our find method to still work because find calls to_i() on it which will just return the id

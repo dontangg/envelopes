@@ -1,11 +1,11 @@
 class Expense
 
   def amount
-    @amount || 0
+    @amount || 0.0
   end
   
   def amount=(new_amount)
-    @amount = new_amount
+    @amount = new_amount.to_f
   end
 
   # Can be either :yearly or :monthly
@@ -20,8 +20,8 @@ class Expense
 
   def initialize(attributes = nil)
     if attributes.respond_to?(:each_pair)
-      attributes.each do |attr_name, attr_value|
-        instance_variable_set("@#{attr_name}", attr_value)
+      attributes.each_pair do |attr_name, attr_value|
+        send("#{attr_name}=", attr_value)
       end
     end
   end

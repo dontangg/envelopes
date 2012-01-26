@@ -49,6 +49,24 @@ class EnvelopeTest < ActiveSupport::TestCase
 
     assert auto_envelope.child_envelopes.include?(fuel_envelope)
   end
+
+  test "initialize can accept a Hash for the expense" do
+    new_envelope = Envelope.new({
+      name: 'test',
+      user_id: 100,
+      expense: {
+        amount: 12.34,
+        occurs_on: 3,
+        frequency: :yearly
+      }
+    })
+
+    assert_not_nil new_envelope
+    assert_equal 'test', new_envelope.name
+    assert_not_nil new_envelope.expense
+    assert_equal 12.34, new_envelope.expense.amount
+    assert_equal :yearly, new_envelope.expense.frequency
+  end
   
   test "to_param returns id-name.parameterize" do
     envelope = envelopes(:available_cash)

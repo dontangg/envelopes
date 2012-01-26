@@ -43,6 +43,43 @@ class EnvelopesControllerTest < ActionController::TestCase
     assert_not_nil assigns(:transactions)
   end
 
+  test "should create an envelope" do
+    new_envelope_name = 'brand new envelope'
+
+    assert_difference("Envelope.count", 1) do
+      post :create, { envelope: {
+        name: new_envelope_name,
+        user_id: users(:jim).id,
+        expense: {
+          amount: 3.45,
+          occurs_on: 3,
+          frequency: :monthly
+        }
+      }}
+    end
+
+    new_envelope = Envelope.where(name: new_envelope_name).first
+
+    assert_not_nil new_envelope
+    assert_equal users(:jim).id, new_envelope.user_id
+    assert_not_nil new_envelope.expense
+    assert_equal 3.45, new_envelope.expense.amount
+  end
+
+  test "should update an envelope" do
+    put :update, {
+      id: envelopes(:fuel).id,
+      envelope: {
+        name: 'Fuel!',
+        expense: {
+          amount: 120.5
+        }
+      }
+    }
+    
+    assert_response :success
+  end
+
   test "should show envelopes to fill" do
     get :fill
     assert_response :success
