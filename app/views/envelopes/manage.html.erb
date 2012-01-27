@@ -8,13 +8,12 @@
   <table>
     <tr>
       <th class='name'><div>Name</div></th>
-      <th class='parent'><div>Parent</div></th>
       <th class='expense'><div>Expense</div></th>
       <th class='rule-actions'></th>
     </tr>
   </table>
   <ul>
-    <%= render partial: 'envelopes/envelope_for_edit', collection: @envelopes, as: :envelope, locals: {envelope_options_for_select: @envelope_options_for_select} %>
+    <%= render partial: 'envelopes/envelope_for_edit', collection: @organized_envelopes[nil], as: :envelope, locals: {indent: 0, organized_envelopes: @organized_envelopes} %>
   </ul>
   <p class='autosave-status'></p>
 </section>
@@ -34,8 +33,8 @@
       <%= f.text_field :name, placeholder: 'Groceries' %>
     </div>
     <div class="field">
-      <%= f.label :parent_envelope_id, 'Parent envelopes' %>
-      <%= f.text_field :parent_envelope_id, placeholder: 'Food' %>
+      <%= f.label :parent_envelope_id, 'Parent Envelope' %>
+      <%= f.select :parent_envelope_id, {} %>
     </div>
     <div class='actions'>
       <a href='javascript:void(0)'>Cancel</a>

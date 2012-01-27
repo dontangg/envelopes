@@ -49,6 +49,10 @@ cancelDatePicker = (event) ->
     source: "<%= CGI.unescape url.suggest_payee_transactions_path %>"
     minLength: 2
 
+###
+# On DOM Ready
+###
+
 $ ->
   $('#dashboard > ul').masonry
     itemSelector: '#dashboard > ul > li',
@@ -56,6 +60,10 @@ $ ->
     gutterWidth: 40,
     isAnimated: true
   
+  ###
+  # Show envelope
+  ###
+
   if $('#transactions_list').length > 0
     setupTransactionsList()
   
@@ -96,7 +104,47 @@ $ ->
     modal.find('input[type=text], input:not([type])]').selectOnFocus()
     modal.find('a').click ->
       hideModal()
+
+  ###
+  # Manage Envelopes
+  ###
+
+  #visibleIds = $('.indent-0, .indent-1').closest('li').map (i, item) ->
+  #  $(item).data('envelope-id').toString()
+  $('#manage_envelopes input[type=text], input:not([type])]').selectOnFocus()
+  $('#envelopes_aside .new').click ->
+    modal = showModal
+      content: '#new_envelope_modal'
+      width: 520
+      className: 'new-envelope-modal'
     
+    modal.find('form').on('ajax:beforeSend', ->
+      modal.find('.loading').show()
+    ).on('ajax:success', (event, data, status, xhr) ->
+      setAltRowClass()
+    ).on('ajax:error', (event, xhr, status, error) ->
+      try
+        errors = $.parseJSON(xhr.responseText)
+        errorMessage = "The envelope wasn't saved!<ul>"
+        for errorField of errors
+          errorMessage += "<li>" + errorField + " " + errors[errorField].join(' and ') + "</li>"
+        errorMessage += "</ul>"
+      catch ex
+        errorMessage = xhr.responseText
+      
+      showAlert errorMessage
+      modal.find('.loading').hide()
+    )
+    
+    modal.find('select').selectToAutocomplete()
+    modal.find('input[type=text], input:not([type])]').selectOnFocus()
+    modal.find('a').on 'click', ->
+      hideModal()
+
+  ###
+  # Fill Envelopes
+  ###
+
   $('#fill_envelopes input[type=text]')
     .selectOnFocus()
     .on 'keyup', ->

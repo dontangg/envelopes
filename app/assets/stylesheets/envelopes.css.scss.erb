@@ -436,7 +436,7 @@ $jquery-ui-border-radius: 0;
     .name {
       width: 39%;
     }
-    .balance, .budget, to-fund {
+    .balance, .budget, .to-fund {
       width: 15%;
     }
     .sum {
@@ -513,8 +513,15 @@ $jquery-ui-border-radius: 0;
       text-align: right;
       padding: 3px 0;
     }
-    .name, .parent {
+    .name {
       width: 33%;
+
+      &.indent-1 {
+        padding-left: 30px;
+      }
+      &.indent-2 {
+        padding-left: 50px;
+      }
     }
     
     th {
