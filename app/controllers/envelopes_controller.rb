@@ -76,7 +76,7 @@ class EnvelopesController < ApplicationController
     @envelope.user_id = current_user_id
     
     if @envelope.save
-
+      head :ok
     else
       render json: @envelope.errors, status: :unprocessable_entity
     end
