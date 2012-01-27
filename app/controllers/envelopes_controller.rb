@@ -93,4 +93,11 @@ class EnvelopesController < ApplicationController
     end
   end
 
+  def manage
+    @new_envelope = Envelope.new
+
+    @envelopes = Envelope.owned_by(current_user_id)
+    @envelope_options_for_select = @envelopes.map {|envelope| [envelope.full_name(@envelopes), envelope.id] }
+  end
+
 end

@@ -1,0 +1,45 @@
+<% title 'Manage Envelopes' %>
+
+<section id='manage_envelopes'>
+  <header>
+    <h1>Manage Envelopes</h1>
+  </header>
+  
+  <table>
+    <tr>
+      <th class='name'><div>Name</div></th>
+      <th class='parent'><div>Parent</div></th>
+      <th class='expense'><div>Expense</div></th>
+      <th class='rule-actions'></th>
+    </tr>
+  </table>
+  <ul>
+    <%= render partial: 'envelopes/envelope_for_edit', collection: @envelopes, as: :envelope, locals: {envelope_options_for_select: @envelope_options_for_select} %>
+  </ul>
+  <p class='autosave-status'></p>
+</section>
+
+<section id='envelopes_aside'>
+  <ul class='actions'>
+    <li><a href='javascript:void(0)' class='button new'>New Envelope</a></li>
+  </ul>
+</section>
+
+<script id='new_envelope_modal' type='template'>
+  <div class='loading'></div>
+  <h1>New Envelope</h1>
+  <%= form_for @new_envelope, remote: true do |f| %>
+    <div class="field">
+      <%= f.label :name, 'Name' %>
+      <%= f.text_field :name, placeholder: 'Groceries' %>
+    </div>
+    <div class="field">
+      <%= f.label :parent_envelope_id, 'Parent envelopes' %>
+      <%= f.text_field :parent_envelope_id, placeholder: 'Food' %>
+    </div>
+    <div class='actions'>
+      <a href='javascript:void(0)'>Cancel</a>
+      <%= f.submit 'Save', class: 'primary' %>
+    </div>
+  <% end %>
+</script>

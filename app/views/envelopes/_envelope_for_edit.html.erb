@@ -1,0 +1,11 @@
+<%= fields_for "envelope[]", envelope do |f| %>
+  <li<%= cycle("", " class='alt'") %> data-envelope-id='<%= envelope.id %>'>
+    <table>
+      <tr>
+        <td class='name'><%= f.text_field :name, 'data-saved-value' => envelope.name %></td>
+        <td class='parent'><%= f.text_field :parent_envelope_id, 'data-saved-value' => envelope.parent_envelope_id %></td>
+        <td class='rule-actions'><button class='destroy image-only' title='Remove this rule'></button></td>
+      </tr>
+    </table>
+  </li>
+<% end %>
