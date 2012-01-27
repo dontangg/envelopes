@@ -96,8 +96,10 @@ class EnvelopesController < ApplicationController
   def manage
     @new_envelope = Envelope.new
 
-    @envelopes = Envelope.owned_by(current_user_id)
-    @envelope_options_for_select = @envelopes.map {|envelope| [envelope.full_name(@envelopes), envelope.id] }
+    @all_envelopes = Envelope.owned_by(current_user_id)
+    @organized_envelopes = Envelope.organize(@all_envelopes)
+    @envelope_options_for_select = @all_envelopes.map {|envelope| [envelope.full_name(@all_envelopes), envelope.id] }
+    @envelope_options_for_select.unshift ['', ''] 
   end
 
 end
