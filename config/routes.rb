@@ -6,6 +6,7 @@ Envelopes::Application.routes.draw do
     collection do
       get 'fill'
       post 'fill' => 'envelopes#perform_fill', as: :perform_fill
+      get 'manage'
     end
   end
 
