@@ -9,7 +9,11 @@ class Expense
   end
 
   # Can be either :yearly or :monthly
-  attr_accessor :frequency
+  attr_reader :frequency
+
+  def frequency=(new_frequency)
+    @frequency = new_frequency.to_sym
+  end
 
   # This can be just a 5 if the frequency is monthly meaning that the expense
   # occurs on the 5th every month

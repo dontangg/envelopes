@@ -3,6 +3,10 @@
     <table>
       <tr>
         <td class='name indent-<%= indent %>'><%= f.text_field :name, 'data-saved-value' => envelope.name %></td>
+        <%= f.fields_for :expense do |f2| %>
+          <td class='expense-amount'><%= f2.text_field :amount, 'data-saved-value' => envelope.expense.amount %></td>
+          <td class='expense-frequency'><%= f2.select :frequency, [:monthly, :yearly], 'data-saved-value' => envelope.expense.frequency %></td>
+        <% end %>
         <td class='rule-actions'><button class='destroy image-only' title='Remove this rule'></button></td>
       </tr>
     </table>
