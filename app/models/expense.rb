@@ -1,7 +1,7 @@
 class Expense
 
   def amount
-    @amount || 0.0
+    @amount ||= 0.0
   end
   
   def amount=(new_amount)
@@ -15,12 +15,12 @@ class Expense
     @frequency = new_frequency.to_sym
   end
 
-  # This can be just a 5 if the frequency is monthly meaning that the expense
-  # occurs on the 5th every month
-  #
-  # This can be a Hash { day: 5, month: 12 } if the frequency is yearly meaning
-  # that the expense occurs December 5th, every year
-  attr_accessor :occurs_on
+  # This should be a Hash { day: 5, month: 12 }
+  attr_writer :occurs_on
+
+  def occurs_on
+    @occurs_on ||= { day: nil, month: nil }
+  end
 
   def initialize(attributes = nil)
     if attributes.respond_to?(:each_pair)
