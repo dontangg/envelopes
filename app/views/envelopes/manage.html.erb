@@ -8,7 +8,9 @@
   <table>
     <tr>
       <th class='name'><div>Name</div></th>
-      <th class='expense'><div>Expense</div></th>
+      <th class='expense-amount'><div>Amount</div></th>
+      <th class='expense-frequency'><div>Frequency</div></th>
+      <th class='expense-occurs-on'><div>When</div></th>
       <th class='rule-actions'></th>
     </tr>
   </table>
@@ -34,7 +36,7 @@
     </div>
     <div class="field">
       <%= f.label :parent_envelope_id, 'Parent Envelope' %>
-      <%= f.select :parent_envelope_id, {} %>
+      <%= f.select :parent_envelope_id, @envelope_options_for_select  %>
     </div>
     <div class='actions'>
       <a href='javascript:void(0)'>Cancel</a>

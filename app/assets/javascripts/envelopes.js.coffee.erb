@@ -121,7 +121,8 @@ $ ->
     modal.find('form').on('ajax:beforeSend', ->
       modal.find('.loading').show()
     ).on('ajax:success', (event, data, status, xhr) ->
-      setAltRowClass()
+      #modal.find('.loading').hide()
+      hideModal()
     ).on('ajax:error', (event, xhr, status, error) ->
       try
         errors = $.parseJSON(xhr.responseText)
