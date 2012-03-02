@@ -15,7 +15,8 @@ class Envelope < ActiveRecord::Base
 
   attr_accessor :suggested_amount
 
-  def initialize(args = nil)
+  def initialize(args = nil, options = {})
+    # TODO: Find a better way of doing this... overriding ActiveRecord::Base is a no-no
     # Make sure that the expense object is created correctly if it is passed as a Hash
     args[:expense] = Expense.new(args[:expense]) if args && args[:expense]
     super
