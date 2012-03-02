@@ -509,12 +509,13 @@ $jquery-ui-border-radius: 0;
     width: 100%;
     
     .envelope-actions {
+      width: 2%;
       min-width: 16px;
       text-align: right;
       padding: 3px 0;
     }
     .name {
-      width: 33%;
+      width: 53%;
 
       &.indent-1 {
         padding-left: 30px;
@@ -522,6 +523,21 @@ $jquery-ui-border-radius: 0;
       &.indent-2 {
         padding-left: 50px;
       }
+
+      input {
+        width: 95%;
+      }
+    }
+    .expense-amount {
+      width: 15%;
+      text-align: left;
+
+      input {
+        width: 75px;
+      }
+    }
+    .expense-frequency, .expense-occurs-on {
+      width: 15%;
     }
     
     th {
@@ -543,7 +559,6 @@ $jquery-ui-border-radius: 0;
       }
 
       input, select {
-        width: 95%;
         background-color: transparent;
         border: 1px solid transparent;
         border-collapse: separate; /* needed for IE to display box-shadow */
