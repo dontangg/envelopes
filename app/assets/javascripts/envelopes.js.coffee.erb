@@ -142,6 +142,8 @@ $ ->
     modal.find('a').on 'click', ->
       hideModal()
 
+  autosave '#manage_envelopes', 'blur', 'input, select', "<%= CGI.unescape url.envelope_path('{id}') %>"
+
   ###
   # Fill Envelopes
   ###

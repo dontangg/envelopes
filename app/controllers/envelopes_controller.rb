@@ -75,6 +75,8 @@ class EnvelopesController < ApplicationController
     @envelope = Envelope.new(params[:envelope])
     @envelope.user_id = current_user_id
     
+    params[:envelope][:expense] = Expense.new(params[:envelope][:expense]) if params[:envelope] && params[:envelope][:expense]
+
     if @envelope.save
       head :ok
     else
@@ -85,6 +87,8 @@ class EnvelopesController < ApplicationController
   def update
     envelope = Envelope.find(params[:id])
     authorize! :update, envelope
+
+    params[:envelope][:expense] = Expense.new(params[:envelope][:expense]) if params[:envelope] && params[:envelope][:expense]
 
     if envelope.update_attributes(params[:envelope])
       head :ok
