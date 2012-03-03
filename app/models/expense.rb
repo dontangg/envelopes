@@ -9,7 +9,9 @@ class Expense
   end
 
   # Can be either :yearly or :monthly
-  attr_reader :frequency
+  def frequency
+    @frequency ||= :monthly
+  end
 
   def frequency=(new_frequency)
     @frequency = new_frequency.to_sym
@@ -28,5 +30,9 @@ class Expense
         send("#{attr_name}=", attr_value)
       end
     end
+  end
+
+  def to_s
+    str = "#{amount} every #{frequency == :yearly ? "month" : "year"}"
   end
 end
