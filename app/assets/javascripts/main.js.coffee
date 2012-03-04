@@ -74,7 +74,7 @@
         url: url.replace(/{id}/, id)
         data: ajaxData
       .done ->
-        $this.data('saved-value', ajaxData[modelName + '[' + attributeName + ']'])
+        $this.data('saved-value', ajaxData[modelName + '[' + attributeNames.join("][") + ']'])
         $this.removeClass 'invalid'
 
         $(parentSelector).find('.autosave-status').text 'Saved at ' + getTimeString()

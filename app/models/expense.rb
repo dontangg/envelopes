@@ -17,12 +17,7 @@ class Expense
     @frequency = new_frequency.to_sym
   end
 
-  # This should be a Hash { day: 5, month: 12 }
-  attr_writer :occurs_on
-
-  def occurs_on
-    @occurs_on ||= { day: nil, month: nil }
-  end
+  attr_accessor :occurs_on_day, :occurs_on_month
 
   def initialize(attributes = nil)
     if attributes.respond_to?(:each_pair)

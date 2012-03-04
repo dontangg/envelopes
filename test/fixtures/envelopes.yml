@@ -65,7 +65,7 @@ christmas:
   income: false
   unassigned: false
   parent_envelope: holidays
-  expense: <%= Expense.new(amount: 840.0, frequency: :yearly, occurs_on: { month: (Date.today - 1.month).month, day: 25 }).to_yaml.inspect %>
+  expense: <%= Expense.new(amount: 840.0, frequency: :yearly, occurs_on_day: 25, occurs_on_month: (Date.today - 1.month).month).to_yaml.inspect %>
 
 valentines:
   name: "Valentine's Day"

@@ -2,7 +2,7 @@ require 'test_helper'
 
 class EnvelopesHelperTest < ActionView::TestCase
   test "should make a nice string for monthly expenses with a day" do
-    expense = Expense.new amount: 3.4, frequency: :monthly, occurs_on: { day: 1 }
+    expense = Expense.new amount: 3.4, frequency: :monthly, occurs_on_day: 1
 
     str = stringify_expense_frequency(expense)
 
@@ -10,7 +10,7 @@ class EnvelopesHelperTest < ActionView::TestCase
   end
 
   test "should make a nice string for monthly expenses without a day" do
-    expense = Expense.new amount: 3.4, frequency: :monthly, occurs_on: { day: nil }
+    expense = Expense.new amount: 3.4, frequency: :monthly
 
     str = stringify_expense_frequency(expense)
 
@@ -18,7 +18,7 @@ class EnvelopesHelperTest < ActionView::TestCase
   end
 
   test "monthly expenses scheduled for the 31 should say 'last'" do
-    expense = Expense.new amount: 5.22, frequency: :monthly, occurs_on: { day: 31 }
+    expense = Expense.new amount: 5.22, frequency: :monthly, occurs_on_day: 31
 
     str = stringify_expense_frequency(expense)
 
@@ -26,7 +26,7 @@ class EnvelopesHelperTest < ActionView::TestCase
   end
 
   test "should make a nice string for yearly expenses with a day and month" do
-    expense = Expense.new amount: 8.09, frequency: :yearly, occurs_on: { day: 1, month: 1 }
+    expense = Expense.new amount: 8.09, frequency: :yearly, occurs_on_day: 1, occurs_on_month: 1
 
     str = stringify_expense_frequency(expense)
 
@@ -35,7 +35,7 @@ class EnvelopesHelperTest < ActionView::TestCase
   end
 
   test "should make a nice string for yearly expenses without a day or month" do
-    expense = Expense.new amount: 8.09, frequency: :yearly, occurs_on: { day: nil, month: nil }
+    expense = Expense.new amount: 8.09, frequency: :yearly
 
     str = stringify_expense_frequency(expense)
 

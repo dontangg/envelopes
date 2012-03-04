@@ -56,7 +56,7 @@ class EnvelopeTest < ActiveSupport::TestCase
       user_id: 100,
       expense: {
         amount: 12.34,
-        occurs_on: 3,
+        occurs_on_day: 3,
         frequency: :yearly
       }
     })
