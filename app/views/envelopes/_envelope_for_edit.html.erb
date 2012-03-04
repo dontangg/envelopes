@@ -4,15 +4,10 @@
       <tr>
         <td class='name indent-<%= indent %>'><%= f.text_field :name, 'data-saved-value' => envelope.name %></td>
         <%= f.fields_for :expense do |f2| %>
-          <td class='expense-amount amount'><%= f2.text_field :amount, 'data-saved-value' => envelope.expense.amount %></td>
-          <td class='expense-frequency'><%= f2.select :frequency, [:monthly, :yearly], 'data-saved-value' => envelope.expense.frequency %></td>
-          <%= f2.fields_for :occurs_on do |f3| %>
-            <%# envelope[3-auto][expense][occurs_on][day] %>
-            <td class='expense-occurs-on-day'><%= select_day envelope.expense.occurs_on[:day], {}, 'data-saved-value' => envelope.expense.occurs_on[:day] %></td>
-            <td class='expense-occurs-on-month'><%= select_month envelope.expense.occurs_on[:month], { include_blank: true }, 'data-saved-value' => envelope.expense.occurs_on[:month] %></td>
-          <% end %>
+          <td class='expense-amount amount'><%= f2.text_field :amount, value: number_to_currency(envelope.expense.amount), 'data-saved-value' => number_to_currency(envelope.expense.amount) %></td>
+          <td class='expense-frequency'><div><%= stringify_expense_frequency(envelope.expense) %></div></td>
         <% end %>
-        <td class='envelope-actions'><button class='destroy image-only' title='Remove this envelope'></button></td>
+        <td class='envelope-actions'><button class='destroy image-only' title='Remove this envelope' tabindex='-1'></button></td>
       </tr>
     </table>
   </li>

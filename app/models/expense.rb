@@ -31,8 +31,10 @@ class Expense
       end
     end
   end
-
-  def to_s
-    str = "#{amount} every #{frequency == :yearly ? "month" : "year"}"
+  
+  def update_attributes(attributes)
+    attributes.each_pair do |attr_name, attr_value|
+      send("#{attr_name}=", attr_value)
+    end
   end
 end
