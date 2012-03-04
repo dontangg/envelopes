@@ -52,7 +52,7 @@ class EnvelopesControllerTest < ActionController::TestCase
         user_id: users(:jim).id,
         expense: {
           amount: 3.45,
-          occurs_on: 3,
+          occurs_on_day: 3,
           frequency: :monthly
         }
       }}
