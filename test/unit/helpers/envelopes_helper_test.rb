@@ -1,28 +1,44 @@
 require 'test_helper'
 
 class EnvelopesHelperTest < ActionView::TestCase
-  test "should make a nice string for monthly expenses" do
+  test "should make a nice string for monthly expenses with a day" do
     expense = Expense.new amount: 3.4, frequency: :monthly, occurs_on: { day: 1 }
 
-    str = stringify_expense(expense)
+    str = stringify_expense_frequency(expense)
 
-    assert_equal "$3.40 on the 1st day of every month", str
+    assert_equal "on the 1st day of every month", str
+  end
+
+  test "should make a nice string for monthly expenses without a day" do
+    expense = Expense.new amount: 3.4, frequency: :monthly, occurs_on: { day: nil }
+
+    str = stringify_expense_frequency(expense)
+
+    assert_equal "every month", str
   end
 
   test "monthly expenses scheduled for the 31 should say 'last'" do
     expense = Expense.new amount: 5.22, frequency: :monthly, occurs_on: { day: 31 }
 
-    str = stringify_expense(expense)
+    str = stringify_expense_frequency(expense)
 
-    assert_equal "$5.22 on the last day of every month", str
+    assert_equal "on the last day of every month", str
   end
 
-  test "should make a nice string for yearly expenses" do
+  test "should make a nice string for yearly expenses with a day and month" do
     expense = Expense.new amount: 8.09, frequency: :yearly, occurs_on: { day: 1, month: 1 }
 
-    str = stringify_expense(expense)
+    str = stringify_expense_frequency(expense)
 
-    assert_equal "$8.09 on January 1st every year", str
+    assert_equal "on January 1st every year", str
 
+  end
+
+  test "should make a nice string for yearly expenses without a day or month" do
+    expense = Expense.new amount: 8.09, frequency: :yearly, occurs_on: { day: nil, month: nil }
+
+    str = stringify_expense_frequency(expense)
+
+    assert_equal "every year", str
   end
 end

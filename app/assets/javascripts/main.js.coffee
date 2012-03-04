@@ -60,10 +60,12 @@
       $this.removeClass 'invalid'
     else
       nameParts = $this.attr('name').split(/[\[\]]+/)
-      [modelName, id, attributeName] = nameParts
+      modelName = nameParts[0]
+      id = nameParts[1]
+      attributeNames = nameParts[2...nameParts.length - 1]
       
       ajaxData = {}
-      ajaxData[modelName + '[' + attributeName + ']'] = $this.val()
+      ajaxData[modelName + '[' + attributeNames.join("][") + ']'] = $this.val()
 
       $(parentSelector).find('.autosave-status').text 'Saving...'
 
