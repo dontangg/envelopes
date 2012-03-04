@@ -5,5 +5,14 @@
  *= require_self
  *= require normalize
  *= require jquery-ui-1.8.16.custom
+ *= require bootstrap
  *= require_tree . 
 */
+
+/* For the Twitter bootstrap popover */
+.popover {
+  h3, p {
+    margin: 0;
+  }
+}
+
