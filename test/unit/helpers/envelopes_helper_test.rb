@@ -41,4 +41,12 @@ class EnvelopesHelperTest < ActionView::TestCase
 
     assert_equal "every year", str
   end
+
+  test "content for frequency popover returns the right kind of string" do
+    expense = Expense.new amount: 8.09, frequency: :yearly
+    
+    str = content_for_frequency_popover(expense)
+
+    assert !str.html_safe?
+  end
 end
