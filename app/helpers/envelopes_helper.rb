@@ -15,4 +15,9 @@ module EnvelopesHelper
       str += "every year"
     end
   end
+
+  def content_for_frequency_popover(expense)
+    text_field_tag(:frequency, expense.frequency).to_str
+    # "<input value=\"#{expense.frequency}\" />"
+  end
 end

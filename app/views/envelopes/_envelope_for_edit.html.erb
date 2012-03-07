@@ -6,7 +6,9 @@
         <%= f.fields_for :expense do |f2| %>
           <td class='expense-amount amount'><%= f2.text_field :amount, value: number_to_currency(envelope.expense.amount), data: {'saved-value' => number_to_currency(envelope.expense.amount)} %></td>
           <td class='expense-frequency'>
-            <div><%= stringify_expense_frequency(envelope.expense) %></div>
+            <%= content_tag :div, data: { content: content_for_frequency_popover(envelope.expense) } do %>
+              <%= stringify_expense_frequency(envelope.expense) %>
+            <% end if organized_envelopes[envelope.id].empty? %>
             <%= f2.hidden_field :frequency, value: envelope.expense.frequency %>
             <%= f2.hidden_field :occurs_on_day, value: envelope.expense.occurs_on_day %>
             <%= f2.hidden_field :occurs_on_month, value: envelope.expense.occurs_on_month %>
