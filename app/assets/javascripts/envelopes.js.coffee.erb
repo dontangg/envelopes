@@ -143,20 +143,14 @@ $ ->
   autosave '#manage_envelopes', 'blur', 'input, select', "<%= CGI.unescape url.envelope_path('{id}') %>"
 
   $('td.expense-frequency div').popover
-    placement: 'bottom',
+    placement: 'bottom'
     trigger: 'manual'
-    title: 'Edit Frequency',
-    #content: "<input />"
+    title: 'Edit Frequency'
   .click (event) ->
     event.stopPropagation()
     $('td.expense-frequency div').popover 'hide'
     $(this).popover 'toggle'
   if $('td.expense-frequency div').length > 0
-    #$('td.expense-frequency div').each ->
-    #  console.log $($(this).data('popover').tip()[0])
-    #  $(this).data('popover').tip().click (event) ->
-    #    console.log 'clicked'
-    #    event.stopPropagation()
     $(document).click ->
       $('td.expense-frequency div').popover 'hide'
 
