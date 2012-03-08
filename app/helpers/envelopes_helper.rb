@@ -17,7 +17,12 @@ module EnvelopesHelper
   end
 
   def content_for_frequency_popover(expense)
-    text_field_tag(:frequency, expense.frequency).to_str
-    # "<input value=\"#{expense.frequency}\" />"
+    radio_button_tag(:frequency, :monthly, expense.frequency == :monthly).to_str +
+    label_tag(:frequency_monthly, "Monthly").to_str +
+    radio_button_tag(:frequency, :yearly, expense.frequency == :yearly).to_str +
+    label_tag(:frequency_yearly, "Yearly").to_str +
+    text_field_tag(:occurs_on_day, expense.occurs_on_day, type: 'text', placeholder: 'Day').to_str +
+    text_field_tag(:occurs_on_month, expense.occurs_on_month, type: 'text', placeholder: 'Month').to_str +
+    button_tag("Close", class: 'primary').to_str
   end
 end
