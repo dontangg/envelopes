@@ -148,8 +148,11 @@ $ ->
     title: 'Edit Frequency'
   .click (event) ->
     event.stopPropagation()
+    $this = $(this)
     $('td.expense-frequency div').popover 'hide'
-    $(this).popover 'toggle'
+    $this.popover 'show'
+    $('.popover a').click ->
+      $this.popover 'hide'
   if $('td.expense-frequency div').length > 0
     $(document).click ->
       $('td.expense-frequency div').popover 'hide'

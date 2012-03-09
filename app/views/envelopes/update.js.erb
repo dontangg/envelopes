@@ -1,0 +1,8 @@
+
+var $item = $("#<%= dom_id(@envelope) %> .expense-frequency div");
+$item.text("<%= stringify_expense_frequency(@envelope.expense) %>");
+$item.attr('data-content', "<%=j raw(content_for_frequency_popover(@envelope)) %>");
+$item.popover('setContent');
+
+$('td.expense-frequency div').popover('hide');
+
