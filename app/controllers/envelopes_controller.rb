@@ -85,15 +85,16 @@ class EnvelopesController < ApplicationController
   end
 
   def update
-    envelope = Envelope.find(params[:id])
-    authorize! :update, envelope
+    @envelope = Envelope.find(params[:id])
+    authorize! :update, @envelope
 
     # params[:envelope][:expense] = Expense.new(params[:envelope][:expense]) if params[:envelope] && params[:envelope][:expense]
 
-    if envelope.update_attributes(params[:envelope])
-      head :ok
+    if @envelope.update_attributes(params[:envelope])
+      #head :ok
+      render
     else
-      render json: envelope.errors, status: :unprocessable_entity
+      render json: @envelope.errors, status: :unprocessable_entity
     end
   end
 

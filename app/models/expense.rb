@@ -17,7 +17,22 @@ class Expense
     @frequency = new_frequency.to_sym
   end
 
-  attr_accessor :occurs_on_day, :occurs_on_month
+  def occurs_on_day
+    @occurs_on_day.blank? || @occurs_on_day == 0 ? nil : @occurs_on_day
+  end
+
+  def occurs_on_month
+    @occurs_on_month.blank? || @occurs_on_month == 0 ? nil : @occurs_on_month
+  end
+
+  def occurs_on_day=(new_day)
+    @occurs_on_day = new_day.blank? || new_day.to_i == 0 ? nil : new_day.to_i
+  end
+
+  def occurs_on_month=(new_month)
+    @occurs_on_month = new_month.blank? || new_month.to_i == 0 ? nil : new_month.to_i
+  end
+
 
   def initialize(attributes = nil)
     if attributes.respond_to?(:each_pair)

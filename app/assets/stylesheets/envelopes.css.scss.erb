@@ -538,6 +538,13 @@ $jquery-ui-border-radius: 0;
     }
     .expense-frequency {
       width: 28%;
+      
+      div {
+        cursor: pointer;
+        &:hover {
+          background: rgba(210, 210, 210, 0.2);
+        }
+      }
     }
 
     th div, td div {
@@ -573,10 +580,22 @@ $jquery-ui-border-radius: 0;
 }
 .popover {
   input {
-    margin-bottom: 10px;
+    margin-bottom: 15px;
+    &[type=text] {
+      margin-right: 15px;
+    }
+    &.number {
+      width: 50px;
+    }
   }
   label {
-    padding: 0 15px 0 5px;
+    padding: 0 25px 0 5px;
+  }
+  .actions {
+    text-align: right;
+    a {
+      margin-right: 15px;
+    }
   }
 }
 

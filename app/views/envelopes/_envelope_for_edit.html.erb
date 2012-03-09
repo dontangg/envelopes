@@ -1,23 +1,23 @@
 <%= fields_for "envelope[]", envelope do |f| %>
-  <li<%= cycle("", " class='alt'") %> data-envelope-id='<%= envelope.id %>'>
+  <%= content_tag_for :li, envelope, class: cycle("", "alt"), data: { 'envelope-id' => envelope.id } do %>
     <table>
       <tr>
         <td class='name indent-<%= indent %>'><%= f.text_field :name, data: {'saved-value' => envelope.name} %></td>
         <%= f.fields_for :expense do |f2| %>
           <td class='expense-amount amount'><%= f2.text_field :amount, value: number_to_currency(envelope.expense.amount), data: {'saved-value' => number_to_currency(envelope.expense.amount)} %></td>
           <td class='expense-frequency'>
-            <%= content_tag :div, data: { content: content_for_frequency_popover(envelope.expense) } do %>
+            <%= content_tag :div, data: { content: content_for_frequency_popover(envelope) } do %>
               <%= stringify_expense_frequency(envelope.expense) %>
             <% end if organized_envelopes[envelope.id].empty? %>
-            <%= f2.hidden_field :frequency, value: envelope.expense.frequency %>
-            <%= f2.hidden_field :occurs_on_day, value: envelope.expense.occurs_on_day %>
-            <%= f2.hidden_field :occurs_on_month, value: envelope.expense.occurs_on_month %>
+            <%# f2.hidden_field :frequency, value: envelope.expense.frequency %>
+            <%# f2.hidden_field :occurs_on_day, value: envelope.expense.occurs_on_day %>
+            <%# f2.hidden_field :occurs_on_month, value: envelope.expense.occurs_on_month %>
           </td>
         <% end %>
         <td class='envelope-actions'><button class='destroy image-only' title='Remove this envelope' tabindex='-1'></button></td>
       </tr>
     </table>
-  </li>
+  <% end %>
 <% end %>
 
 <%= render partial: 'envelopes/envelope_for_edit', collection: organized_envelopes[envelope.id], as: :envelope, locals: {indent: indent + 1, organized_envelopes: organized_envelopes} %>

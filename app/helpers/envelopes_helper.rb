@@ -10,19 +10,26 @@ module EnvelopesHelper
       str += "every month"
     else
       if expense.occurs_on_day && expense.occurs_on_month
-        str += "on #{Date::MONTHNAMES[expense.occurs_on_month]} #{expense.occurs_on_day.ordinalize} "
+        str += "on #{Date::MONTHNAMES[expense.occurs_on_month.to_i]} #{expense.occurs_on_day.to_i.ordinalize} "
       end
       str += "every year"
     end
   end
 
-  def content_for_frequency_popover(expense)
-    radio_button_tag(:frequency, :monthly, expense.frequency == :monthly).to_str +
-    label_tag(:frequency_monthly, "Monthly").to_str +
-    radio_button_tag(:frequency, :yearly, expense.frequency == :yearly).to_str +
-    label_tag(:frequency_yearly, "Yearly").to_str +
-    text_field_tag(:occurs_on_day, expense.occurs_on_day, type: 'text', placeholder: 'Day').to_str +
-    text_field_tag(:occurs_on_month, expense.occurs_on_month, type: 'text', placeholder: 'Month').to_str +
-    button_tag("Close", class: 'primary').to_str
+  def content_for_frequency_popover(envelope)
+    form_for(envelope, remote: true) do |f|
+      f.fields_for(:expense) do |f2|
+        f2.radio_button(:frequency, :monthly, checked: envelope.expense.frequency == :monthly) +
+        f2.label(:frequency_monthly, "Monthly") +
+        f2.radio_button(:frequency, :yearly, checked: envelope.expense.frequency == :yearly) +
+        f2.label(:frequency_yearly, "Yearly") +
+        f2.text_field(:occurs_on_month, placeholder: 'Month', class: 'number', value: envelope.expense.occurs_on_month) +
+        f2.text_field(:occurs_on_day, placeholder: 'Day', class: 'number', value: envelope.expense.occurs_on_day) +
+        content_tag(:div, class: 'actions') do
+          link_to("Cancel", "javascript:void(0)") +
+          f2.button("Save", class: 'primary')
+        end
+      end
+    end.to_str
   end
 end
