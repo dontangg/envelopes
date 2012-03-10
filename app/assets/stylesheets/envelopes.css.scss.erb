@@ -538,14 +538,7 @@ $jquery-ui-border-radius: 0;
     }
     .expense-frequency {
       width: 28%;
-      
-      div {
-        cursor: pointer;
-        &:hover {
-          background: rgba(210, 210, 210, 0.2);
-        }
-      }
-    }
+    }  
 
     th div, td div {
       padding: 3px 5px;
@@ -563,6 +556,13 @@ $jquery-ui-border-radius: 0;
     
       .destroy {
         visibility: hidden;
+      }
+
+      &.expense-frequency div {
+        cursor: pointer;
+        &:hover {
+          background: rgba(210, 210, 210, 0.2);
+        }
       }
 
       input, select {
