@@ -27,13 +27,13 @@
   <div>
     <h2><%= @end_date.strftime('%B') %></h2>
     <table>
-      <tr><%# TODO: make graph change based on @end_date and put amounts in tooltip %>
+      <tr>
         <th>Spent</th>
-        <td><div class="chart-bar spent" title="$243.32" style="width:<%= @spent_percent %>%;"></div></td>
+        <td><div class="chart-bar spent" title="<%= number_to_currency(@spent_amount) %>" style="width:<%= @spent_percent %>%;"></div></td>
       </tr>
       <tr>
         <th>Budget</th>
-        <td><div class="chart-bar budget" title="$600.00" style="width:<%= @funded_percent %>%;"></div></td>
+        <td><div class="chart-bar budget" title="<%= number_to_currency(@funded_amount) %>" style="width:<%= @funded_percent %>%;"></div></td>
       </tr>
     </table>
   </div>
