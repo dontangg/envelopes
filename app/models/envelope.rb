@@ -100,9 +100,10 @@ class Envelope < ActiveRecord::Base
   end
 
   def amount_spent_between(start_date = Date.today.beginning_of_month, end_date = Date.today.end_of_month)
-    where_clause = Transaction.arel_table[:amount].lt(0)
-      .and(Transaction.arel_table[:posted_at].gteq(start_date))
-      .and(Transaction.arel_table[:posted_at].lteq(end_date))
+    transaction_table = Transaction.arel_table
+    where_clause = transaction_table[:amount].lt(0)
+      .and(transaction_table[:posted_at].gteq(start_date))
+      .and(transaction_table[:posted_at].lteq(end_date))
     all_transactions.where(where_clause).sum(:amount)
   end
   

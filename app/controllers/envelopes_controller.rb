@@ -30,13 +30,12 @@ class EnvelopesController < ApplicationController
     @transactions = @envelope.all_transactions(@organized_envelopes).starting_at(@start_date).ending_at(@end_date)
     @transactions = @transactions.without_transfers unless @show_transfers
     
-    # TODO: avoid dividing by 0
-    funded = 1 #@envelope.amount_funded_this_month.abs
-    spent = 1 #@envelope.amount_spent_this_month.abs
-    max_spent_funded = [funded, spent].max
-    
-    @spent_percent = spent * 100 / max_spent_funded
-    @funded_percent = funded * 100 / max_spent_funded
+    @funded_amount = @envelope.amount_funded_this_month.abs
+    @spent_amount = @envelope.amount_spent_this_month.abs
+    max_spent_funded = [@funded_amount, @spent_amount].max
+
+    @spent_percent = max_spent_funded == 0 ? 0 : @spent_amount * 100 / max_spent_funded
+    @funded_percent = max_spent_funded == 0 ? 0 : @funded_amount * 100 / max_spent_funded
   end
   
   def fill
