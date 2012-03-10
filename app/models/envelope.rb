@@ -10,10 +10,18 @@ class Envelope < ActiveRecord::Base
   belongs_to :parent_envelope, class_name: 'Envelope', foreign_key: 'parent_envelope_id'
   has_many :child_envelopes, class_name: 'Envelope', foreign_key: 'parent_envelope_id'
   has_many :transactions
+
+  after_create :move_parents_transactions
   
   serialize :expense, Expense
 
   attr_accessor :suggested_amount
+
+  def move_parents_transactions
+    if self.parent_envelope_id.present? && self.parent_envelope.transactions.count > 0
+      self.parent_envelope.transactions.update_all(envelope_id: self.id)
+    end
+  end
 
   def expense=(new_expense)
     if new_expense.is_a?(Hash)
