@@ -139,4 +139,16 @@ class EnvelopeTest < ActiveSupport::TestCase
     assert_equal 70.0, christmas_envelope.suggested_amount
 
   end
+
+  test "creating an envelope as a child of an envelope that has transactions should move the transactions to the new child" do
+    groceries_envelope = envelopes(:groceries)
+    num_transactions = groceries_envelope.transactions.count 
+
+    assert num_transactions > 0
+
+    new_envelope = Envelope.create name: 'newtest', parent_envelope: groceries_envelope
+
+    assert_equal num_transactions, new_envelope.transactions.count
+    assert_equal 0, groceries_envelope.transactions.count
+  end
 end

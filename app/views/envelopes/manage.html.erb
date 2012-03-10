@@ -37,6 +37,7 @@
       <%= f.label :parent_envelope_id, 'Parent Envelope' %>
       <%= f.select :parent_envelope_id, @envelope_options_for_create_select %>
     </div>
+    <small>Note: If the parent envelope has transactions, its transactions will be moved into this new envelope</small>
     <div class='actions'>
       <a href='javascript:void(0)'>Cancel</a>
       <%= f.submit 'Save', class: 'primary' %>
