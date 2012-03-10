@@ -176,6 +176,22 @@ $ ->
     $(document).click ->
       $('td.expense-frequency div').popover 'hide'
 
+  $('.envelope .amount input').keyup ->
+    monthly_amount = 0
+
+    $('.envelope .amount input').each (i, item) ->
+      $item = $(item)
+      amount = getAmount $item.val()
+      frequency_text = $item.closest('tr').find('.expense-frequency div').text()
+      if frequency_text.indexOf("month") == -1
+        monthly_amount += amount / 12
+      else
+        monthly_amount += amount
+
+    $('#envelopes_aside .budgeted').text numberToCurrency(monthly_amount)
+
+  $('.envelope .amount input').trigger('keyup')
+
   ###
   # Fill Envelopes
   ###
