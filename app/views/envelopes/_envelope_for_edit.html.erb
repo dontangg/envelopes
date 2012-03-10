@@ -14,7 +14,11 @@
             <%# f2.hidden_field :occurs_on_month, value: envelope.expense.occurs_on_month %>
           </td>
         <% end %>
-        <td class='envelope-actions'><button class='destroy image-only' title='Remove this envelope' tabindex='-1'></button></td>
+        <td class='envelope-actions'>
+          <% if organized_envelopes[envelope.id].empty? %>
+            <button class='destroy image-only' title='Remove this envelope' tabindex='-1'></button>
+          <% end %>
+        </td>
       </tr>
     </table>
   <% end %>

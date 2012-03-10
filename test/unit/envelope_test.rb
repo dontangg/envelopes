@@ -151,4 +151,31 @@ class EnvelopeTest < ActiveSupport::TestCase
     assert_equal num_transactions, new_envelope.transactions.count
     assert_equal 0, groceries_envelope.transactions.count
   end
+
+  test "creating an envelope as a child of an envelope without transactions doesn't crash" do
+    auto_envelope = envelopes(:auto)
+
+    assert_equal 0, auto_envelope.transactions.count
+    
+    new_envelope = Envelope.create name: 'newtest', parent_envelope: auto_envelope
+  end
+
+  test "attempting to destroy an envelope with transactions should fail" do
+    groceries_envelope = envelopes(:groceries)
+    num_transactions = groceries_envelope.transactions.count 
+
+    assert num_transactions > 0
+
+    assert !groceries_envelope.destroy
+  end
+
+  test "attempting to destroy an envelope without transactions should succeed" do
+    auto_envelope = envelopes(:auto)
+    num_transactions = auto_envelope.transactions.count 
+
+    assert_equal 0, num_transactions
+
+    assert auto_envelope.destroy
+  end
+
 end

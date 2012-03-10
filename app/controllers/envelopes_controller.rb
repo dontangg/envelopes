@@ -114,6 +114,34 @@ class EnvelopesController < ApplicationController
         @envelope_options_for_create_select.push [envelope.full_name(@all_envelopes), envelope.id] 
       end
     end
+
+    @envelopes_with_transactions = []
+    @all_envelopes.each do |envelope|
+      if @organized_envelopes[envelope.id].size == 0
+        @envelopes_with_transactions.push [envelope.full_name(@all_envelopes), envelope.id]
+      end
+    end
+  end
+
+  def destroy
+    envelope = Envelope.find(params[:id])
+    authorize! :destroy, envelope
+
+    if envelope.transactions.count > 0
+      if Envelope.find(params[:destination_envelope_id]) && params[:destination_envelope_id].to_i != envelope.id
+        Envelope.move_transactions(envelope.id, params[:destination_envelope_id])
+      else
+        envelope.errors.add(" ", "You must specify a valid envelope to move the transactions into")
+      end
+    end
+
+    if envelope.destroy
+      redirect_to manage_envelopes_url
+    else
+      error_msg = envelope.errors.full_messages.join("\n")
+
+      redirect_to manage_envelopes_url, alert: error_msg
+    end
   end
 
 end

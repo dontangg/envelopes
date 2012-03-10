@@ -12,15 +12,24 @@ class Envelope < ActiveRecord::Base
   has_many :transactions
 
   after_create :move_parents_transactions
+  before_destroy :check_for_transactions
   
   serialize :expense, Expense
 
   attr_accessor :suggested_amount
 
   def move_parents_transactions
-    if self.parent_envelope_id.present? && self.parent_envelope.transactions.count > 0
-      self.parent_envelope.transactions.update_all(envelope_id: self.id)
+    if self.parent_envelope_id.present?
+      Envelope.move_transactions(self.parent_envelope_id, self.id)
     end
+  end
+
+  def self.move_transactions(from_envelope_id, to_envelope_id)
+    Transaction.where(envelope_id: from_envelope_id).update_all(envelope_id: to_envelope_id)
+  end
+
+  def check_for_transactions
+    self.transactions.count == 0
   end
 
   def expense=(new_expense)

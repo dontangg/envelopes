@@ -1,8 +1,11 @@
 Envelopes::Application.routes.draw do
 
+  # Default actions for resources:
+  #   index, new, create, show, edit, update, destroy
+
   resources :rules, only: [:index, :create, :update, :destroy]
 
-  resources :envelopes, only: [:index, :show, :create, :update] do
+  resources :envelopes, except: [:new, :edit] do
     collection do
       get 'fill'
       post 'fill' => 'envelopes#perform_fill', as: :perform_fill

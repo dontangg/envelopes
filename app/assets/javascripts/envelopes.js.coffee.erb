@@ -116,24 +116,24 @@ $ ->
       width: 520
       className: 'new-envelope-modal'
     
-    modal.find('form').on('ajax:beforeSend', ->
-      modal.find('.loading').show()
-    ).on('ajax:success', (event, data, status, xhr) ->
-      #modal.find('.loading').hide()
-      hideModal()
-    ).on('ajax:error', (event, xhr, status, error) ->
-      try
-        errors = $.parseJSON(xhr.responseText)
-        errorMessage = "The envelope wasn't saved!<ul>"
-        for errorField of errors
-          errorMessage += "<li>" + errorField + " " + errors[errorField].join(' and ') + "</li>"
-        errorMessage += "</ul>"
-      catch ex
-        errorMessage = xhr.responseText
-      
-      showAlert errorMessage
-      modal.find('.loading').hide()
-    )
+    # modal.find('form').on('ajax:beforeSend', ->
+    #   modal.find('.loading').show()
+    # ).on('ajax:success', (event, data, status, xhr) ->
+    #   #modal.find('.loading').hide()
+    #   hideModal()
+    # ).on('ajax:error', (event, xhr, status, error) ->
+    #   try
+    #     errors = $.parseJSON(xhr.responseText)
+    #     errorMessage = "The envelope wasn't saved!<ul>"
+    #     for errorField of errors
+    #       errorMessage += "<li>" + errorField + " " + errors[errorField].join(' and ') + "</li>"
+    #     errorMessage += "</ul>"
+    #   catch ex
+    #     errorMessage = xhr.responseText
+    #   
+    #   showAlert errorMessage
+    #   modal.find('.loading').hide()
+    # )
     
     modal.find('select').selectToAutocomplete()
     modal.find('input[type=text], input:not([type])]').selectOnFocus()
@@ -141,6 +141,25 @@ $ ->
       hideModal()
 
   autosave '#manage_envelopes', 'blur', 'input, select', "<%= CGI.unescape url.envelope_path('{id}') %>"
+
+  $('#manage_envelopes .destroy').click ->
+    $this = $(this)
+    modal = showModal
+      content: '#destroy_envelope_modal'
+      width: 520
+      className: 'destroy-envelope-modal'
+
+    $envelope_parent = $this.closest('li')
+    envelope_id = $envelope_parent.data('envelope-id')
+    envelope_name = $envelope_parent.find('.name input').val()
+
+    modal.find('form').attr('action', '<%= CGI.unescape url.envelope_path("{id}") %>'.replace("{id}", envelope_id))
+    modal.find('#destroy_envelope_name').text envelope_name
+    modal.find('select').selectToAutocomplete()
+    modal.find('input[type=text], input:not([type])]').selectOnFocus()
+    modal.find('a').on 'click', ->
+      hideModal()
+
 
   $('td.expense-frequency div').popover
     placement: 'bottom'

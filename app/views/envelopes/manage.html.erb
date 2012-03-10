@@ -44,3 +44,21 @@
     </div>
   <% end %>
 </script>
+
+<script id='destroy_envelope_modal' type='template'>
+  <h1>Delete Envelope</h1>
+  <%= form_for @new_envelope, method: :delete do |f| %>
+    <div>
+      Are you sure you want to delete the envelope: <span id='destroy_envelope_name'></span>?
+    </div>
+    <div class="field">
+      <%= label_tag :destination_envelope_id, 'Move transactions to' %>
+      <%= select_tag :destination_envelope_id, options_for_select(@envelopes_with_transactions) %>
+    </div>
+    <div class='actions'>
+      <a href='javascript:void(0)'>Cancel</a>
+      <%= f.submit 'Delete', class: 'primary' %>
+    </div>
+  <% end %>
+</script>
+
