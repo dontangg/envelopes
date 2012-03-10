@@ -28,7 +28,7 @@
 <script id='new_envelope_modal' type='template'>
   <div class='loading'></div>
   <h1>New Envelope</h1>
-  <%= form_for @new_envelope, remote: true do |f| %>
+  <%= form_for @new_envelope do |f| %>
     <div class="field">
       <%= f.label :name, 'Name' %>
       <%= f.text_field :name, placeholder: 'Groceries' %>

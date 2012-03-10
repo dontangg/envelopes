@@ -78,7 +78,7 @@ class EnvelopesController < ApplicationController
     params[:envelope][:expense] = Expense.new(params[:envelope][:expense]) if params[:envelope] && params[:envelope][:expense]
 
     if @envelope.save
-      head :ok
+      redirect_to manage_envelopes_url
     else
       render json: @envelope.errors, status: :unprocessable_entity
     end
