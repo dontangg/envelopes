@@ -4,7 +4,11 @@
       <tr>
         <td class='name indent-<%= indent %>'><%= f.text_field :name, data: {'saved-value' => envelope.name} %></td>
         <%= f.fields_for :expense do |f2| %>
-          <td class='expense-amount amount'><%= f2.text_field :amount, value: number_to_currency(envelope.expense.amount), data: {'saved-value' => number_to_currency(envelope.expense.amount)} %></td>
+          <td class='expense-amount amount'>
+            <% if organized_envelopes[envelope.id].empty? %>
+              <%= f2.text_field :amount, value: number_to_currency(envelope.expense.amount), data: {'saved-value' => number_to_currency(envelope.expense.amount)} %>
+            <% end %>
+          </td>
           <td class='expense-frequency'>
             <%= content_tag :div, data: { content: content_for_frequency_popover(envelope) } do %>
               <%= stringify_expense_frequency(envelope.expense) %>
