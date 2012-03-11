@@ -79,7 +79,9 @@ class TransactionsController < ApplicationController
   def create_transfer
     amount = params[:transfer_amount].scan(/[-0-9.]+/).join.to_f
 
-    if amount > 0
+    if amount > 0 && params[:transfer_from_id] != params[:transfer_to_id]
+      @attempted_transfer = true
+      
       from_envelope = Envelope.find(params[:transfer_from_id])
       to_envelope = Envelope.find(params[:transfer_to_id])
       authorize! :update, from_envelope
@@ -106,7 +108,8 @@ class TransactionsController < ApplicationController
 
       @spent_percent = max_spent_funded == 0 ? 0 : @spent_amount * 100 / max_spent_funded
       @budgeted_percent = max_spent_funded == 0 ? 0 : @budgeted_amount * 100 / max_spent_funded
-
+    else
+      @attempted_transfer = false
     end
     
     respond_to do |format|
