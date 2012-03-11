@@ -78,6 +78,18 @@ class Envelope < ActiveRecord::Base
 
     @full_name = name
   end
+
+  def simple_monthly_budget
+    if self.expense
+      if self.expense.frequency == :monthly
+        self.expense.amount
+      else
+        self.expense.amount / 12
+      end
+    else
+      0
+    end
+  end
   
   def amount_funded_this_month
     @amount_funded_this_month ||= amount_funded_between(Date.today.beginning_of_month, Date.today.end_of_month)
