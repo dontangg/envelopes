@@ -43,9 +43,10 @@ class EnvelopesHelperTest < ActionView::TestCase
   end
 
   test "content for frequency popover returns the right kind of string" do
-    expense = Expense.new amount: 8.09, frequency: :yearly
+    envelope = Envelope.new
+    envelope.expense = Expense.new amount: 8.09, frequency: :yearly
     
-    str = content_for_frequency_popover(expense)
+    str = content_for_frequency_popover(envelope)
 
     assert !str.html_safe?
   end

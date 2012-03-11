@@ -74,7 +74,8 @@ class EnvelopesControllerTest < ActionController::TestCase
         expense: {
           amount: 120.5
         }
-      }
+      },
+      format: :js
     }
     
     assert_response :success
