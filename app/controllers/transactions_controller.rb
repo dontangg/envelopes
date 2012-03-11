@@ -99,9 +99,15 @@ class TransactionsController < ApplicationController
       end
 
       @new_balance = current_envelope.inclusive_total_amount
-    end
 
-    # TODO: update transactions if currently viewing envelope transfers
+      @budgeted_amount = current_envelope.simple_monthly_budget
+      @spent_amount = current_envelope.amount_spent_this_month.abs
+      max_spent_funded = [@budgeted_amount, @spent_amount].max
+
+      @spent_percent = max_spent_funded == 0 ? 0 : @spent_amount * 100 / max_spent_funded
+      @budgeted_percent = max_spent_funded == 0 ? 0 : @budgeted_amount * 100 / max_spent_funded
+
+    end
     
     respond_to do |format|
       format.js
