@@ -42,6 +42,10 @@
       <%= f.label :bank_password, 'Bank password:' %>
       <%= f.password_field :bank_password, placeholder: 'password' %>
     </div>
+    <div class="field">
+      <%= f.label :bank_account_id, 'Bank Account ID:' %>
+      <%= f.text_field :bank_account_id, placeholder: 'bank account id' %>
+    </div>
     <div class="field multi-line">
       <%= f.label :bank_secret_questions, 'Bank secret questions:' %>
       <ul class='questions'>
@@ -63,6 +67,7 @@
     <p><small>Note: Passwords left blank will not be modified.</small></p>
     <div class="field">
       <%= f.submit "Save", class: 'primary' %>
+      <%= link_to "Import transactions", 'javascript:void(0)', class: 'import' if current_user.bank_id.present? && current_user.bank_username.present? %>
     </div>
   <% end %>
   
@@ -74,3 +79,8 @@
     </li>
   </script>
 </section>
+
+<script id='import_modal' type='template'>
+  Importing transactions...
+  <div class='special-loading'></div>
+</script>
