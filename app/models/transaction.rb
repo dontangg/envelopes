@@ -143,6 +143,9 @@ class Transaction < ActiveRecord::Base
                           posted_at: Date.today,
                           envelope_id: Envelope.owned_by(user.id).where(income: true).select(:id).first.id
     end
+
+    user.imported_transactions_at = DateTime.now
+    user.save
     
   end
 
