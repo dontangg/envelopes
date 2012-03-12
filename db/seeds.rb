@@ -18,7 +18,7 @@ when "development"
   puts "-- creating envelopes"
   
   cash_envelope = Envelope.create name: 'Available Cash', user: test_user, income: true
-  unassigned_envelope = Envelope.create name: 'Unassigned Transactions', user: test_user, unassigned: true
+  unassigned_envelope = Envelope.create name: 'Unassigned', user: test_user, unassigned: true
   
   auto_envelope = Envelope.create name: 'Auto', user: test_user
   fuel_envelope = Envelope.create name: "Fuel", user: test_user, parent_envelope: auto_envelope
