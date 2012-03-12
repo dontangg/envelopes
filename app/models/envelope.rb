@@ -160,6 +160,7 @@ class Envelope < ActiveRecord::Base
       organized_envelopes[nil].each do |envelope|
         all_child_envelope_ids.concat Envelope.all_child_envelope_ids(envelope.id, organized_envelopes)
       end
+      all_child_envelope_ids.concat organized_envelopes['sys']
     else
       all_child_envelope_ids = Envelope.all_child_envelope_ids(self.id, organized_envelopes) << self.id
     end
