@@ -68,6 +68,7 @@
     <div class="field">
       <%= f.submit "Save", class: 'primary' %>
       <%= link_to "Import transactions", 'javascript:void(0)', class: 'import' if current_user.bank_id.present? && current_user.bank_username.present? %>
+      <%=raw "<small id='last_imported'>(imported #{time_ago_in_words(@user.imported_transactions_at)} ago)</small>" unless @user.imported_transactions_at.nil? %>
     </div>
   <% end %>
   
