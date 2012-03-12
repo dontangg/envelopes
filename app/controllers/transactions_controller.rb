@@ -116,4 +116,12 @@ class TransactionsController < ApplicationController
       format.js
     end
   end
+
+  def import
+    Transaction.import_all(current_user_id)
+
+    respond_to do |format|
+      format.js
+    end
+  end
 end

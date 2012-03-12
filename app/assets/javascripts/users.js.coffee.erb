@@ -1,3 +1,5 @@
+<% url = Envelopes::Application.routes.url_helpers %>
+
 $ ->
   $('#account input').selectOnFocus()
 
@@ -15,3 +17,11 @@ $ ->
     event.preventDefault()
     $(this).parent().slideUp ->
       $(this).remove()
+
+  $('#account .import').click ->
+    modal = showModal
+      content: '#import_modal'
+      width: 510
+      className: 'import-modal'
+    $.post("<%= url.import_transactions_path %>");
+
