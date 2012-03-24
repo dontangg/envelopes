@@ -1,0 +1,10 @@
+development:
+  host: localhost
+  database: envelopes
+
+test:
+  host: localhost
+  database: envelopes_test
+
+production:
+  uri: <%= ENV['MONGOLAB_URI'] %>
