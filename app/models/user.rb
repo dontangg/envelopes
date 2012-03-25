@@ -9,6 +9,7 @@ class User
 
   # Define embeds
   embeds_one  :bank
+  embeds_many :rules
 
   # Mass asignment protection
   attr_accessible :email, :password, :password_confirmation
@@ -18,8 +19,6 @@ class User
   validates_presence_of :password, :on => :create
   validates_presence_of :email
   validates_uniqueness_of :email, :on => :create
-
-  ##has_many :rules
 
   class << self
     def find_by_email(email)

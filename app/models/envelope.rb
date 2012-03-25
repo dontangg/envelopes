@@ -1,4 +1,5 @@
 class Envelope
+  include Mongoid::Document
   
   ## default_scope order(arel_table[:name])
   ##scope :owned_by, lambda { |user_id| where(user_id: user_id) }

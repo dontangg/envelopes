@@ -2,7 +2,8 @@
 FactoryGirl.define do
   factory :user do
     email 'jim@example.com'
-    password_digest BCrypt::Password.create('jimpass')
+    password 'jimpass'
+    #password_digest BCrypt::Password.create('jimpass')
   end
 end
 
