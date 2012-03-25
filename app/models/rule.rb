@@ -1,11 +1,11 @@
 class Rule
-  default_scope order(arel_table[:order])
-  scope :owned_by, lambda { |user_id| where(user_id: user_id) }
+  ##default_scope order(arel_table[:order])
+  ##scope :owned_by, lambda { |user_id| where(user_id: user_id) }
 
-  validates_presence_of :search_text, :user_id
+  ##validates_presence_of :search_text, :user_id
 
-  belongs_to :user
-  belongs_to :envelope
+  ##belongs_to :user
+  ##belongs_to :envelope
 
   def run(payee)
     if payee && payee.downcase.include?(self.search_text.downcase)
