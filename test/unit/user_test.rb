@@ -45,4 +45,19 @@ class UserTest < ActiveSupport::TestCase
 
     assert_equal 'passdigest', u.password_digest
   end
+
+  test "income_envelope should get the income envelope" do
+    user_id = FactoryGirl.create(:income_envelope).user.id
+    envelope = User.find(user_id).income_envelope
+
+    assert envelope.income?
+  end
+
+  test "unassigned_envelope should get the unassigned envelope" do
+    user_id = FactoryGirl.create(:unassigned_envelope).user.id
+    envelope = User.find(user_id).unassigned_envelope
+
+    assert envelope.unassigned?
+  end
+
 end
