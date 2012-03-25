@@ -1,17 +1,17 @@
 class Transaction
-  default_scope order(arel_table[:posted_at].desc)
-  scope :starting_at, lambda {|start_date| where(arel_table[:posted_at].gteq(start_date)) }
-  scope :ending_at, lambda {|end_date| where(arel_table[:posted_at].lteq(end_date)) }
-  scope :without_transfers, where(arel_table[:unique_id].not_eq(nil))
+  ##default_scope order(arel_table[:posted_at].desc)
+  ##scope :starting_at, lambda {|start_date| where(arel_table[:posted_at].gteq(start_date)) }
+  ##scope :ending_at, lambda {|end_date| where(arel_table[:posted_at].lteq(end_date)) }
+  ##scope :without_transfers, where(arel_table[:unique_id].not_eq(nil))
   
-  validates_presence_of :posted_at, :payee, :original_payee, :amount, :envelope_id
-  validates_uniqueness_of :unique_id, :allow_nil => true
+  ##validates_presence_of :posted_at, :payee, :original_payee, :amount, :envelope_id
+  ##validates_uniqueness_of :unique_id, :allow_nil => true
   
-  before_save :strip_payee
-  after_save :check_associated_transaction
+  ##before_save :strip_payee
+  ##after_save :check_associated_transaction
   
-  belongs_to :envelope
-  belongs_to :associated_transaction, class_name: 'Transaction', foreign_key: 'associated_transaction_id'
+  ##belongs_to :envelope
+  ##belongs_to :associated_transaction, class_name: 'Transaction', foreign_key: 'associated_transaction_id'
   
   def self.owned_by(user_id)
     user_id = user_id.id if user_id.respond_to? :id

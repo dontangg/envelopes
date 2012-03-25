@@ -7,7 +7,7 @@ gem 'bson_ext', '~> 1.6.1'
 gem 'jquery-rails'
 gem 'cancan', '~> 1.6'
 gem 'syrup', '~> 0.0.9'
-gem 'gibberish'
+gem 'gibberish', '~> 1.2.0' # To encrypt bank passwords
 gem 'bcrypt-ruby', '~> 3.0.0' # To use ActiveModel has_secure_password
 # gem 'ruby-debug19', :require => 'ruby-debug' # To use debugger
 
@@ -18,7 +18,7 @@ group :assets do
   gem 'uglifier',     '>= 1.0.3'
 end
 
-gem 'sqlite3', group: [:development, :test]
+gem 'factory_girl_rails', group: [:development, :test]
 
 group :development do
   gem 'guard-test'

@@ -1,31 +1,38 @@
 class User
-  attr_accessible :email, :password, :password_confirmation, :bank_id, :bank_username, :bank_password, :bank_secret_questions, :bank_account_id
+  include Mongoid::Document
+  include Mongoid::Timestamps
+  include ActiveModel::SecurePassword
+
+  # Define the fields
+  field :email,           type: String
+  field :password_digest, type: String
+
+  # Define embeds
+  embeds_one  :bank
+
+  # Mass asignment protection
+  attr_accessible :email, :password, :password_confirmation
+
   has_secure_password
+
   validates_presence_of :password, :on => :create
   validates_presence_of :email
   validates_uniqueness_of :email, :on => :create
 
-  has_many :rules
-  
-  serialize :bank_secret_questions
+  ##has_many :rules
+
+  class << self
+    def find_by_email(email)
+      self.first(conditions: {email: email})
+    end
+  end
 
   def email=(new_email)
-    pass = self.bank_password
+    # Since the email is used while encrypting/decrypting the bank password,
+    # we need to make sure we update the encrypted value if the email changes
+    pass = self.bank.password if self.bank
     super
-    self.bank_password = pass
+    self.bank.password = pass if self.bank
   end
- 
-  def bank_password
-    unless self.bank_password_cipher.blank?
-      cipher = Gibberish::AES.new(self.email + 's')
-      cipher.dec(self.bank_password_cipher)
-    end
-  end
-  
-  def bank_password=(unencrypted_password)
-    unless unencrypted_password.blank?
-      cipher = Gibberish::AES.new(self.email + 's')
-      self.bank_password_cipher = cipher.enc(unencrypted_password)
-    end
-  end
+
 end
