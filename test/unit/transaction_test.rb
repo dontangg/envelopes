@@ -2,24 +2,31 @@ require 'test_helper'
 
 class TransactionTest < ActiveSupport::TestCase
   test "uniq_str generates the correct unique string" do
-    txn = transactions(:ancestry)
+    txn = FactoryGirl.create(:transaction, payee: 'payee with space', original_payee: 'original  payee  ', amount: 1.23, posted_at: Date.new(2012, 3, 26), unique_count: 1)
     
-    assert_equal txn.unique_id, txn.uniq_str
+    assert_equal "2012-03-26~original payee~1.23~false~", txn.uniq_str
   end
   
-  test "owned_by returns transactions in envelopes owned by the right user" do
-    txns = Transaction.owned_by(users(:jim))
-    jims_envelopes = Envelope.where(user_id: users(:jim).id).map(&:id)
-    txns.each do |transaction|
-      assert jims_envelopes.include?(transaction.envelope_id)
-    end
-  end
-  
-  test "envelope_id must be present before saving" do
-    txn = Transaction.new payee: "t", original_payee: "tt", posted_at: Date.today, amount: 1.0
-    
-    assert !txn.save
-    assert !txn.valid?
+  test "posted_at, payee, original_payee, and amount must be present before saving" do
+    txn = FactoryGirl.build(:transaction, posted_at: nil)
+    assert !txn.save, txn.errors.full_messages.join
+    txn.posted_at = Date.today
+    assert txn.save, txn.errors.full_messages.join
+
+    txn = FactoryGirl.build(:transaction, payee: nil)
+    assert !txn.save, txn.errors.full_messages.join
+    txn.payee = "payee"
+    assert txn.save, txn.errors.full_messages.join
+
+    txn = FactoryGirl.build(:transaction, original_payee: nil)
+    assert !txn.save, txn.errors.full_messages.join
+    txn.original_payee = "original payee"
+    assert txn.save, txn.errors.full_messages.join
+
+    txn = FactoryGirl.build(:transaction, amount: nil)
+    assert !txn.save, txn.errors.full_messages.join
+    txn.amount = 1.23
+    assert txn.save, txn.errors.full_messages.join
   end
   
   test "transactions are ordered by posted_at, then original payee, then amount" do
@@ -38,25 +45,42 @@ class TransactionTest < ActiveSupport::TestCase
     assert_equal transaction1, transactions[1]
     assert_equal transaction2, transactions[2]
     assert_equal transaction3, transactions[3]
-    assert_not_equal transaction1, transactions[0]
+    assert_not_equal transaction1, transactions[0], "== is not testing equality correctly"
   end
   
-  test "without_transfers excludes when unique_id is nil" do
-    transactions = Transaction.without_transfers
+  test "without_transfers excludes transactions with a nil unique_count" do
+    group = FactoryGirl.create(:transaction_group_with_transactions)
+    transactions = group.transactions.without_transfers
+
+    assert transactions.size > 0, "Can't do a proper test without any transactions"
+    assert transactions.size != group.transactions.size, "Can't do a proper test without normal and transfer transactions"
     transactions.each do |transaction|
-      assert_not_nil transaction.unique_id
+      assert_not_nil transaction.unique_count
     end
   end
 
-  test "associated transaction amounts stay in sync" do
-    transfer_to = transactions(:transfer_to_food)
-    transfer_from = transfer_to.associated_transaction
+  test "transactions should be read in the right order" do
+    group = FactoryGirl.create(:transaction_group)
 
-    assert transfer_to.amount == (transfer_from.amount * -1)
+    FactoryGirl.create(:transaction, transaction_group: group, posted_at: Date.today - 1.day)
+    FactoryGirl.create(:transaction, transaction_group: group, posted_at: Date.today)
+    FactoryGirl.create(:transaction, transaction_group: group, posted_at: Date.today - 3.days)
+    FactoryGirl.create(:transaction, transaction_group: group, posted_at: Date.today - 2.days)
 
-    transfer_to.amount = 25
-    transfer_to.save
+    # Read the user to get the order right
+    group = TransactionGroup.find(group.id)
 
-    assert_equal -25, transfer_from.amount
+    prev_date = Date.today + 1.day
+    group.transactions.each do |txn|
+      assert prev_date > txn.posted_at, "Transactions should be ordered by date descending (#{prev_date} <= #{txn.posted_at})"
+      prev_date = txn.posted_at
+    end
   end
+
+  test "should strip the whitespace off the payee before save" do
+    txn = FactoryGirl.create(:transaction, payee: "\t\n lots of\n whitespace \t\n")
+
+    assert_equal "lots of\n whitespace", txn.payee
+  end
+
 end

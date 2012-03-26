@@ -33,7 +33,7 @@ class RuleTest < ActiveSupport::TestCase
 
     prev_order = 0
     user.rules.each do |rule|
-      assert prev_order < rule.order, "Rules should be ordered (#{prev_order} < #{rule.order})"
+      assert prev_order < rule.order, "Rules should be ordered (#{prev_order} >= #{rule.order})"
       prev_order = rule.order
     end
   end

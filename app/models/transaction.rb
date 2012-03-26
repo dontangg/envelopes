@@ -1,22 +1,25 @@
 class Transaction
-  ##default_scope order(arel_table[:posted_at].desc)
+  include Mongoid::Document
+
+  embedded_in :transaction_group
+
+  field :posted_at,       type: Date
+  field :payee,           type: String
+  field :original_payee,  type: String
+  field :amount,          type: Float
+  field :unique_count,    type: Integer
+  field :pending,         type: Boolean
+
+  default_scope order_by([[:posted_at, :desc]])
   ##scope :starting_at, lambda {|start_date| where(arel_table[:posted_at].gteq(start_date)) }
   ##scope :ending_at, lambda {|end_date| where(arel_table[:posted_at].lteq(end_date)) }
-  ##scope :without_transfers, where(arel_table[:unique_id].not_eq(nil))
+  scope :without_transfers, where(:unique_count.ne => nil)
   
-  ##validates_presence_of :posted_at, :payee, :original_payee, :amount, :envelope_id
-  ##validates_uniqueness_of :unique_id, :allow_nil => true
+  validates_presence_of :posted_at, :payee, :original_payee, :amount
   
-  ##before_save :strip_payee
-  ##after_save :check_associated_transaction
+  before_save :strip_payee
   
-  ##belongs_to :envelope
-  ##belongs_to :associated_transaction, class_name: 'Transaction', foreign_key: 'associated_transaction_id'
-  
-  def self.owned_by(user_id)
-    user_id = user_id.id if user_id.respond_to? :id
-    envelopes_table = Envelope.arel_table
-    where(self.arel_table[:envelope_id].in(envelopes_table.project(envelopes_table[:id]).where(envelopes_table[:user_id].eq(user_id))))
+  def identify
   end
   
   def self.payee_suggestions_for_user_id(user_id, term, original = nil)
@@ -47,20 +50,12 @@ class Transaction
     payee.strip!
   end
   
-  def check_associated_transaction
-    if @amount_changed && self.associated_transaction_id.present?
-      if associated_transaction.amount != -self.amount
-        associated_transaction.update_column(:amount, -self.amount)
-      end
-    end
-  end
-  
   def cleared?
     !pending?
   end
   
   def <=>(other)
-    # Transactions are ordered by posted_at, payee, then amount
+    # Transactions are ordered by posted_at, original payee, then amount
     result = self.posted_at <=> other.posted_at
     
     if result == 0
@@ -73,12 +68,14 @@ class Transaction
     
     result
   end
-  
-  def amount=(new_amount)
-    if self.amount != new_amount
-      write_attribute(:amount, new_amount)
-      @amount_changed = true
+
+  def ==(other)
+    # Mongoid's default == method only compares the ids.
+    # Since this document's id should always be nil, that doesn't help
+    attributes.each do |attr_name, attr_value|
+      return false if self.attributes[attr_name] != other.attributes[attr_name]
     end
+    true
   end
   
   def uniq_str
@@ -126,8 +123,8 @@ class Transaction
       num = 0
       num = num.next while id_cache[uniq_str + num.to_s]
       
-      transaction.unique_id = uniq_str + num.to_s
-      id_cache[transaction.unique_id] = true
+      transaction.unique_count = num.to_s
+      id_cache[uniq_str + num.to_s] = true
       
       import(transaction, user.rules)
     end

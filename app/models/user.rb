@@ -12,6 +12,11 @@ class User
   embeds_many :rules
   embeds_many :envelopes
 
+  # Define indexes
+  index([
+    [:email, Mongo::ASCENDING]
+  ])
+
   # Mass asignment protection
   attr_accessible :email, :password, :password_confirmation
 
