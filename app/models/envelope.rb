@@ -1,20 +1,20 @@
-class Envelope
+class Envelope < ActiveRecord::Base
   
-  ## default_scope order(arel_table[:name])
-  ##scope :owned_by, lambda { |user_id| where(user_id: user_id) }
-  ##scope :income, where(income: true)
-  ##scope :unassigned, where(unassigned: true)
-  ##scope :generic, where(income: false, unassigned: false)
+  default_scope order(arel_table[:name])
+  scope :owned_by, lambda { |user_id| where(user_id: user_id) }
+  scope :income, where(income: true)
+  scope :unassigned, where(unassigned: true)
+  scope :generic, where(income: false, unassigned: false)
 
-  ##belongs_to :user
-  ##belongs_to :parent_envelope, class_name: 'Envelope', foreign_key: 'parent_envelope_id'
-  ##has_many :child_envelopes, class_name: 'Envelope', foreign_key: 'parent_envelope_id'
-  ##has_many :transactions
+  belongs_to :user
+  belongs_to :parent_envelope, class_name: 'Envelope', foreign_key: 'parent_envelope_id'
+  has_many :child_envelopes, class_name: 'Envelope', foreign_key: 'parent_envelope_id'
+  has_many :transactions
 
-  ##after_create :move_parents_transactions
-  ##before_destroy :check_for_transactions
+  after_create :move_parents_transactions
+  before_destroy :check_for_transactions
   
-  ##serialize :expense, Expense
+  serialize :expense, Expense
 
   attr_accessor :suggested_amount
 

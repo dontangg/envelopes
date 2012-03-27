@@ -1,4 +1,4 @@
-class Transaction
+class Transaction < ActiveRecord::Base
   default_scope order(arel_table[:posted_at].desc)
   scope :starting_at, lambda {|start_date| where(arel_table[:posted_at].gteq(start_date)) }
   scope :ending_at, lambda {|end_date| where(arel_table[:posted_at].lteq(end_date)) }
