@@ -2,8 +2,6 @@ source 'http://rubygems.org'
 
 gem 'rails', '3.2.2'
 gem 'unicorn' unless RUBY_PLATFORM =~ /mingw32/i
-gem 'mongoid', '~> 2.4.7'
-gem 'bson_ext', '~> 1.6.1'
 gem 'jquery-rails'
 gem 'cancan', '~> 1.6'
 gem 'syrup', '~> 0.0.9'
@@ -26,3 +24,4 @@ group :development do
   gem 'foreman'
 end
 
+gem 'pg', group: :production
