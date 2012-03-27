@@ -60,7 +60,7 @@ class Transaction < ActiveRecord::Base
   end
   
   def <=>(other)
-    # Transactions are ordered by posted_at, payee, then amount
+    # Transactions are ordered by posted_at, original_payee, then amount
     result = self.posted_at <=> other.posted_at
     
     if result == 0

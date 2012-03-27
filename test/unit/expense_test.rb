@@ -14,8 +14,22 @@ class ExpenseTest < ActiveSupport::TestCase
     expense = Expense.new
 
     assert_kind_of Float, expense.amount
+    assert_equal 0, expense.amount
     assert_equal :monthly, expense.frequency
     assert_nil expense.occurs_on_day
+    assert_nil expense.occurs_on_month
+  end
+
+  test "should return nil if day or month is set to 0" do
+    expense = Expense.new occurs_on_day: 0, occurs_on_month: 0
+
+    assert_nil expense.occurs_on_day
+    assert_nil expense.occurs_on_month
+
+    expense.occurs_on_day = 0
+    assert_nil expense.occurs_on_day
+
+    expense.occurs_on_month = 0
     assert_nil expense.occurs_on_month
   end
 end
