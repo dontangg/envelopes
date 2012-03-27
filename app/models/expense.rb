@@ -1,5 +1,4 @@
 class Expense
-  include Mongoid::Document
 
   def amount
     @amount ||= 0.0

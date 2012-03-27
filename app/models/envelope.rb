@@ -1,18 +1,11 @@
 class Envelope
   include Mongoid::Document
   
-  embedded_in :user
-  embeds_one  :expense
-
-  field :name,                type: String
-  field :income,              type: Boolean
-  field :unassigned,          type: Boolean
-  field :parent_envelope_id,  type: BSON::ObjectId
-
-  default_scope order_by([[:name, :asc]])
-  scope :income, where(income: true)
-  scope :unassigned, where(unassigned: true)
-  scope :generic, where(income: false, unassigned: false)
+  ## default_scope order(arel_table[:name])
+  ##scope :owned_by, lambda { |user_id| where(user_id: user_id) }
+  ##scope :income, where(income: true)
+  ##scope :unassigned, where(unassigned: true)
+  ##scope :generic, where(income: false, unassigned: false)
 
   ##belongs_to :user
   ##belongs_to :parent_envelope, class_name: 'Envelope', foreign_key: 'parent_envelope_id'
@@ -23,12 +16,6 @@ class Envelope
   ##before_destroy :check_for_transactions
   
   ##serialize :expense, Expense
-  
-  class << self
-    #def income
-    #  self.first(conditions: {income: true}) #where(income: true)
-    #end
-  end
 
   attr_accessor :suggested_amount
 

@@ -10,7 +10,6 @@ class User
   # Define embeds
   embeds_one  :bank
   embeds_many :rules
-  embeds_many :envelopes
 
   # Mass asignment protection
   attr_accessible :email, :password, :password_confirmation
@@ -25,14 +24,6 @@ class User
     def find_by_email(email)
       self.first(conditions: {email: email})
     end
-  end
-
-  def income_envelope
-    self.envelopes.income.first
-  end
-
-  def unassigned_envelope
-    self.envelopes.unassigned.first
   end
 
   def email=(new_email)
