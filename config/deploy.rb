@@ -1,5 +1,7 @@
+require "bundler/capistrano"
+
 set :application, "envelopes"
-set :repository,  "git@github.com:dontangg/envelopes.git"
+set :repository,  "git://github.com/dontangg/envelopes.git"
 
 set :scm, :git
 
@@ -12,9 +14,14 @@ role :db,  "50.56.208.109", :primary => true        # This is where Rails migrat
 
 set :user, "app_user"
 
-# It complained about no tty, so use pty
+# It complained about no tty, so use pty... no profile scripts :(
 # http://weblog.jamisbuck.org/2007/10/14/capistrano-2-1
 default_run_options[:pty] = true
+
+# Since we're using pty, load the path ourselves
+set :default_environment, {
+  "PATH" => "/home/app_user/.rbenv/shims:/home/app_user/.rbenv/bin:$PATH"
+}
 
 # if you're still using the script/reaper helper you will need
 # these http://github.com/rails/irs_process_scripts
