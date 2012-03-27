@@ -14,99 +14,21 @@ class Envelope
   scope :unassigned, where(unassigned: true)
   scope :generic, where(income: false, unassigned: false)
 
+  ##belongs_to :user
+  ##belongs_to :parent_envelope, class_name: 'Envelope', foreign_key: 'parent_envelope_id'
+  ##has_many :child_envelopes, class_name: 'Envelope', foreign_key: 'parent_envelope_id'
   ##has_many :transactions
 
   ##after_create :move_parents_transactions
   ##before_destroy :check_for_transactions
+  
+  ##serialize :expense, Expense
   
   class << self
     #def income
     #  self.first(conditions: {income: true}) #where(income: true)
     #end
   end
-
-  # This overrides the default to_param method that just returns id
-  def to_param
-    name.parameterize if id # I think that this needs to return nil if this envelope hasn't been saved
-  end
-
-  def parent_envelope_id=(new_id)
-    super
-    @parent_envelope = nil
-  end
-
-  def parent_envelope
-    if self.parent_envelope_id
-      @parent_envelope ||= self.user.envelopes.select { |envelope| envelope.id == self.parent_envelope_id }.first
-    else
-      nil
-    end
-  end
-
-  def parent_envelope=(new_parent_envelope)
-    @parent_envelope = nil
-    self.parent_envelope_id = new_parent_envelope.id
-  end
-
-  def child_envelopes
-    @child_envelopes ||= self.user.envelopes.select { |envelope| self.id == envelope.parent_envelope_id }
-  end
-
-  def self_and_child_envelope_ids
-    child_ids = [self.id]
-
-    child_envelopes.each do |child|
-      child_ids.concat child.self_and_child_envelope_ids
-    end
-
-    child_ids
-  end
-
-  def transactions(start_date, end_date = Date.today)
-    start_year_month = start_date.strftime("%Y-%m")
-    end_year_month = end_date.strftime("%Y-%m")
-    groups = TransactionGroup.where(:year_month.gte => start_year_month)
-                             .and(:year_month.lte => end_year_month)
-                             .and(:envelope_id.in => self_and_child_envelope_ids)
-                             .desc(:year_month)
-    transactions = []
-    groups.each do |group|
-      group.transactions.each do |txn|
-        transactions << txn if txn.posted_at >= start_date && txn.posted_at <= end_date
-      end
-    end
-
-    # Sort by posted_at, then payee, then unique_count
-    transactions.sort! do |a, b|
-      result = b.posted_at <=> a.posted_at
-      if result == 0
-        result = a.payee <=> b.payee
-        if result == 0
-          result = a.unique_count <=> b.unique_count
-        end
-      end
-
-      result
-    end
-
-    transactions
-  end
-
-  def total_amount
-    unless @total_amount
-      # Add up all child envelopes transactions
-      @total_amount = child_envelopes.inject(0) { |running_total, child_envelope| running_total + (child_envelope.total_amount || 0) }
-
-      # Add up all my transactions
-      groups = TransactionGroup.where(envelope_id: self.id).only(:total_amount)
-      @total_amount = groups.inject(@total_amount) { |running_total, group| running_total + (group.total_amount || 0) }
-    end
-    @total_amount
-  end
-
-
-  ###############
-
 
   attr_accessor :suggested_amount
 
@@ -136,9 +58,19 @@ class Envelope
     end
   end
 
-  #def total_amount=(new_amount)
-  #  @total_amount = new_amount
-  #end
+  # This overrides the default to_param method that just returns id
+  # This causes our find method to still work because find calls to_i() on it which will just return the id
+  def to_param
+    "#{id}-#{name.parameterize}" if id
+  end
+  
+  def total_amount
+    @total_amount ||= read_attribute(:total_amount) || transactions.sum(:amount)
+  end
+  
+  def total_amount=(new_amount)
+    @total_amount = new_amount
+  end
 
   def inclusive_total_amount(organized_envelopes = nil)
     children = organized_envelopes.nil? ? self.child_envelopes : organized_envelopes[id]
@@ -151,7 +83,9 @@ class Envelope
     name = if parent_envelope_id.nil?
       self.name
     else
-      parent_full_name = self.parent_envelope.full_name(all_envelopes)
+      parent_envelope = all_envelopes ? all_envelopes.select {|envelope| envelope.id == self.parent_envelope_id}.first : Envelope.find(self.parent_envelope_id)
+    
+      parent_full_name = parent_envelope.full_name(all_envelopes)
 
       "#{parent_full_name}: #{self.name}"
     end
@@ -232,6 +166,28 @@ class Envelope
       env2 = envelopes2.select {|envelope| envelope.id == env.id}.first
       env.amount_funded_this_month = env2.nil? ? 0 : env2.total_amount
     end
+  end
+
+  def all_transactions(organized_envelopes = nil)
+    if self.id == 0 && organized_envelopes.present? # All Transactions envelope
+      all_child_envelope_ids = []
+      organized_envelopes[nil].each do |envelope|
+        all_child_envelope_ids.concat Envelope.all_child_envelope_ids(envelope.id, organized_envelopes)
+      end
+      all_child_envelope_ids.concat organized_envelopes['sys']
+    else
+      all_child_envelope_ids = Envelope.all_child_envelope_ids(self.id, organized_envelopes) << self.id
+    end
+    Transaction.where(envelope_id: all_child_envelope_ids)
+  end
+  
+  def self.all_child_envelope_ids(envelope_id, organized_envelopes = nil)
+    children = organized_envelopes ? organized_envelopes[envelope_id] : Envelope.where(parent_envelope_id: envelope_id)
+    all_child_ids = children.map(&:id)
+    children.each do |child|
+      all_child_ids << all_child_envelope_ids(child.id, organized_envelopes)
+    end
+    all_child_ids.flatten
   end
 
   def self.all_envelope(total_amount = nil)
