@@ -38,11 +38,14 @@ class TransactionTest < ActiveSupport::TestCase
     assert_equal transaction1, transactions[1]
     assert_equal transaction2, transactions[2]
     assert_equal transaction3, transactions[3]
-    assert_not_equal transaction1, transactions[0]
+    assert_not_equal transaction1, transactions[0], "== is not testing equality correctly"
   end
   
   test "without_transfers excludes when unique_id is nil" do
     transactions = Transaction.without_transfers
+
+    assert transactions.size > 0, "Can't do a proper test without any transactions"
+    assert transactions.size != Transaction.count, "Can't do a proper test without normal and transfer transactions"
     transactions.each do |transaction|
       assert_not_nil transaction.unique_id
     end
