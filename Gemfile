@@ -22,6 +22,7 @@ group :development do
   gem 'guard-test'
   gem 'rb-fsevent', require: false #if RUBY_PLATFORM =~ /darwin/i
   gem 'foreman'
+  gem 'capistrano'
 end
 
 gem 'pg', group: :production
