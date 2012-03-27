@@ -1,19 +1,11 @@
 class Rule
-  include Mongoid::Document
+  ##default_scope order(arel_table[:order])
+  ##scope :owned_by, lambda { |user_id| where(user_id: user_id) }
 
-  embedded_in :user
-  belongs_to :envelope
+  ##validates_presence_of :search_text, :user_id
 
-  field :search_text,       type: String
-  field :replacement_text,  type: String
-  field :order,             type: Integer
-
-  default_scope order_by([[:order, :asc]])
-
-  validates_presence_of :search_text
-
-  def identify
-  end
+  ##belongs_to :user
+  ##belongs_to :envelope
 
   def run(payee)
     if payee && payee.downcase.include?(self.search_text.downcase)
