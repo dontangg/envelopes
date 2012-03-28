@@ -102,6 +102,7 @@ class Transaction < ActiveRecord::Base
 
     starting_at = user.imported_transactions_at.nil? ? Date.today - 1.month : user.imported_transactions_at - 1.week
     
+    income_envelope_id = Envelope.owned_by(user.id).find_by_income(true).id
     unassigned_envelope_id = Envelope.owned_by(user.id).find_by_unassigned(true).id
     
     bank = Syrup.setup_institution(user.bank_id) do |config|
@@ -118,8 +119,10 @@ class Transaction < ActiveRecord::Base
       transaction = Transaction.new payee: raw_transaction.payee,
                                     amount: raw_transaction.amount,
                                     posted_at: raw_transaction.posted_at,
-                                    pending: raw_transaction.status == :pending,
-                                    envelope_id: unassigned_envelope_id
+                                    pending: raw_transaction.status == :pending
+
+      # Default to Available Cash if the amount is not negative, Unassigned if it is negative
+      transaction.envelope_id = transaction.amount < 0 ? unassigned_envelope_id : income_envelope_id 
       
       # Find a truly unique id for this transaction
       uniq_str = transaction.uniq_str
