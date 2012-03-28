@@ -23,8 +23,23 @@ set :default_environment, {
   "PATH" => "/home/app_user/.rbenv/shims:/home/app_user/.rbenv/bin:$PATH"
 }
 
-# if you're still using the script/reaper helper you will need
-# these http://github.com/rails/irs_process_scripts
+
+namespace :deploy do
+  desc "Zero-downtime restart of Unicorn"
+  task :restart, roles: :app, :except => { :no_release => true } do
+    run "kill -s USR2 `cat /tmp/unicorn.envelopes.pid`"
+  end
+
+  desc "Start Unicorn"
+  task :start, roles: :app, :except => { :no_release => true } do
+    run "cd #{current_path} ; bundle exec unicorn_rails -c config/unicorn.rb -D"
+  end
+
+  desc "Stop Unicorn"
+  task :stop, roles: :app, :except => { :no_release => true } do
+    run "kill -s QUIT `cat /tmp/unicorn.envelopes.pid`"
+  end 
+end
 
 # If you are using Passenger mod_rails uncomment this:
 # namespace :deploy do
