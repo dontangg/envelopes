@@ -51,11 +51,11 @@ class Envelope < ActiveRecord::Base
   end
   
   def total_amount
-    @total_amount ||= read_attribute(:total_amount) || transactions.sum(:amount) || 0
+    @total_amount ||= BigDecimal.new((read_attribute(:total_amount) || transactions.sum(:amount) || "0").to_s)
   end
   
   def total_amount=(new_amount)
-    @total_amount = new_amount
+    @total_amount = BigDeicmal.new(new_amount.to_s)
   end
 
   def inclusive_total_amount(organized_envelopes = nil)
