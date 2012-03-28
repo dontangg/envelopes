@@ -19,7 +19,7 @@ if env == "production"
   working_directory "/u/apps/envelopes/current"
 
   # feel free to point this anywhere accessible on the filesystem
-  user 'deployer', 'staff'
+  user 'app_user', 'app_user' # 'user', 'group'
   shared_path = "/u/apps/envelopes/shared"
 
   stderr_path "#{shared_path}/log/unicorn.stderr.log"
