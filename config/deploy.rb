@@ -39,13 +39,36 @@ namespace :deploy do
   task :stop, roles: :app, :except => { :no_release => true } do
     run "kill -s QUIT `cat /tmp/unicorn.envelopes.pid`"
   end 
+
+
+  namespace :assets do
+
+    desc <<-DESC
+      Run the asset precompilation rake task. You can specify the full path \
+      to the rake executable by setting the rake variable. You can also \
+      specify additional environment variables to pass to rake via the \
+      asset_env variable. The defaults are:
+
+        set :rake,      "rake"
+        set :rails_env, "production"
+        set :asset_env, "RAILS_GROUPS=assets"
+
+      * only runs if assets have changed (add `-s force=true` to force precompilation)
+    DESC
+    task :precompile, :roles => :web, :except => { :no_release => true } do
+      # Only precompile assets if any assets changed
+      # http://www.bencurtis.com/2011/12/skipping-asset-compilation-with-capistrano/
+      from = source.next_revision(current_revision)
+      if configuration[:force] || capture("cd #{latest_release} && #{source.local.log(from)} vendor/assets/ app/assets/ lib/assets/ | wc -l").to_i > 0
+        # Just like original: https://github.com/capistrano/capistrano/blob/master/lib/capistrano/recipes/deploy/assets.rb
+        run "cd #{latest_release} && #{rake} RAILS_ENV=#{rails_env} #{asset_env} assets:precompile"
+      else
+        logger.info "Skipping asset pre-compilation because there were no asset changes"
+      end
+    end
+
+  end
+
 end
 
-# If you are using Passenger mod_rails uncomment this:
-# namespace :deploy do
-#   task :start do ; end
-#   task :stop do ; end
-#   task :restart, :roles => :app, :except => { :no_release => true } do
-#     run "#{try_sudo} touch #{File.join(current_path,'tmp','restart.txt')}"
-#   end
-# end
+
