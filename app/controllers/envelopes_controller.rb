@@ -103,21 +103,22 @@ class EnvelopesController < ApplicationController
     @all_envelopes = Envelope.owned_by(current_user_id)
     @organized_envelopes = Envelope.organize(@all_envelopes)
 
-    @envelope_options_for_select = @all_envelopes.map {|envelope| [envelope.full_name(@all_envelopes), envelope.id] }
-    @envelope_options_for_select.unshift ['', ''] 
-
     top_level_envelope_ids = @organized_envelopes[nil].map {|envelope| envelope.id }
     @envelope_options_for_create_select = [ ['', ''] ]
     @all_envelopes.each do |envelope|
-      if envelope.parent_envelope_id.nil? || top_level_envelope_ids.include?(envelope.parent_envelope_id)
-        @envelope_options_for_create_select.push [envelope.full_name(@all_envelopes), envelope.id] 
+      unless envelope.income || envelope.unassigned
+        # Only include 1st or 2nd level envelopes
+        if envelope.parent_envelope_id.nil? || top_level_envelope_ids.include?(envelope.parent_envelope_id)
+          @envelope_options_for_create_select << [envelope.full_name(@all_envelopes), envelope.id] 
+        end
       end
     end
 
     @envelopes_with_transactions = []
     @all_envelopes.each do |envelope|
+      # Only include envelopes that do not contain other envelopes
       if @organized_envelopes[envelope.id].size == 0
-        @envelopes_with_transactions.push [envelope.full_name(@all_envelopes), envelope.id]
+        @envelopes_with_transactions << [envelope.full_name(@all_envelopes), envelope.id]
       end
     end
   end
