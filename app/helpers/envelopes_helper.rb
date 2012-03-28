@@ -9,8 +9,12 @@ module EnvelopesHelper
       end
       str += "every month"
     else
-      if expense.occurs_on_day && expense.occurs_on_month
-        str += "on #{Date::MONTHNAMES[expense.occurs_on_month.to_i]} #{expense.occurs_on_day.to_i.ordinalize} "
+      if expense.occurs_on_month
+        if expense.occurs_on_day
+          str += "on #{Date::MONTHNAMES[expense.occurs_on_month.to_i]} #{expense.occurs_on_day.to_i.ordinalize} "
+        else
+          str += "in #{Date::MONTHNAMES[expense.occurs_on_month.to_i]} "
+        end
       end
       str += "every year"
     end
