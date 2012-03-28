@@ -53,13 +53,13 @@ namespace :deploy do
         set :rails_env, "production"
         set :asset_env, "RAILS_GROUPS=assets"
 
-      * only runs if assets have changed (add `-s force=true` to force precompilation)
+      * only runs if assets have changed (add `-s force_assets=true` to force precompilation)
     DESC
     task :precompile, :roles => :web, :except => { :no_release => true } do
       # Only precompile assets if any assets changed
       # http://www.bencurtis.com/2011/12/skipping-asset-compilation-with-capistrano/
       from = source.next_revision(current_revision)
-      if configuration[:force] || capture("cd #{latest_release} && #{source.local.log(from)} vendor/assets/ app/assets/ lib/assets/ | wc -l").to_i > 0
+      if fetch(:force_assets, false) || capture("cd #{latest_release} && #{source.local.log(from)} vendor/assets/ app/assets/ lib/assets/ | wc -l").to_i > 0
         # Just like original: https://github.com/capistrano/capistrano/blob/master/lib/capistrano/recipes/deploy/assets.rb
         run "cd #{latest_release} && #{rake} RAILS_ENV=#{rails_env} #{asset_env} assets:precompile"
       else
