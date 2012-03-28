@@ -51,7 +51,7 @@ class Envelope < ActiveRecord::Base
   end
   
   def total_amount
-    @total_amount ||= read_attribute(:total_amount) || transactions.sum(:amount)
+    @total_amount ||= read_attribute(:total_amount) || transactions.sum(:amount) || 0
   end
   
   def total_amount=(new_amount)
