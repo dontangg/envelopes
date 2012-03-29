@@ -54,7 +54,7 @@ class EnvelopesController < ApplicationController
     params.each do |key, value|
       match = /fill_envelope_(\d+)/.match(key)
       if match && match.length == 2
-        amount = value.scan(/[-0-9.]+/).join.to_f
+        amount = value.gsub(/[^-0-9.]/, '').to_d
         
         if amount > 0
           to_envelope = Envelope.find(match[1])

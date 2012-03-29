@@ -5,7 +5,7 @@ class Expense
   end
   
   def amount=(new_amount)
-    @amount = new_amount.to_f
+    @amount = new_amount.to_d
   end
 
   # Can be either :yearly or :monthly

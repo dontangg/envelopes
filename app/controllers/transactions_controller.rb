@@ -77,7 +77,7 @@ class TransactionsController < ApplicationController
   end
   
   def create_transfer
-    amount = params[:transfer_amount].scan(/[-0-9.]+/).join.to_f
+    amount = params[:transfer_amount].gsub(/[^-0-9.]/, '').to_d
 
     if amount > 0 && params[:transfer_from_id] != params[:transfer_to_id]
       @attempted_transfer = true
