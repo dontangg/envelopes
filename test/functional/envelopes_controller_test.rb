@@ -77,8 +77,32 @@ class EnvelopesControllerTest < ActionController::TestCase
       },
       format: :js
     }
-    
+
     assert_response :success
+
+    fuel = Envelope.find(envelopes(:fuel).id)
+
+    assert_equal 120.5, fuel.expense.amount
+    assert_equal 'Fuel!', fuel.name
+  end
+
+  test "formatted envelope expense amount should still update correctly" do
+    put :update, {
+      id: envelopes(:fuel).id,
+      envelope: {
+        name: 'Fuel!',
+        expense: {
+          amount: '$121.50'
+        }
+      },
+      format: :js
+    }
+
+    assert_response :success
+
+    fuel = Envelope.find(envelopes(:fuel).id)
+
+    assert_equal 121.5, fuel.expense.amount
   end
 
   test "should show envelopes to fill" do

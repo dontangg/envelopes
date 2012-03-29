@@ -87,6 +87,8 @@ class EnvelopesController < ApplicationController
     @envelope = Envelope.find(params[:id])
     authorize! :update, @envelope
 
+    params[:envelope][:expense][:amount].gsub!(/[^-0-9.]/, '') if params[:envelope][:expense] && params[:envelope][:expense][:amount]
+
     # params[:envelope][:expense] = Expense.new(params[:envelope][:expense]) if params[:envelope] && params[:envelope][:expense]
 
     if @envelope.update_attributes(params[:envelope])
