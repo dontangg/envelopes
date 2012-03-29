@@ -4,7 +4,7 @@ gem 'rails', '3.2.2'
 gem 'unicorn' unless RUBY_PLATFORM =~ /mingw32/i
 gem 'jquery-rails'
 gem 'cancan', '~> 1.6'
-gem 'syrup', '~> 0.0.10'
+gem 'syrup', '~> 0.0.11'
 gem 'gibberish'
 gem 'bcrypt-ruby', '~> 3.0.0' # To use ActiveModel has_secure_password
 # gem 'ruby-debug19', :require => 'ruby-debug' # To use debugger
