@@ -118,7 +118,7 @@ class TransactionsController < ApplicationController
   end
 
   def import
-    Transaction.import_all(current_user_id)
+    @import_count = Transaction.import_all(current_user_id)
 
     respond_to do |format|
       format.js

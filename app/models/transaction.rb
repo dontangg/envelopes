@@ -111,6 +111,7 @@ class Transaction < ActiveRecord::Base
       config.secret_questions = user.bank_secret_questions
     end
     
+    import_count = 0
     id_cache = {}
     account = bank.find_account_by_id user.bank_account_id
     account.find_transactions(starting_at, Date.today).each do |raw_transaction|
@@ -132,7 +133,7 @@ class Transaction < ActiveRecord::Base
       transaction.unique_id = uniq_str + num.to_s
       id_cache[transaction.unique_id] = true
       
-      import(transaction, user.rules)
+      import_count = import_count.next if import(transaction, user.rules)
     end
     
     # Make sure that our balance matches the bank's balance
@@ -150,6 +151,7 @@ class Transaction < ActiveRecord::Base
     user.imported_transactions_at = DateTime.now
     user.save
     
+    import_count
   end
 
   def self.import(transaction, rules = [])
