@@ -49,6 +49,16 @@ cancelDatePicker = (event) ->
     source: "<%= CGI.unescape url.suggest_payee_transactions_path %>"
     minLength: 2
 
+  $('#update_all_transactions')
+    .on('ajax:beforeSend', ->
+      cancelDatePicker()
+      $('#update_all_transactions .loading-overlay').css('opacity', 0.7).show()
+    ).on('ajax:error', (event, xhr, status, error) ->
+      showAlert error
+      $('#update_all_transactions .loading-overlay').hide()
+    )
+   
+
 ###
 # On DOM Ready
 ###
@@ -76,16 +86,6 @@ $ ->
     if associated_transaction.length > 0
       newAmount = parseFloat($this.val().replace(/[^-.0-9]/g, "")) * -1
       associated_transaction.find('.amount input').val(newAmount.toFixed(2).replace /([.0-9]+)/g, "$$$1")
-  
-  $('#update_all_transactions')
-    .on('ajax:beforeSend', ->
-      cancelDatePicker()
-      $('#update_all_transactions .loading-overlay').css('opacity', 0.7).show()
-    ).on('ajax:error', (event, xhr, status, error) ->
-      showAlert error
-      $('#update_all_transactions .loading-overlay').hide()
-    )
-    
   
   $('#envelope_aside .transfer').click ->
     modal = showModal

@@ -6,7 +6,7 @@ class TransactionsController < ApplicationController
     authorize! :update, transaction
     
     if params[:transaction] && params[:transaction][:amount]
-      params[:transaction][:amount] = params[:transaction][:amount].scan(/[-0-9.]+/).join
+      params[:transaction][:amount].gsub!(/[^-0-9.]+/, '')
     end
 
     if transaction.update_attributes(params[:transaction])
