@@ -16,7 +16,10 @@ group :assets do
   gem 'uglifier',     '>= 1.0.3'
 end
 
-gem 'sqlite3', group: [:development, :test]
+group :development, :test do
+  gem 'sqlite3'
+  gem 'factory_girl_rails'
+end
 
 group :development do
   gem 'rake'
@@ -24,7 +27,6 @@ group :development do
   gem 'rb-fsevent', require: false #if RUBY_PLATFORM =~ /darwin/i
   gem 'foreman'
   gem 'capistrano'
-  gem 'factory_girl_rails', '~> 3.0'
 end
 
 gem 'pg', group: :production

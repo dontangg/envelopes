@@ -178,7 +178,7 @@ DEPENDENCIES
   cancan (~> 1.6)
   capistrano
   coffee-rails (~> 3.2.1)
-  factory_girl_rails (~> 3.0)
+  factory_girl_rails
   foreman
   gibberish
   guard-test
