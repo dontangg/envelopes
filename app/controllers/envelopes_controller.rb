@@ -20,7 +20,11 @@ class EnvelopesController < ApplicationController
       raise CanCan::AccessDenied.new("Not authorized!", :read, Envelope) unless @envelope
     end
 
-    @envelope_options_for_select = @all_envelopes.map {|envelope| [envelope.full_name(@all_envelopes), envelope.id] }
+    # Only suggest envelopes that don't contain other envelopes
+    @envelope_options_for_select = []
+    @all_envelopes.each do |envelope|
+      @envelope_options_for_select << [envelope.full_name(@all_envelopes), envelope.id] if @organized_envelopes[envelope.id].empty?
+    end
     
     @start_date = params[:start_date].try(:to_date) || Date.today - 1.month
     @end_date = params[:end_date].try(:to_date) || Date.today
