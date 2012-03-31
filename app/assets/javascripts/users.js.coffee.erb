@@ -26,10 +26,10 @@ $ ->
     $.post("<%= url.import_transactions_path %>")
       .error (data) ->
         hideModal()
-        regex = /<h1>\s*([^<]*)\s*<\/h1>\s*<pre>([^<]*)/m
-        matches = regex.exec(data.responseText)
+        #regex = /<h1>\s*([^<]*)\s*<\/h1>\s*<pre>([^<]*)/m
+        #matches = regex.exec(data.responseText)
         
-        $("<div class='flash alert'><div><pre style='margin:0'>" + matches[1] + "\n" + matches[2] + "</pre></div></div>")
+        $("<div class='flash alert'><div>An error occurred!</div></div>")
           .appendTo('body')
           .delay(8000)
           .fadeOut ->
