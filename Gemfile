@@ -24,6 +24,7 @@ group :development do
   gem 'rb-fsevent', require: false #if RUBY_PLATFORM =~ /darwin/i
   gem 'foreman'
   gem 'capistrano'
+  gem 'factory_girl_rails', '~> 3.0'
 end
 
 gem 'pg', group: :production
