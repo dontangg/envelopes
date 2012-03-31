@@ -18,6 +18,9 @@ set :user, "app_user"
 # http://weblog.jamisbuck.org/2007/10/14/capistrano-2-1
 default_run_options[:pty] = true
 
+# Don't show so much! (Log levels: IMPORTANT, INFO, DEBUG, TRACE, MAX_LEVEL)
+logger.level = Capistrano::Logger::DEBUG
+
 # Since we're using pty, load the path ourselves
 set :default_environment, {
   "PATH" => "/home/app_user/.rbenv/shims:/home/app_user/.rbenv/bin:$PATH"
