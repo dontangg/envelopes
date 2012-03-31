@@ -4,7 +4,15 @@
 if($('#show_transfers').prop('checked'))
   $('#update_all_transactions').submit();
 
-$('#envelope_details header .balance').text('<%= number_to_currency(@new_balance) %>');
+balanceEl = $('#envelope_details header .balance');
+balanceEl.text('<%= number_to_currency(@new_balance) %>');
+if(<%= @new_balance %> < 0) {
+  balanceEl.removeClass('positive-number');
+  balanceEl.addClass('negative-number');
+} else {
+  balanceEl.addClass('positive-number');
+  balanceEl.removeClass('negative-number');
+}
 
 $('.chart-bar.spent').attr('title', '<%= number_to_currency(@spent_amount) %>').width('<%= number_to_percentage(@spent_percent) %>');
 $('.chart-bar.budget').attr('title', '<%= number_to_currency(@budgeted_amount) %>').width('<%= number_to_percentage(@budgeted_percent) %>');
