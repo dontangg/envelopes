@@ -18,4 +18,20 @@ class UserTest < ActiveSupport::TestCase
 
     assert_equal 'mypass', u.bank_password
   end
+
+  test "setting password should set password_digest" do
+    u = User.new
+
+    u.password = "testpass"
+
+    assert_not_nil u.password_digest
+  end
+
+  test "authenticate returns true when the password matches" do
+    u = User.new password: 'mypass'
+
+    assert u.authenticate('mypass')
+
+    assert !u.authenticate('not mypass')
+  end
 end
