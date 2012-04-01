@@ -27,13 +27,13 @@ end
 group :development, :test do
   gem 'sqlite3'
   gem 'factory_girl_rails'
-  #gem 'turn', require: false
-  #gem 'minitest'
+  gem 'turn'
+  gem 'minitest'
 end
 
 group :development do
   gem 'rake'
-  gem 'guard-test'
+  gem 'guard-minitest'
   gem 'rb-fsevent', require: false #if RUBY_PLATFORM =~ /darwin/i
   gem 'foreman'
   gem 'capistrano'
