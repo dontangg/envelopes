@@ -31,7 +31,6 @@ class EnvelopesHelperTest < ActionView::TestCase
     str = stringify_expense_frequency(expense)
 
     assert_equal "on January 1st every year", str
-
   end
 
   test "should make a nice string for yearly expenses without a day or month" do
@@ -40,6 +39,14 @@ class EnvelopesHelperTest < ActionView::TestCase
     str = stringify_expense_frequency(expense)
 
     assert_equal "every year", str
+  end
+
+  test "should make a nice string for yearly expenses with only a month" do
+    expense = Expense.new amount: 8.09, frequency: :yearly, occurs_on_month: 7
+
+    str = stringify_expense_frequency(expense)
+
+    assert_equal "in July every year", str
   end
 
   test "content for frequency popover returns the right kind of string" do
