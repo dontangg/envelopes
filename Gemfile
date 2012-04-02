@@ -24,6 +24,8 @@ group :assets do
   gem 'uglifier',     '>= 1.2'
 end
 
+# Put test-only gems in this group so their generators
+# and rake tasks are available in development mode:
 group :development, :test do
   gem 'sqlite3'
   gem 'factory_girl_rails'
