@@ -2,7 +2,7 @@ require 'test_helper'
 
 class TransactionTest < ActiveSupport::TestCase
   test "uniq_str generates the correct unique string" do
-    txn = transactions(:ancestry)
+    txn = FactoryGirl.build :transaction
     
     assert_equal txn.unique_id, txn.uniq_str
   end
