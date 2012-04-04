@@ -223,7 +223,7 @@ class Envelope < ActiveRecord::Base
             # If it is a monthly envelope, suggest the full amount
             current_envelope.suggested_amount = current_envelope.expense.amount
           else
-            if current_envelope.expense.occurs_on_day.nil? || current_envelope.expense.occurs_on_month.nil?
+            if current_envelope.expense.occurs_on_month.nil?
               # If it is a yearly envelope without a date, suggest the full amount / 12
               current_envelope.suggested_amount = current_envelope.expense.amount / 12
             else
@@ -232,12 +232,12 @@ class Envelope < ActiveRecord::Base
                 # Get all the envelopes with the same parent that are also yearly with a date
                 yearlies = []
                 organized_envelopes[current_envelope.parent_envelope_id].each do |envelope|
-                  if envelope.expense.try(:frequency) == :yearly && envelope.expense.occurs_on_day.present? && envelope.expense.occurs_on_month.present?
+                  if envelope.expense.try(:frequency) == :yearly && envelope.expense.occurs_on_month.present?
                     months = envelope.expense.occurs_on_month
                     months += 12 if envelope.expense.occurs_on_month < Date.today.month
                     months -= Date.today.month - 1
                     yearlies << {
-                      sort_by_key: "%02d%02d" % [months, envelope.expense.occurs_on_day],
+                      sort_by_key: "%02d%02d" % [months, envelope.expense.occurs_on_day || 1],
                       number_of_months_before_due: months,
                       envelope: envelope
                     }
