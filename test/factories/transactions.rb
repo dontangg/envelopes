@@ -6,7 +6,7 @@ FactoryGirl.define do
     original_payee '1239465 BEST BUY USA'
     amount 1.23
     pending false
-    unique_id '2012-04-02~1239465 BEST BUY USA~1.23~false~'
+    unique_id { uniq_str }
     envelope FactoryGirl.build :envelope
   end
 end

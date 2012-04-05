@@ -4,7 +4,7 @@ class TransactionTest < ActiveSupport::TestCase
   test "uniq_str generates the correct unique string" do
     txn = FactoryGirl.build :transaction
     
-    assert_equal txn.unique_id, txn.uniq_str
+    assert_equal "#{Date.today.strftime('%F')}~1239465 BEST BUY USA~1.23~false~", txn.uniq_str
   end
   
   test "owned_by returns transactions in envelopes owned by the right user" do
