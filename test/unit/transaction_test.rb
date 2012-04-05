@@ -4,15 +4,17 @@ class TransactionTest < ActiveSupport::TestCase
   test "uniq_str generates the correct unique string" do
     txn = FactoryGirl.build :transaction
     
-    assert_equal "#{Date.today.strftime('%F')}~1239465 BEST BUY USA~1.23~false~", txn.uniq_str
+    assert_equal "#{Date.today.strftime('%F')}~#{txn.original_payee}~#{txn.amount}~#{txn.pending?}~", txn.uniq_str
   end
   
   test "owned_by returns transactions in envelopes owned by the right user" do
-    txns = Transaction.owned_by(users(:jim))
-    jims_envelopes = Envelope.where(user_id: users(:jim).id).map(&:id)
-    txns.each do |transaction|
-      assert jims_envelopes.include?(transaction.envelope_id)
-    end
+    envelope = FactoryGirl.create :envelope_with_transactions
+    FactoryGirl.create :envelope_with_transactions, user: envelope.user
+    FactoryGirl.create :envelope_with_transactions
+
+    txns = Transaction.owned_by(envelope.user.id)
+    users_envelopes = envelope.user.envelopes.map(&:id)
+    assert txns.all? { |txn| users_envelopes.include?(txn.envelope_id) }
   end
   
   test "envelope_id must be present before saving" do
@@ -41,7 +43,10 @@ class TransactionTest < ActiveSupport::TestCase
     assert_not_equal transaction1, transactions[0], "== is not testing equality correctly"
   end
   
-  test "without_transfers excludes when unique_id is nil" do
+  test "without_transfers excludes transactions with a nil unique_id" do
+    FactoryGirl.create_list :transfer_transaction, 3
+    FactoryGirl.create_list :transaction, 3
+
     transactions = Transaction.without_transfers
 
     assert transactions.size > 0, "Can't do a proper test without any transactions"
@@ -52,14 +57,16 @@ class TransactionTest < ActiveSupport::TestCase
   end
 
   test "associated transaction amounts stay in sync" do
-    transfer_to = transactions(:transfer_to_food)
-    transfer_from = transfer_to.associated_transaction
+    txn1 = FactoryGirl.create :transfer_transaction, amount: 15.01
+    txn2 = FactoryGirl.create :transfer_transaction, amount: txn1.amount * -1, associated_transaction_id: txn1.id
+    txn1.update_attribute :associated_transaction_id, txn2.id
 
-    assert transfer_to.amount == (transfer_from.amount * -1)
+    assert txn1.amount == (txn2.amount * -1)
 
-    transfer_to.amount = 25
-    transfer_to.save
+    txn1.update_attribute :amount, 25
 
-    assert_equal -25, transfer_from.amount
+    txn2 = Transaction.find(txn2.id)
+
+    assert_equal -25, txn2.amount
   end
 end
