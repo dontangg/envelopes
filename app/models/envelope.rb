@@ -55,7 +55,7 @@ class Envelope < ActiveRecord::Base
   end
   
   def total_amount=(new_amount)
-    @total_amount = BigDecimal.new(new_amount.to_s)
+    @total_amount = new_amount.nil? ? nil : BigDecimal.new(new_amount.to_s)
   end
 
   def inclusive_total_amount(organized_envelopes = nil)

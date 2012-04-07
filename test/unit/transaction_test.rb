@@ -75,4 +75,57 @@ class TransactionTest < ActiveSupport::TestCase
 
     assert_equal 'my payee', txn.payee
   end
+
+  test "should give valid payee suggestions" do
+    txn1 = FactoryGirl.create :transaction, payee: 'an awesome store'
+    txn2 = FactoryGirl.create :transaction, payee: 'a great store', envelope: txn1.envelope
+    txn3 = FactoryGirl.create :transaction, payee: '1234 STORE USA', original_payee: '1234 STORE USA', envelope: txn1.envelope
+
+    suggestions = Transaction.payee_suggestions_for_user_id(txn1.envelope.user.id, 'store')
+    assert suggestions.size > 0, "There must be some suggestions to test"
+
+    suggestions.each do |sugg|
+      assert (sugg =~ /store/i), "Each suggestion for 'store' should include the word 'store' (suggestion: '#{sugg}')"
+    end
+
+    assert suggestions.include?(txn1.payee), "#{txn1.payee} should be a suggestion"
+    assert suggestions.include?(txn2.payee), "#{txn1.payee} should be a suggestion"
+    assert !suggestions.include?(txn3.payee), "#{txn1.payee} should NOT be a suggestion"
+  end
+
+  test "should give valid original payee suggestions" do
+    txn1 = FactoryGirl.create :transaction, original_payee: '2345 DOLLAR STORE'
+    txn2 = FactoryGirl.create :transaction, original_payee: '1357 BOAT STORE', envelope: txn1.envelope
+    txn3 = FactoryGirl.create :transaction, original_payee: '1234 STORE USA', envelope: txn1.envelope
+
+    suggestions = Transaction.payee_suggestions_for_user_id(txn1.envelope.user.id, 'store', true)
+    assert suggestions.size > 0, "There must be some suggestions to test"
+
+    suggestions.each do |sugg|
+      assert (sugg =~ /store/i), "Each suggestion for 'store' should include the word 'store' (suggestion: '#{sugg}')"
+    end
+
+    assert suggestions.include?(txn1.original_payee), "#{txn1.original_payee} should be a suggestion"
+    assert suggestions.include?(txn2.original_payee), "#{txn2.original_payee} should be a suggestion"
+    assert suggestions.include?(txn3.original_payee), "#{txn3.original_payee} should be a suggestion"
+  end
+
+  test "can create a transfer" do
+    from_envelope = FactoryGirl.create :envelope
+    to_envelope = FactoryGirl.create :envelope, user: from_envelope.user
+
+    from_sum = from_envelope.total_amount
+    to_sum = to_envelope.total_amount
+
+    txn = Transaction.create_transfer 4.56, from_envelope.id, to_envelope.id, "Transferred from ...", "Transferred to ..."
+
+    assert txn.associated_transaction_id.present?, "Transfer transactions should have an associated transaction"
+    assert txn.amount == -txn.associated_transaction.amount, "Associated transaction amount should equal -amount"
+
+    from_envelope.total_amount = nil
+    to_envelope.total_amount = nil
+
+    assert from_envelope.total_amount = from_sum + txn.amount, "New envelope total should have changed"
+    assert to_envelope.total_amount = to_sum - txn.amount, "New envelope total should have changed"
+  end
 end
