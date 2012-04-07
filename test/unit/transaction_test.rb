@@ -76,6 +76,28 @@ class TransactionTest < ActiveSupport::TestCase
     assert_equal 'my payee', txn.payee
   end
 
+  test "should return transactions starting_at a date" do
+    txn1 = FactoryGirl.create :transaction, posted_at: Date.today
+    txn2 = FactoryGirl.create :transaction, posted_at: Date.today - 1, envelope: txn1.envelope
+
+    txns = Transaction.starting_at Date.today
+
+    assert txns.all? { |txn| txn.posted_at >= Date.today }
+    assert txns.any? { |txn| txn.id == txn1.id }
+    assert txns.none? { |txn| txn.id == txn2.id }
+  end
+
+  test "should return transactions ending_at a date" do
+    txn1 = FactoryGirl.create :transaction, posted_at: Date.today
+    txn2 = FactoryGirl.create :transaction, posted_at: Date.today - 1, envelope: txn1.envelope
+
+    txns = Transaction.ending_at(Date.today - 1)
+
+    assert txns.all? { |txn| txn.posted_at <= Date.today - 1 }
+    assert txns.any? { |txn| txn.id == txn2.id }
+    assert txns.none? { |txn| txn.id == txn1.id }
+  end
+
   test "should give valid payee suggestions" do
     txn1 = FactoryGirl.create :transaction, payee: 'an awesome store'
     txn2 = FactoryGirl.create :transaction, payee: 'a great store', envelope: txn1.envelope
