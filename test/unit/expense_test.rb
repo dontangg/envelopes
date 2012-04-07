@@ -57,5 +57,13 @@ class ExpenseTest < ActiveSupport::TestCase
     expense.amount = 1.234
     assert_kind_of BigDecimal, expense.amount
   end
+
+  test "amount= always stored absolute value" do
+    expense = Expense.new
+
+    expense.amount = "-2.23"
+
+    assert_equal 2.23, expense.amount
+  end
 end
 

@@ -9,10 +9,14 @@ FactoryGirl.define do
     unique_id { uniq_str }
     envelope
 
+    trait :transfer do
+      unique_id nil
+    end
+
     factory :transfer_transaction do
       payee 'Transferred money from another envelope'
       original_payee 'Transferred money from another envelope'
-      unique_id nil
+      transfer
     end
   end
 end
