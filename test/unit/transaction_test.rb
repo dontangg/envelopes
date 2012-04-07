@@ -93,6 +93,15 @@ class TransactionTest < ActiveSupport::TestCase
     assert !suggestions.include?(txn3.payee), "#{txn1.payee} should NOT be a suggestion"
   end
 
+  test "should suggest payees with fuzzy matches" do
+    txn1 = FactoryGirl.create :transaction, payee: 'an awesome store'
+
+    suggestions = Transaction.payee_suggestions_for_user_id(txn1.envelope.user.id, 'awe store')
+    assert suggestions.size > 0, "There must be some suggestions to test"
+
+    assert suggestions.include?(txn1.payee)
+  end
+
   test "should give valid original payee suggestions" do
     txn1 = FactoryGirl.create :transaction, original_payee: '2345 DOLLAR STORE'
     txn2 = FactoryGirl.create :transaction, original_payee: '1357 BOAT STORE', envelope: txn1.envelope

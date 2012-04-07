@@ -26,7 +26,7 @@ class Transaction < ActiveRecord::Base
         column = original ? arel_table[:original_payee] : arel_table[:payee]
 
         relation = owned_by(user_id)
-          .where(column.matches("%#{term}%"))
+          .where(column.matches("%#{term.gsub(/\s+/, '%')}%"))
           .select(column)
           .order(column)
           .order(arel_table[:posted_at].desc)
