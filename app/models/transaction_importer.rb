@@ -2,7 +2,7 @@ class TransactionImporter
 
   class << self
 
-    def self.auto_import(user_id)
+    def auto_import(user_id)
       user = User.find(user_id)
 
       return unless user.bank_username && user.bank_id
@@ -61,7 +61,7 @@ class TransactionImporter
       import_count
     end
 
-    def self.import(transaction, rules = [])
+    def import(transaction, rules = [])
       # Check for existence of this transaction
       # If the importing transaction has a unique_id and one already exists with the same unique_id,
       # it has already been imported.
@@ -75,12 +75,13 @@ class TransactionImporter
         if rule_result
           transaction.payee = rule_result[0] if rule_result[0]
           transaction.envelope_id = rule_result[1] if rule_result[1]
+          break
         end
       end
 
       if transaction.payee == transaction.original_payee
         # Clean the payee
-        strings_to_remove = [/[A-Z0-9]{17}/, /P\.O\.S\.\s*PURCHASE/i, /REF # \d{15}/, /\d{3}-?\d{3}-?\d{4}/, /\s#[^\s]+/]
+        strings_to_remove = [/[A-Z0-9]{17}\s*/, /P\.O\.S\.\s*PURCHASE\s*/i, /REF # \d{15}\s*/, /\b\d{3}-?\d{3}-?\d{4}\s+/, /\s#[^\s]+/, /\d{5,}/]
         strings_to_remove.each { |str| transaction.payee.gsub! str, '' }
 
         # Correct the case of the payee
