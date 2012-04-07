@@ -12,35 +12,38 @@ class Transaction < ActiveRecord::Base
   
   belongs_to :envelope
   belongs_to :associated_transaction, class_name: 'Transaction', foreign_key: 'associated_transaction_id'
-  
-  def self.owned_by(user_id)
-    user_id = user_id.id if user_id.respond_to? :id
-    envelopes_table = Envelope.arel_table
-    where(self.arel_table[:envelope_id].in(envelopes_table.project(envelopes_table[:id]).where(envelopes_table[:user_id].eq(user_id))))
-  end
-  
-  def self.payee_suggestions_for_user_id(user_id, term, original = nil)
-    unscoped do
-      column = original ? arel_table[:original_payee] : arel_table[:payee]
 
-      relation = owned_by(user_id)
-        .where(column.matches("%#{term}%"))
-        .select(column)
-        .order(column)
-        .order(arel_table[:posted_at].desc)
-      
-      relation = relation.where(arel_table[:payee].not_eq(arel_table[:original_payee])) unless original
-
-      relation.map(&column.name)
+  class << self
+  
+    def owned_by(user_id)
+      user_id = user_id.id if user_id.respond_to? :id
+      envelopes_table = Envelope.arel_table
+      where(self.arel_table[:envelope_id].in(envelopes_table.project(envelopes_table[:id]).where(envelopes_table[:user_id].eq(user_id))))
     end
-  end
-  
-  def self.create_transfer(amount, from_envelope_id, to_envelope_id, from_txn_payee, to_txn_payee)
-    from_txn = Transaction.create posted_at: Date.today, payee: from_txn_payee, original_payee: from_txn_payee, envelope_id: from_envelope_id, amount: -amount
-    to_txn = Transaction.create posted_at: Date.today, payee: to_txn_payee, original_payee: to_txn_payee, envelope_id: to_envelope_id, amount: amount, associated_transaction_id: from_txn.id
+    
+    def payee_suggestions_for_user_id(user_id, term, original = nil)
+      unscoped do
+        column = original ? arel_table[:original_payee] : arel_table[:payee]
 
-    from_txn.associated_transaction_id = to_txn.id
-    from_txn.save
+        relation = owned_by(user_id)
+          .where(column.matches("%#{term}%"))
+          .select(column)
+          .order(column)
+          .order(arel_table[:posted_at].desc)
+        
+        relation = relation.where(arel_table[:payee].not_eq(arel_table[:original_payee])) unless original
+
+        relation.map(&column.name)
+      end
+    end
+    
+    def create_transfer(amount, from_envelope_id, to_envelope_id, from_txn_payee, to_txn_payee)
+      from_txn = Transaction.create posted_at: Date.today, payee: from_txn_payee, original_payee: from_txn_payee, envelope_id: from_envelope_id, amount: -amount
+      to_txn = Transaction.create posted_at: Date.today, payee: to_txn_payee, original_payee: to_txn_payee, envelope_id: to_envelope_id, amount: amount, associated_transaction_id: from_txn.id
+
+      from_txn.update_column :associated_transaction_id, to_txn.id
+    end
+
   end
   
   def strip_payee

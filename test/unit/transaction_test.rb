@@ -69,4 +69,10 @@ class TransactionTest < ActiveSupport::TestCase
 
     assert_equal -25, txn2.amount
   end
+
+  test "should strip whitespace from payee before save" do
+    txn = FactoryGirl.create :transaction, payee: ' my payee  '
+
+    assert_equal 'my payee', txn.payee
+  end
 end
