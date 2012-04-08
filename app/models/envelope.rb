@@ -12,11 +12,95 @@ class Envelope < ActiveRecord::Base
   has_many :transactions
 
   after_create :move_parents_transactions
-  before_destroy :check_for_transactions
+  before_destroy :check_for_any_transactions
   
   serialize :expense, Expense
 
   attr_accessor :suggested_amount
+
+  class << self
+
+    def move_transactions(from_envelope_id, to_envelope_id)
+      Transaction.where(envelope_id: from_envelope_id).update_all(envelope_id: to_envelope_id)
+    end
+
+    # A chainable scope that also returns the amount in the envelope
+    def with_amounts
+      et = Envelope.arel_table
+      tt = Transaction.arel_table
+      
+      envelopes_columns = Envelope.column_names.map {|column_name| et[column_name.to_sym] }
+      
+      sum_function = Arel::Nodes::NamedFunction.new('SUM', [tt[:amount]])
+      aggregation = Arel::Nodes::NamedFunction.new('COALESCE', [sum_function, 0], 'total_amount')
+      
+      select([et[Arel.star], aggregation])
+        .joins(Arel::Nodes::OuterJoin.new(tt, Arel::Nodes::On.new(et[:id].eq(tt[:envelope_id]))))
+        .group(envelopes_columns)
+    end
+    
+    def add_funded_this_month(envelopes, user_id)
+      et = Envelope.arel_table
+      tt = Transaction.arel_table
+      
+      envelopes_columns = Envelope.column_names.map {|column_name| et[column_name.to_sym] }
+      
+      sum_function = Arel::Nodes::NamedFunction.new('SUM', [tt[:amount]])
+      aggregation = Arel::Nodes::NamedFunction.new('COALESCE', [sum_function, 0], 'total_amount')
+      
+      envelopes2 = select([et[:id], aggregation])
+        .joins(Arel::Nodes::OuterJoin.new(tt, Arel::Nodes::On.new(et[:id].eq(tt[:envelope_id]))))
+        .where(tt[:amount].gt(0).and(tt[:posted_at].gteq(Date.today.beginning_of_month)).and(et[:user_id].eq(user_id)))
+        .group([et[:id]])
+      
+      envelopes.each do |env|
+        env2 = envelopes2.select {|envelope| envelope.id == env.id}.first
+        env.amount_funded_this_month = env2.nil? ? 0 : env2.total_amount
+      end
+    end
+
+    def all_child_envelope_ids(envelope_id, organized_envelopes = nil)
+      children = organized_envelopes ? organized_envelopes[envelope_id] : Envelope.where(parent_envelope_id: envelope_id)
+      all_child_ids = children.map(&:id)
+      children.each do |child|
+        all_child_ids << all_child_envelope_ids(child.id, organized_envelopes)
+      end
+      all_child_ids.flatten
+    end
+
+    def all_envelope(total_amount = nil)
+      env = Envelope.new(name: 'All Transactions')
+      env.total_amount = total_amount if total_amount
+      env.id = 0
+      env
+    end
+    
+    # Returns a Hash with all the envelopes organized. eg:
+    #
+    #   'sys' => [array of income and unassigned envelopes]
+    #   nil   => [array of all envelopes with parent_envelope_id = nil]
+    #   1     => [array of envelopes with parent_envelope_id = 1]
+    def organize(all_envelopes)
+      total_amount = 0
+      envelopes = Hash.new { |hash, key| hash[key] = [] }
+      all_envelopes.each do |envelope|
+        total_amount += envelope.total_amount
+        envelope.full_name(all_envelopes) # Have each envelope figure out and memoize its full_name
+        if envelope.income || envelope.unassigned
+          envelopes['sys'] << envelope
+        else
+          envelopes[envelope.parent_envelope_id] << envelope
+        end
+      end
+      
+      envelopes['sys'].unshift(all_envelope(total_amount))
+      
+      all_envelopes.sort! {|e1, e2| e1.full_name <=> e2.full_name }
+
+      envelopes
+    end
+
+  end
 
   def move_parents_transactions
     if self.parent_envelope_id.present?
@@ -24,11 +108,7 @@ class Envelope < ActiveRecord::Base
     end
   end
 
-  def self.move_transactions(from_envelope_id, to_envelope_id)
-    Transaction.where(envelope_id: from_envelope_id).update_all(envelope_id: to_envelope_id)
-  end
-
-  def check_for_transactions
+  def check_for_any_transactions
     self.transactions.count == 0
   end
 
@@ -51,7 +131,7 @@ class Envelope < ActiveRecord::Base
   end
   
   def total_amount
-    @total_amount ||= BigDecimal.new((read_attribute(:total_amount) || transactions.sum(:amount) || "0").to_s)
+    @total_amount ||= (read_attribute(:total_amount) || transactions.sum(:amount) || "0").to_d
   end
   
   def total_amount=(new_amount)
@@ -119,41 +199,6 @@ class Envelope < ActiveRecord::Base
     all_transactions.where(where_clause).sum(:amount)
   end
   
-  # A chainable scope that also returns the amount in the envelope
-  def self.with_amounts
-    et = Envelope.arel_table
-    tt = Transaction.arel_table
-    
-    envelopes_columns = Envelope.column_names.map {|column_name| et[column_name.to_sym] }
-    
-    sum_function = Arel::Nodes::NamedFunction.new('SUM', [tt[:amount]])
-    aggregation = Arel::Nodes::NamedFunction.new('COALESCE', [sum_function, 0], 'total_amount')
-    
-    select([et[Arel.star], aggregation])
-      .joins(Arel::Nodes::OuterJoin.new(tt, Arel::Nodes::On.new(et[:id].eq(tt[:envelope_id]))))
-      .group(envelopes_columns)
-  end
-  
-  def self.add_funded_this_month(envelopes, user_id)
-    et = Envelope.arel_table
-    tt = Transaction.arel_table
-    
-    envelopes_columns = Envelope.column_names.map {|column_name| et[column_name.to_sym] }
-    
-    sum_function = Arel::Nodes::NamedFunction.new('SUM', [tt[:amount]])
-    aggregation = Arel::Nodes::NamedFunction.new('COALESCE', [sum_function, 0], 'total_amount')
-    
-    envelopes2 = select([et[:id], aggregation])
-      .joins(Arel::Nodes::OuterJoin.new(tt, Arel::Nodes::On.new(et[:id].eq(tt[:envelope_id]))))
-      .where(tt[:amount].gt(0).and(tt[:posted_at].gteq(Date.today.beginning_of_month)).and(et[:user_id].eq(user_id)))
-      .group([et[:id]])
-    
-    envelopes.each do |env|
-      env2 = envelopes2.select {|envelope| envelope.id == env.id}.first
-      env.amount_funded_this_month = env2.nil? ? 0 : env2.total_amount
-    end
-  end
-
   def all_transactions(organized_envelopes = nil)
     if self.id == 0 && organized_envelopes.present? # All Transactions envelope
       all_child_envelope_ids = []
@@ -167,45 +212,4 @@ class Envelope < ActiveRecord::Base
     Transaction.where(envelope_id: all_child_envelope_ids)
   end
   
-  def self.all_child_envelope_ids(envelope_id, organized_envelopes = nil)
-    children = organized_envelopes ? organized_envelopes[envelope_id] : Envelope.where(parent_envelope_id: envelope_id)
-    all_child_ids = children.map(&:id)
-    children.each do |child|
-      all_child_ids << all_child_envelope_ids(child.id, organized_envelopes)
-    end
-    all_child_ids.flatten
-  end
-
-  def self.all_envelope(total_amount = nil)
-    env = Envelope.new(name: 'All Transactions')
-    env.total_amount = total_amount if total_amount
-    env.id = 0
-    env
-  end
-  
-  # Returns a Hash with all the envelopes organized. eg:
-  #
-  #   'sys' => [array of income and unassigned envelopes]
-  #   nil   => [array of all envelopes with parent_envelope_id = nil]
-  #   1     => [array of envelopes with parent_envelope_id = 1]
-  def self.organize(all_envelopes)
-    total_amount = 0
-    envelopes = Hash.new { |hash, key| hash[key] = [] }
-    all_envelopes.each do |envelope|
-      total_amount += envelope.total_amount
-      envelope.full_name(all_envelopes) # Have each envelope figure out and memoize its full_name
-      if envelope.income || envelope.unassigned
-        envelopes['sys'] << envelope
-      else
-        envelopes[envelope.parent_envelope_id] << envelope
-      end
-    end
-    
-    envelopes['sys'].unshift(all_envelope(total_amount))
-    
-    all_envelopes.sort! {|e1, e2| e1.full_name <=> e2.full_name }
-
-    envelopes
-  end
-
 end
