@@ -1,0 +1,2 @@
+class CompletePresenter < Presenter
+end
