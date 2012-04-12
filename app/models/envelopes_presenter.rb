@@ -1,2 +1,2 @@
-class CompletePresenter < Presenter
+class EnvelopesPresenter < Presenter
 end

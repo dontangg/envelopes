@@ -52,10 +52,12 @@ class Envelope < ActiveRecord::Base
         .joins(Arel::Nodes::OuterJoin.new(tt, Arel::Nodes::On.new(et[:id].eq(tt[:envelope_id]))))
         .where(tt[:amount].gt(0).and(tt[:posted_at].gteq(Date.today.beginning_of_month)).and(et[:user_id].eq(user_id)))
         .group([et[:id]])
+
+      funded_map = {}
+      envelopes2.each { |env| funded_map[env.id] = env.total_amount }
       
       envelopes.each do |env|
-        env2 = envelopes2.select {|envelope| envelope.id == env.id}.first
-        env.amount_funded_this_month = env2.nil? ? 0 : env2.total_amount
+        env.amount_funded_this_month = funded_map[env.id] || 0.to_d
       end
     end
 
