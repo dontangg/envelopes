@@ -2,32 +2,37 @@ require 'test_helper'
 
 class EnvelopeTest < ActiveSupport::TestCase
   test "owned_by scope should return envelopes owned by the user specified" do
-    envelopes = Envelope.owned_by(1)
+    env = FactoryGirl.create :envelope
+    FactoryGirl.create :envelope, user: env.user
+    envelopes = Envelope.owned_by(env.user.id)
   
     envelopes.each do |envelope|
-      assert_equal 1, envelope.user_id, "owned_by(1) should only return envelopes owned by user 1"
+      assert_equal env.user.id, envelope.user_id, "owned_by(#{env.user.id}) should only return envelopes owned by user #{env.user.id}"
     end
   end
 
   test "income scope should return income envelopes" do
-    envelope = Envelope.income.first
+    FactoryGirl.create :income_envelope
+    envelopes = Envelope.income
     
-    assert_equal "Available Cash", envelope.name
-    assert envelope.parent_envelope_id.nil?, "The income envelope should not have a parent envelope"
-    assert envelope.income?
-    assert !envelope.unassigned?
+    envelopes.each do |envelope|
+      assert envelope.income?
+    end
   end
   
   test "unassigned scope should return unassigned envelopes" do
-    envelope = Envelope.unassigned.first
+    FactoryGirl.create :unassigned_envelope
+    envelope = Envelope.unassigned
     
-    assert "Unassigned", envelope.name
-    assert envelope.parent_envelope_id.nil?, "The unassigned envelope should not have a parent envelope"
-    assert !envelope.income?
-    assert envelope.unassigned?
+    envelopes.each do |envelope|
+      assert envelope.unassigned?
+    end
   end
   
   test "generic scope should return generic envelopes" do
+    FactoryGirl.create :envelope
+    FactoryGirl.create :income_envelope
+    FactoryGirl.create :unassigned_envelope
     envelopes = Envelope.generic
     
     envelopes.each do |envelope|
@@ -37,17 +42,19 @@ class EnvelopeTest < ActiveSupport::TestCase
   end
   
   test "parent_envelope returns the parent envelope" do
-    fuel_envelope = envelopes(:fuel)
-    auto_envelope = envelopes(:auto)
+    parent = FactoryGirl.create :envelope
+    child = FactoryGirl.create :envelope, user: parent.user, parent_envelope: parent
     
-    assert_equal auto_envelope, fuel_envelope.parent_envelope
+    assert_equal parent.id, child.parent_envelope.id
   end
 
   test "child_envelopes returns the child envelopes" do
-    fuel_envelope = envelopes(:fuel)
-    auto_envelope = envelopes(:auto)
+    parent = FactoryGirl.create :envelope
+    child = FactoryGirl.create :envelope, user: parent.user, parent_envelope: parent
 
-    assert auto_envelope.child_envelopes.include?(fuel_envelope)
+    assert parent.child_envelopes do |envelope|
+      assert_equal parent.id, envelope.parent_envelope_id
+    end
   end
 
   test "initialize can accept a Hash for the expense" do
@@ -69,95 +76,112 @@ class EnvelopeTest < ActiveSupport::TestCase
   end
   
   test "to_param returns id-name.parameterize" do
-    envelope = envelopes(:available_cash)
+    envelope = FactoryGirl.create :envelope, name: 'Available Cash'
     
     assert_equal "#{envelope.id}-available-cash", envelope.to_param
   end
   
   test "transactions scope returns all transactions for this envelope" do
-    food_envelope = envelopes(:food)
-    assert_equal 2, food_envelope.transactions.size
-    
-    auto_envelope = envelopes(:auto)
-    assert_equal 0, auto_envelope.transactions.size
-    
-    cash_envelope = envelopes(:available_cash)
-    assert_equal 1, cash_envelope.transactions.size
+    envelope = FactoryGirl.create :envelope_with_transactions, transactions_count: 6
+    assert_equal 6, envelope.transactions.size
+
+    envelope = FactoryGirl.create :envelope_with_transactions, transactions_count: 3
+    assert_equal 3, envelope.transactions.size
   end
   
   test "total_amount returns sum of all transactions" do
-    cash_envelope = envelopes(:available_cash)
-    assert_equal 9.99, cash_envelope.total_amount
+    envelope = FactoryGirl.create :envelope
+    FactoryGirl.create :transaction, envelope: envelope, amount: 1.0
+    FactoryGirl.create :transaction, envelope: envelope, amount: -2.22
+
+    assert_equal -1.22, envelope.total_amount
   end
 
   test "inclusive_total_amount returns sum of all transactions" do
-    food_envelope = envelopes(:food)
-    assert_equal 79.99, food_envelope.inclusive_total_amount.to_f
+    parent = FactoryGirl.create :envelope
+    child1 = FactoryGirl.create :envelope, user: parent.user, parent_envelope_id: parent.id
+    FactoryGirl.create :transaction, envelope: child1, amount: 2.0
+    child2 = FactoryGirl.create :envelope, user: parent.user, parent_envelope_id: parent.id
+    FactoryGirl.create :transaction, envelope: child2, amount: -3.33
+
+    assert_equal 0.0, parent.total_amount
+    assert_equal -1.33, parent.inclusive_total_amount
   end
 
   test "full_name returns this and parent envelope names separated by colons" do
-    food_envelope = envelopes(:food)
+    food_envelope = FactoryGirl.create :envelope, name: 'Food'
     assert_equal "Food", food_envelope.full_name
     
-    groceries_envelope = envelopes(:groceries)
+    groceries_envelope = FactoryGirl.create :envelope, name: 'Groceries', user: food_envelope.user, parent_envelope: food_envelope
     assert_equal "Food: Groceries", groceries_envelope.full_name
   end
   
   test "all_child_envelope_ids returns an array of all child envelope ids" do
-    child_envelope_ids = Envelope.all_child_envelope_ids(envelopes(:gifts).id)
-    assert_equal [envelopes(:holidays).id, envelopes(:christmas).id, envelopes(:valentines).id], child_envelope_ids
+    parent = FactoryGirl.create :envelope
+    child1 = FactoryGirl.create :envelope, user: parent.user, parent_envelope_id: parent.id
+    child2 = FactoryGirl.create :envelope, user: parent.user, parent_envelope_id: parent.id
+
+    child_envelope_ids = Envelope.all_child_envelope_ids(parent.id)
+    assert_equal [child1.id, child2.id], child_envelope_ids
   end
   
   test "all_transactions returns all transactions for that envelope and all children" do
-    sql = envelopes(:gifts).all_transactions(nil).to_sql
-    assert sql.include?(envelopes(:gifts).id.to_s)
-    assert sql.include?(envelopes(:holidays).id.to_s)
-    assert sql.include?(envelopes(:christmas).id.to_s)
-    assert sql.include?(envelopes(:valentines).id.to_s)
+    parent = FactoryGirl.create :envelope
+    child1 = FactoryGirl.create :envelope, user: parent.user, parent_envelope_id: parent.id
+    child2 = FactoryGirl.create :envelope, user: parent.user, parent_envelope_id: parent.id
+    txn1 = FactoryGirl.create :transaction, envelope: child1
+    txn2 = FactoryGirl.create :transaction, envelope: child2
+
+    all_txns = parent.all_transactions(nil)
+    assert all_txns.any? { |txn| txn.id == txn1.id }
+    assert all_txns.any? { |txn| txn.id == txn2.id }
   end
 
   test "amount_funded_this_month returns a sum of the positive transaction amounts" do
-    amount = envelopes(:groceries).amount_funded_this_month.to_f
+    envelope = FactoryGirl.create :envelope
+    txn1 = FactoryGirl.create :transaction, envelope: envelope, amount: -20.0
+    txn2 = FactoryGirl.create :transaction, envelope: envelope, amount: 100.0
+    amount = envelope.amount_funded_this_month.to_f
 
     assert_equal 100.0, amount
   end
 
   test "creating an envelope as a child of an envelope that has transactions should move the transactions to the new child" do
-    groceries_envelope = envelopes(:groceries)
-    num_transactions = groceries_envelope.transactions.count 
+    food_envelope = FactoryGirl.create :envelope, name: 'Food'
+    txn1 = FactoryGirl.create :transaction, envelope: food_envelope
 
-    assert num_transactions > 0
+    num_transactions = food_envelope.transactions.count 
 
-    new_envelope = Envelope.create name: 'newtest', parent_envelope: groceries_envelope
+    assert_equal 1, num_transactions
 
-    assert_equal num_transactions, new_envelope.transactions.count
-    assert_equal 0, groceries_envelope.transactions.count
+    groceries_envelope = FactoryGirl.create :envelope, name: 'Groceries', user: food_envelope.user, parent_envelope: food_envelope
+
+    assert_equal 1, groceries_envelope.transactions.count
+    assert_equal 0, food_envelope.transactions.count
   end
 
   test "creating an envelope as a child of an envelope without transactions doesn't crash" do
-    auto_envelope = envelopes(:auto)
-
-    assert_equal 0, auto_envelope.transactions.count
-    
-    new_envelope = Envelope.create name: 'newtest', parent_envelope: auto_envelope
+    assert_nothing_raised do
+      food_envelope = FactoryGirl.create :envelope, name: 'Food'
+      groceries_envelope = FactoryGirl.create :envelope, name: 'Groceries', user: food_envelope.user, parent_envelope: food_envelope
+    end
   end
 
   test "attempting to destroy an envelope with transactions should fail" do
-    groceries_envelope = envelopes(:groceries)
-    num_transactions = groceries_envelope.transactions.count 
+    food_envelope = FactoryGirl.create :envelope, name: 'Food'
+    FactoryGirl.create :transaction, envelope: food_envelope
 
-    assert num_transactions > 0
+    assert_equal 1, food_envelope.transactions.count 
 
-    assert !groceries_envelope.destroy
+    assert !food_envelope.destroy
   end
 
   test "attempting to destroy an envelope without transactions should succeed" do
-    auto_envelope = envelopes(:auto)
-    num_transactions = auto_envelope.transactions.count 
+    food_envelope = FactoryGirl.create :envelope, name: 'Food'
 
-    assert_equal 0, num_transactions
+    assert_equal 0, food_envelope.transactions.count 
 
-    assert auto_envelope.destroy
+    assert food_envelope.destroy
   end
 
 end
