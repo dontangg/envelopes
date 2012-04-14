@@ -7,7 +7,10 @@ class TransactionImporter
 
       return unless user.bank_username && user.bank_id
 
-      starting_at = user.imported_transactions_at.nil? ? Date.today - 1.month : user.imported_transactions_at - 1.week
+      # TODO: Fix Syrup... clients shouldn't have to know the time zone of the bank
+      today = Time.now.in_time_zone('Mountain Time (US & Canada)').to_date
+      starting_at = user.imported_transactions_at.nil? ? today - 1.month : user.imported_transactions_at - 1.week
+      ending_at = today
       
       income_envelope_id = Envelope.owned_by(user.id).find_by_income(true).id
       unassigned_envelope_id = Envelope.owned_by(user.id).find_by_unassigned(true).id
@@ -21,7 +24,7 @@ class TransactionImporter
       import_count = 0
       id_cache = {}
       account = bank.find_account_by_id user.bank_account_id
-      account.find_transactions(starting_at, Date.today).each do |raw_transaction|
+      account.find_transactions(starting_at, ending_at).each do |raw_transaction|
         next if raw_transaction.status == :pending
         
         transaction = Transaction.new payee: raw_transaction.payee,
