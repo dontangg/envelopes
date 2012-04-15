@@ -34,7 +34,7 @@ class EnvelopeTest < ActiveSupport::TestCase
   
   test "unassigned scope should return unassigned envelopes" do
     create :unassigned_envelope
-    envelope = Envelope.unassigned
+    envelopes = Envelope.unassigned
     
     envelopes.each do |envelope|
       assert envelope.unassigned?

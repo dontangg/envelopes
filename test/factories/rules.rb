@@ -5,8 +5,8 @@ FactoryGirl.define do
     replacement_text 'Walmart'
     order 0
 
-    association :user
-    association :envelope
+    user
+    envelope
   end
 end
 

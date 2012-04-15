@@ -2,12 +2,12 @@ require 'test_helper'
 
 class TransactionsControllerTest < ActionController::TestCase
   setup do
-    login_as :jim
+    @user = login
   end
 
   test "successful transfer" do
-    from_envelope = envelopes(:groceries)
-    to_envelope = envelopes(:christmas)
+    from_envelope = create :envelope, user: @user
+    to_envelope = create :envelope, user: @user
 
     assert_difference('Transaction.count', 2) do
       post :create_transfer, {
@@ -24,8 +24,8 @@ class TransactionsControllerTest < ActionController::TestCase
   end
 
   test "ignored transfer" do
-    from_envelope = envelopes(:groceries)
-    to_envelope = envelopes(:christmas)
+    from_envelope = create :envelope, user: @user
+    to_envelope = create :envelope, user: @user
 
     assert_difference('Transaction.count', 0) do
       post :create_transfer, {
@@ -42,7 +42,8 @@ class TransactionsControllerTest < ActionController::TestCase
   end
 
   test "successful transaction update" do
-    txn = transactions(:walmart)
+    envelope = create :envelope, user: @user
+    txn = create :transaction, envelope: envelope
 
     put :update, {
       id: txn.id,
@@ -54,7 +55,8 @@ class TransactionsControllerTest < ActionController::TestCase
   end
 
   test "failed transaction update" do
-    txn = transactions(:walmart)
+    envelope = create :envelope, user: @user
+    txn = create :transaction, envelope: envelope
 
     put :update, {
       id: txn.id,
@@ -65,9 +67,12 @@ class TransactionsControllerTest < ActionController::TestCase
   end
 
   test "payee suggestions" do
+    envelope = create :envelope, user: @user
+    txn = create :transaction, envelope: envelope, payee: 'Walmart'
+
     get :suggest_payee, {term: 'al'}
 
     assert_response :success
-    assert @response.body.include?(transactions(:walmart).payee), transactions(:walmart).payee + " should be a suggestion for 'al'"
+    assert @response.body.include?(txn.payee), "#{txn.payee} should be a suggestion for 'al'"
   end
 end

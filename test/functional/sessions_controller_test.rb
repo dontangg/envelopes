@@ -7,14 +7,16 @@ class SessionsControllerTest < ActionController::TestCase
   end
   
   test "correct email and password should successfully log in" do
-    post :create, { email: users(:jim).email, password: 'jimpass' }
+    user = create :user
+    post :create, { email: user.email, password: user.password }
     assert_redirected_to root_url
     assert_not_nil session[:user_id], ":user_id session value was not set"
-    assert_equal users(:jim).id, session[:user_id]
+    assert_equal user.id, session[:user_id]
   end
   
   test "incorrect email/password should not successfully log in" do
-    post :create, { email: users(:jim).email, password: 'invalid' }
+    user = create :user
+    post :create, { email: user.email, password: 'invalid' }
     assert_response :success
     assert_nil session[:user_id], ":user_id session value was set even though login wasn't successful"
     assert_not_nil flash.alert

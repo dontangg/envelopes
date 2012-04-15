@@ -2,17 +2,19 @@ require 'test_helper'
 
 class RuleTest < ActiveSupport::TestCase
   test "search text and user id are required" do
+    user = create :user
+
     rule = Rule.new
     assert !rule.save
     
-    rule.user_id = users(:jim).id
+    rule.user_id = user.id
     assert !rule.save
     rule.user_id = nil
     
     rule.search_text = 'test'
     assert !rule.save
     
-    rule.user_id = users(:jim).id
+    rule.user_id = user.id
     assert rule.save
   end
 

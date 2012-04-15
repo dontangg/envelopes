@@ -2,18 +2,18 @@ require 'test_helper'
 
 class UsersControllerTest < ActionController::TestCase
   setup do
-    login_as :jim
+    @user = login
   end
 
   test "should require a user to be logged in" do
     logout
 
-    get :edit, id: users(:jim).id
+    get :edit, id: @user.id
     assert_redirected_to controller: 'sessions', action: 'new'
   end
 
   test "should get edit" do
-    get :edit, id: users(:jim).id
+    get :edit, id: @user.id
     assert_response :success
     assert_not_nil assigns(:user)
     assert_not_nil assigns(:bank_options)
@@ -21,7 +21,7 @@ class UsersControllerTest < ActionController::TestCase
 
   test "should successfully update account" do
     put :update, {
-      id: users(:jim).id,
+      id: @user.id,
       user: {
         email: 'newemail@example.com',
         password: 'new password',
@@ -39,7 +39,7 @@ class UsersControllerTest < ActionController::TestCase
       }
     }
 
-    user = User.find(users(:jim).id)
+    user = User.find(@user.id)
 
     assert_equal 'newemail@example.com', user.email
     assert_equal 'uccu', user.bank_id
@@ -52,7 +52,7 @@ class UsersControllerTest < ActionController::TestCase
 
   test "should fail while trying to update account" do
     put :update, {
-      id: users(:jim).id,
+      id: @user.id,
       user: {
         email: nil
       }

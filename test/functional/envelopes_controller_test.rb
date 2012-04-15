@@ -2,17 +2,18 @@ require 'test_helper'
 
 class EnvelopesControllerTest < ActionController::TestCase
   setup do
-    login_as :jim
-    @envelope = envelopes(:available_cash)
+    @user = login
   end
 
   test "should require a user to be logged in" do
     logout
 
+    envelope = create :income_envelope, user: @user
+
     get :index
     assert_redirected_to controller: 'sessions', action: 'new'
 
-    get :show, id: @envelope.to_param
+    get :show, id: envelope.to_param
     assert_redirected_to controller: 'sessions', action: 'new'
   end
 
@@ -23,14 +24,15 @@ class EnvelopesControllerTest < ActionController::TestCase
 
     assert_select 'section#dashboard' do
       tags = css_select('.name').map {|tag| tag.to_s}.join
-      Envelope.owned_by(session[:user_id]).each do |envelope|
+      Envelope.owned_by(@user.id).each do |envelope|
         assert tags.include?(ERB::Util.html_escape(envelope.name)), "The envelope named \"#{envelope.name}\" is missing"
       end
     end
   end
 
   test "should show an envelope" do
-    get :show, id: @envelope.to_param
+    envelope = create :income_envelope, user: @user
+    get :show, id: envelope.to_param
     assert_response :success
 
     assert_not_nil assigns(:all_envelopes)
@@ -49,7 +51,7 @@ class EnvelopesControllerTest < ActionController::TestCase
     assert_difference("Envelope.count", 1) do
       post :create, { envelope: {
         name: new_envelope_name,
-        user_id: users(:jim).id,
+        user_id: @user.id,
         expense: {
           amount: 3.45,
           occurs_on_day: 3,
@@ -61,14 +63,16 @@ class EnvelopesControllerTest < ActionController::TestCase
     new_envelope = Envelope.where(name: new_envelope_name).first
 
     assert_not_nil new_envelope
-    assert_equal users(:jim).id, new_envelope.user_id
+    assert_equal @user.id, new_envelope.user_id
     assert_not_nil new_envelope.expense
     assert_equal 3.45, new_envelope.expense.amount
   end
 
   test "should update an envelope" do
+    fuel = create :envelope, name: 'Fuel', user: @user, expense: nil
+
     put :update, {
-      id: envelopes(:fuel).id,
+      id: fuel.id,
       envelope: {
         name: 'Fuel!',
         expense: {
@@ -80,15 +84,17 @@ class EnvelopesControllerTest < ActionController::TestCase
 
     assert_response :success
 
-    fuel = Envelope.find(envelopes(:fuel).id)
+    fuel = Envelope.find(fuel.id)
 
     assert_equal 120.5, fuel.expense.amount
     assert_equal 'Fuel!', fuel.name
   end
 
-  test "formatted envelope expense amount should still update correctly" do
+  test "formatted envelope expense amount should update correctly" do
+    fuel = create :envelope, name: 'Fuel', user: @user, expense: nil
+
     put :update, {
-      id: envelopes(:fuel).id,
+      id: fuel.id,
       envelope: {
         name: 'Fuel!',
         expense: {
@@ -100,12 +106,15 @@ class EnvelopesControllerTest < ActionController::TestCase
 
     assert_response :success
 
-    fuel = Envelope.find(envelopes(:fuel).id)
+    fuel = Envelope.find(fuel.id)
 
     assert_equal 121.5, fuel.expense.amount
   end
 
   test "should show envelopes to fill" do
+    create :envelope, user: @user
+    create :income_envelope, user: @user
+
     get :fill
     assert_response :success
 
@@ -114,13 +123,14 @@ class EnvelopesControllerTest < ActionController::TestCase
   end
 
   test "should fill the envelopes with money" do
-    auto_envelope = envelopes(:auto)
-    food_envelope = envelopes(:food)
+    create :income_envelope, user: @user
+    auto = create :envelope, name: 'Auto', user: @user, expense: nil
+    food = create :envelope, name: 'Food', user: @user, expense: nil
     
     assert_difference("Transaction.count", 4) do
       post :perform_fill, {
-        "fill_envelope_#{auto_envelope.id}" => '$1.23',
-        "fill_envelope_#{food_envelope.id}" => '$2.34'
+        "fill_envelope_#{auto.id}" => '$1.23',
+        "fill_envelope_#{food.id}" => '$2.34'
       }
     end
 

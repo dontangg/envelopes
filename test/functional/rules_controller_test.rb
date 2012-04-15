@@ -2,7 +2,7 @@ require 'test_helper'
 
 class RulesControllerTest < ActionController::TestCase
   setup do
-    login_as :jim
+    @user = login
   end
 
   test "should require a user to be logged in" do
@@ -22,14 +22,16 @@ class RulesControllerTest < ActionController::TestCase
   end
 
   test "should create a new rule" do
+    envelope = create :envelope, user: @user
+
     assert_difference "Rule.count", 1 do
       post :create, {
         format: :js,
         rule: {
           search_text: 'test search',
           replacement_text: 'test replace',
-          user_id: users(:jim).id,
-          envelope_id: envelopes(:groceries)
+          user_id: @user.id,
+          envelope_id: envelope.id
         }
       }
     end
@@ -39,8 +41,10 @@ class RulesControllerTest < ActionController::TestCase
   end
 
   test "should update a rule" do
+    rule = create :rule, user: @user
+
     put :update, {
-      id: rules(:walmart).id,
+      id: rule.id,
       rule: { search_text: 'newtext' }
     }
     
@@ -48,9 +52,11 @@ class RulesControllerTest < ActionController::TestCase
   end
   
   test "should delete a rule" do
+    rule = create :rule, user: @user
+
     assert_difference "Rule.count", -1 do
       delete :destroy, {
-        id: rules(:walmart).id
+        id: rule.id
       }
     end
 

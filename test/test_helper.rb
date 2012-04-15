@@ -21,10 +21,13 @@ class ActiveSupport::TestCase
   # expose create and build methods
   include FactoryGirl::Syntax::Methods
 
-  fixtures :all
+  def login
+    login_as(create(:user))
+  end
 
   def login_as(user)
-    session[:user_id] = users(user).id
+    session[:user_id] = user.id
+    user
   end
   
   def logout
