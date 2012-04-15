@@ -7,6 +7,7 @@ FactoryGirl.define do
     amount 1.23
     pending false
     unique_id { uniq_str }
+
     envelope
 
     trait :transfer do

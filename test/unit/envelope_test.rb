@@ -214,22 +214,31 @@ class EnvelopeTest < ActiveSupport::TestCase
   end
   
   test "all_child_envelope_ids returns an array of all child envelope ids" do
-    parent = create :envelope
-    child1 = create :envelope, user: parent.user, parent_envelope_id: parent.id
-    child2 = create :envelope, user: parent.user, parent_envelope_id: parent.id
+    parent = FactoryGirl.build :envelope, id: 1, user: nil
+    child1 = FactoryGirl.build :envelope, id: 2, user: nil, parent_envelope_id: parent.id
+    child2 = FactoryGirl.build :envelope, id: 3, user: nil, parent_envelope_id: parent.id
 
-    child_envelope_ids = Envelope.all_child_envelope_ids(parent.id)
+    organized_envelopes = Hash.new { |hash, key| hash[key] = [] }
+    organized_envelopes[nil] = [parent]
+    organized_envelopes[parent.id] = [child1, child2]
+
+    child_envelope_ids = Envelope.all_child_envelope_ids(parent.id, organized_envelopes)
     assert_equal [child1.id, child2.id], child_envelope_ids
   end
   
   test "all_transactions returns all transactions for that envelope and all children" do
-    parent = create :envelope
+    user = create :user
+    parent = create :envelope, user: user
     child1 = create :envelope, user: parent.user, parent_envelope_id: parent.id
     child2 = create :envelope, user: parent.user, parent_envelope_id: parent.id
     txn1 = create :transaction, envelope: child1
     txn2 = create :transaction, envelope: child2
 
-    all_txns = parent.all_transactions(nil)
+    organized_envelopes = Hash.new { |hash, key| hash[key] = [] }
+    organized_envelopes[nil] = [parent]
+    organized_envelopes[parent.id] = [child1, child2]
+
+    all_txns = parent.all_transactions(organized_envelopes)
     assert all_txns.any? { |txn| txn.id == txn1.id }
     assert all_txns.any? { |txn| txn.id == txn2.id }
   end

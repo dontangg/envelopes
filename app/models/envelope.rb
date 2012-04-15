@@ -66,9 +66,9 @@ class Envelope < ActiveRecord::Base
       children = organized_envelopes ? organized_envelopes[envelope_id] : Envelope.where(parent_envelope_id: envelope_id)
       all_child_ids = children.map(&:id)
       children.each do |child|
-        all_child_ids << all_child_envelope_ids(child.id, organized_envelopes)
+        all_child_ids.concat all_child_envelope_ids(child.id, organized_envelopes)
       end
-      all_child_ids.flatten
+      all_child_ids
     end
 
     # Creates an "All Transactions" envelope and returns it

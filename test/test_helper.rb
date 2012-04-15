@@ -2,6 +2,8 @@ ENV["RAILS_ENV"] = "test"
 require File.expand_path('../../config/environment', __FILE__)
 require 'rails/test_help'
 
+Rails.logger.level = 4
+
 Turn.config do |c|
  # use one of output formats:
  # :outline  - turn's original case/test outline mode [default]
