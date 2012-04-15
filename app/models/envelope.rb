@@ -39,6 +39,7 @@ class Envelope < ActiveRecord::Base
         .group(envelopes_columns)
     end
     
+    # Fills in the amount_funded_this_month property for each envelope
     def add_funded_this_month(envelopes, user_id)
       et = Envelope.arel_table
       tt = Transaction.arel_table
@@ -70,6 +71,7 @@ class Envelope < ActiveRecord::Base
       all_child_ids.flatten
     end
 
+    # Creates an "All Transactions" envelope and returns it
     def all_envelope(total_amount = nil)
       env = Envelope.new(name: 'All Transactions')
       env.total_amount = total_amount if total_amount
@@ -77,9 +79,9 @@ class Envelope < ActiveRecord::Base
       env
     end
     
-    # Returns a Hash with all the envelopes organized. eg:
+    # Returns a Hash with all the envelopes organized. ie:
     #
-    #   'sys' => [array of income and unassigned envelopes]
+    #   'sys' => [array of all, income, and unassigned envelopes]
     #   nil   => [array of all envelopes with parent_envelope_id = nil]
     #   1     => [array of envelopes with parent_envelope_id = 1]
     def organize(all_envelopes)
@@ -161,6 +163,7 @@ class Envelope < ActiveRecord::Base
     @full_name = name
   end
 
+  # calculates a very simple budget for this envelope
   def simple_monthly_budget
     if self.expense
       if self.expense.frequency == :monthly
@@ -189,6 +192,7 @@ class Envelope < ActiveRecord::Base
     all_transactions.where(where_clause).sum(:amount)
   end
 
+  # TODO: test
   def amount_spent_this_month
     amount_spent_between(Date.today.beginning_of_month, Date.today.end_of_month)
   end

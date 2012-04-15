@@ -1,6 +1,18 @@
 require 'test_helper'
 
 class EnvelopeTest < ActiveSupport::TestCase
+  test "the default order should be alphabetically, by name" do
+    FactoryGirl.create :envelope, name: 'Jack'
+    FactoryGirl.create :envelope, name: 'Emily'
+    FactoryGirl.create :envelope, name: 'Huck'
+
+    prev_name = ""
+    Envelope.all.each do |envelope|
+      assert prev_name < envelope.name
+      prev_name = envelope.name
+    end
+  end
+
   test "owned_by scope should return envelopes owned by the user specified" do
     env = FactoryGirl.create :envelope
     FactoryGirl.create :envelope, user: env.user
@@ -55,6 +67,80 @@ class EnvelopeTest < ActiveSupport::TestCase
     assert parent.child_envelopes do |envelope|
       assert_equal parent.id, envelope.parent_envelope_id
     end
+  end
+
+  test "with_amounts returns all envelopes with their total amounts" do
+    fuel = FactoryGirl.create :envelope, name: 'Fuel'
+    groceries = FactoryGirl.create :envelope, name: 'Groceries', user: fuel.user
+    mortgage = FactoryGirl.create :envelope, name: 'Mortgage', user: fuel.user
+
+    FactoryGirl.create :transaction, envelope: fuel, amount: 1.11
+    FactoryGirl.create :transaction, envelope: groceries, amount: 2.22
+    FactoryGirl.create :transaction, envelope: mortgage, amount: 3.33
+
+    all_envelopes = Envelope.with_amounts
+
+    fuel = all_envelopes.select { |envelope| envelope.id == fuel.id }.first
+    assert_not_nil fuel
+    assert_equal 1.11, fuel.read_attribute(:total_amount)
+
+    groceries = all_envelopes.select { |envelope| envelope.id == groceries.id }.first
+    assert_not_nil groceries
+    assert_equal 2.22, groceries.read_attribute(:total_amount)
+
+    mortgage = all_envelopes.select { |envelope| envelope.id == mortgage.id }.first
+    assert_not_nil mortgage
+    assert_equal 3.33, mortgage.read_attribute(:total_amount)
+  end
+
+  test "add_funded_this_month gets the amount funded for all envelopes" do
+    fuel = FactoryGirl.create :envelope, name: 'Fuel'
+    groceries = FactoryGirl.create :envelope, name: 'Groceries', user: fuel.user
+    other = FactoryGirl.create :envelope, name: 'Other', user: fuel.user
+
+    FactoryGirl.create :transaction, envelope: fuel, amount: -5.0
+    FactoryGirl.create :transaction, envelope: fuel, amount: 7.0
+    FactoryGirl.create :transaction, envelope: groceries, amount: 6.0
+
+    all_envelopes = Envelope.all
+    Envelope.add_funded_this_month(all_envelopes, fuel.user.id)
+
+    fuel = all_envelopes.select { |envelope| envelope.id == fuel.id }.first
+    assert_equal 7.0, fuel.instance_variable_get(:@amount_funded_this_month)
+    groceries = all_envelopes.select { |envelope| envelope.id == groceries.id }.first
+    assert_equal 6.0, groceries.instance_variable_get(:@amount_funded_this_month)
+    other = all_envelopes.select { |envelope| envelope.id == other.id }.first
+    assert_equal 0.0, other.instance_variable_get(:@amount_funded_this_month)
+  end
+
+  test "all_envelope returns an envelope that represents all transactions" do
+    all = Envelope.all_envelope
+    assert_equal 0, all.id
+
+    all = Envelope.all_envelope(5.43)
+    assert_equal 0, all.id
+    assert_equal 5.43, all.total_amount
+  end
+
+  test "can organize envelope into groups and sort envelopes by full name" do
+    income = FactoryGirl.create :income_envelope
+    unassigned = FactoryGirl.create :unassigned_envelope, user: income.user
+    parent = FactoryGirl.create :envelope, user: income.user, name: 'Food'
+    child = FactoryGirl.create :envelope, user: income.user, parent_envelope: parent, name: 'Groceries'
+
+    all_envelopes = [unassigned, income, child, parent]
+    organized_envelopes = Envelope.organize(all_envelopes)
+
+    assert organized_envelopes['sys'].include?(income)
+    assert organized_envelopes['sys'].include?(unassigned)
+    assert organized_envelopes['sys'].any? {|env| env.id == 0 }
+    assert_equal [parent], organized_envelopes[nil], "There should be a group containing all top-level envelopes"
+    assert_equal [child], organized_envelopes[parent.id]
+
+    assert_equal income, all_envelopes[0], "the original array wasn't sorted correctly"
+    assert_equal parent, all_envelopes[1], "the original array wasn't sorted correctly"
+    assert_equal child, all_envelopes[2], "the original array wasn't sorted correctly"
+    assert_equal unassigned, all_envelopes[3], "the original array wasn't sorted correctly"
   end
 
   test "initialize can accept a Hash for the expense" do
@@ -115,6 +201,17 @@ class EnvelopeTest < ActiveSupport::TestCase
     groceries_envelope = FactoryGirl.create :envelope, name: 'Groceries', user: food_envelope.user, parent_envelope: food_envelope
     assert_equal "Food: Groceries", groceries_envelope.full_name
   end
+
+  test "can calculate a simple budget for this envelope" do
+    envelope = FactoryGirl.build :envelope, expense: nil
+    assert_equal 0.0, envelope.simple_monthly_budget
+
+    envelope.expense = Expense.new(frequency: :monthly, amount: 12.0)
+    assert_equal 12.0, envelope.simple_monthly_budget
+
+    envelope.expense.frequency = :yearly
+    assert_equal 1.0, envelope.simple_monthly_budget
+  end
   
   test "all_child_envelope_ids returns an array of all child envelope ids" do
     parent = FactoryGirl.create :envelope
@@ -144,6 +241,15 @@ class EnvelopeTest < ActiveSupport::TestCase
     amount = envelope.amount_funded_this_month.to_f
 
     assert_equal 100.0, amount
+  end
+
+  test "amount_spent_this_month returns a sum of the negative transaction amounts" do
+    envelope = FactoryGirl.create :envelope
+    txn1 = FactoryGirl.create :transaction, envelope: envelope, amount: -20.0
+    txn2 = FactoryGirl.create :transaction, envelope: envelope, amount: 100.0
+    amount = envelope.amount_spent_this_month.to_f
+
+    assert_equal -20.0, amount
   end
 
   test "creating an envelope as a child of an envelope that has transactions should move the transactions to the new child" do
