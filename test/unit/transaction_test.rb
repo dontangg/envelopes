@@ -2,15 +2,15 @@ require 'test_helper'
 
 class TransactionTest < ActiveSupport::TestCase
   test "uniq_str generates the correct unique string" do
-    txn = FactoryGirl.build :transaction
+    txn = build :transaction
     
     assert_equal "#{Date.today.strftime('%F')}~#{txn.original_payee}~#{txn.amount}~#{txn.pending?}~", txn.uniq_str
   end
   
   test "owned_by returns transactions in envelopes owned by the right user" do
-    envelope = FactoryGirl.create :envelope_with_transactions
-    FactoryGirl.create :envelope_with_transactions, user: envelope.user
-    FactoryGirl.create :envelope_with_transactions
+    envelope = create :envelope_with_transactions
+    create :envelope_with_transactions, user: envelope.user
+    create :envelope_with_transactions
 
     txns = Transaction.owned_by(envelope.user.id)
     users_envelopes = envelope.user.envelopes.map(&:id)
@@ -44,8 +44,8 @@ class TransactionTest < ActiveSupport::TestCase
   end
   
   test "without_transfers excludes transactions with a nil unique_id" do
-    FactoryGirl.create_list :transfer_transaction, 3
-    FactoryGirl.create_list :transaction, 3
+    create_list :transfer_transaction, 3
+    create_list :transaction, 3
 
     transactions = Transaction.without_transfers
 
@@ -57,8 +57,8 @@ class TransactionTest < ActiveSupport::TestCase
   end
 
   test "associated transaction amounts stay in sync" do
-    txn1 = FactoryGirl.create :transfer_transaction, amount: 15.01
-    txn2 = FactoryGirl.create :transfer_transaction, amount: txn1.amount * -1, associated_transaction_id: txn1.id
+    txn1 = create :transfer_transaction, amount: 15.01
+    txn2 = create :transfer_transaction, amount: txn1.amount * -1, associated_transaction_id: txn1.id
     txn1.update_attribute :associated_transaction_id, txn2.id
 
     assert txn1.amount == (txn2.amount * -1)
@@ -71,14 +71,14 @@ class TransactionTest < ActiveSupport::TestCase
   end
 
   test "should strip whitespace from payee before save" do
-    txn = FactoryGirl.create :transaction, payee: ' my payee  '
+    txn = create :transaction, payee: ' my payee  '
 
     assert_equal 'my payee', txn.payee
   end
 
   test "should return transactions starting_at a date" do
-    txn1 = FactoryGirl.create :transaction, posted_at: Date.today
-    txn2 = FactoryGirl.create :transaction, posted_at: Date.today - 1, envelope: txn1.envelope
+    txn1 = create :transaction, posted_at: Date.today
+    txn2 = create :transaction, posted_at: Date.today - 1, envelope: txn1.envelope
 
     txns = Transaction.starting_at Date.today
 
@@ -88,8 +88,8 @@ class TransactionTest < ActiveSupport::TestCase
   end
 
   test "should return transactions ending_at a date" do
-    txn1 = FactoryGirl.create :transaction, posted_at: Date.today
-    txn2 = FactoryGirl.create :transaction, posted_at: Date.today - 1, envelope: txn1.envelope
+    txn1 = create :transaction, posted_at: Date.today
+    txn2 = create :transaction, posted_at: Date.today - 1, envelope: txn1.envelope
 
     txns = Transaction.ending_at(Date.today - 1)
 
@@ -99,9 +99,9 @@ class TransactionTest < ActiveSupport::TestCase
   end
 
   test "should give valid payee suggestions" do
-    txn1 = FactoryGirl.create :transaction, payee: 'an awesome store'
-    txn2 = FactoryGirl.create :transaction, payee: 'a great store', envelope: txn1.envelope
-    txn3 = FactoryGirl.create :transaction, payee: '1234 STORE USA', original_payee: '1234 STORE USA', envelope: txn1.envelope
+    txn1 = create :transaction, payee: 'an awesome store'
+    txn2 = create :transaction, payee: 'a great store', envelope: txn1.envelope
+    txn3 = create :transaction, payee: '1234 STORE USA', original_payee: '1234 STORE USA', envelope: txn1.envelope
 
     suggestions = Transaction.payee_suggestions_for_user_id(txn1.envelope.user.id, 'store')
     assert suggestions.size > 0, "There must be some suggestions to test"
@@ -116,7 +116,7 @@ class TransactionTest < ActiveSupport::TestCase
   end
 
   test "should suggest payees with fuzzy matches" do
-    txn1 = FactoryGirl.create :transaction, payee: 'an awesome store'
+    txn1 = create :transaction, payee: 'an awesome store'
 
     suggestions = Transaction.payee_suggestions_for_user_id(txn1.envelope.user.id, 'awe store')
     assert suggestions.size > 0, "There must be some suggestions to test"
@@ -125,9 +125,9 @@ class TransactionTest < ActiveSupport::TestCase
   end
 
   test "should give valid original payee suggestions" do
-    txn1 = FactoryGirl.create :transaction, original_payee: '2345 DOLLAR STORE'
-    txn2 = FactoryGirl.create :transaction, original_payee: '1357 BOAT STORE', envelope: txn1.envelope
-    txn3 = FactoryGirl.create :transaction, original_payee: '1234 STORE USA', envelope: txn1.envelope
+    txn1 = create :transaction, original_payee: '2345 DOLLAR STORE'
+    txn2 = create :transaction, original_payee: '1357 BOAT STORE', envelope: txn1.envelope
+    txn3 = create :transaction, original_payee: '1234 STORE USA', envelope: txn1.envelope
 
     suggestions = Transaction.payee_suggestions_for_user_id(txn1.envelope.user.id, 'store', true)
     assert suggestions.size > 0, "There must be some suggestions to test"
@@ -142,8 +142,8 @@ class TransactionTest < ActiveSupport::TestCase
   end
 
   test "can create a transfer" do
-    from_envelope = FactoryGirl.create :envelope
-    to_envelope = FactoryGirl.create :envelope, user: from_envelope.user
+    from_envelope = create :envelope
+    to_envelope = create :envelope, user: from_envelope.user
 
     from_sum = from_envelope.total_amount
     to_sum = to_envelope.total_amount

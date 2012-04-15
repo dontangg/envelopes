@@ -192,7 +192,6 @@ class Envelope < ActiveRecord::Base
     all_transactions.where(where_clause).sum(:amount)
   end
 
-  # TODO: test
   def amount_spent_this_month
     amount_spent_between(Date.today.beginning_of_month, Date.today.end_of_month)
   end

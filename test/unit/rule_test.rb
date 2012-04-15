@@ -17,9 +17,9 @@ class RuleTest < ActiveSupport::TestCase
   end
 
   test "rules are returned ordered by `order`" do
-    rule1 = FactoryGirl.create :rule, search_text: 'rule1', order: 1
-    rule0 = FactoryGirl.create :rule, search_text: 'rule0', order: 0, user: rule1.user
-    rule2 = FactoryGirl.create :rule, search_text: 'rule2', order: 2, user: rule1.user
+    rule1 = create :rule, search_text: 'rule1', order: 1
+    rule0 = create :rule, search_text: 'rule0', order: 0, user: rule1.user
+    rule2 = create :rule, search_text: 'rule2', order: 2, user: rule1.user
 
     in_right_order = true
     prev_order = -1
@@ -37,12 +37,12 @@ class RuleTest < ActiveSupport::TestCase
   end
 
   test "running a rule that doesn't find the search_text should return nil" do
-    rule = FactoryGirl.build :rule, search_text: 'test payee'
+    rule = build :rule, search_text: 'test payee'
     assert_nil rule.run('a different payee')
   end
 
   test "running a rule that contains the search_text should return correct envelope_id and payee" do
-    rule = FactoryGirl.build :rule, search_text: 'test payee', replacement_text: 'replacement', envelope_id: 5
+    rule = build :rule, search_text: 'test payee', replacement_text: 'replacement', envelope_id: 5
 
     run_result = rule.run('There is a test payee in here')
     assert_equal 'replacement', run_result[0]
@@ -56,8 +56,8 @@ class RuleTest < ActiveSupport::TestCase
   end
 
   test "owned_by should only return rules for the specified user" do
-    rule1 = FactoryGirl.create :rule
-    rule2 = FactoryGirl.create :rule, user: FactoryGirl.create(:user, email: 'junk not used')
+    rule1 = create :rule
+    rule2 = create :rule, user: create(:user, email: 'junk not used')
 
     assert Rule.owned_by(rule1.user.id).all? { |rule| rule1.user.id == rule.user.id }
   end
