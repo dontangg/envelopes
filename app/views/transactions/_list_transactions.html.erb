@@ -20,8 +20,12 @@
       </div>
     </div>
   </div>
-  <table id='transactions_list'>
-    <%= render partial: 'transactions/transaction', collection: transactions, locals: {envelope_options_for_select: envelope_options_for_select} %>
-  </table>
-  <p class='autosave-status'></p>
+  <% if transactions.size > 0 %>
+    <table id='transactions_list'>
+      <%= render partial: 'transactions/transaction', collection: transactions, locals: {envelope_options_for_select: envelope_options_for_select} %>
+    </table>
+    <p class='autosave-status'></p>
+  <% else %>
+    <span class='status'>No transactions in this time frame.</span>
+  <% end %>
 <% end %>
