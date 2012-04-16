@@ -1,6 +1,6 @@
 <li>
   <a href='<%= envelope_path(envelope) %>'>
-    <span class='amount'><%= number_to_currency(envelope.inclusive_total_amount(organized_envelopes)) %></span>
+    <span class='amount <%= 'negative-number' if envelope.total_amount < 0 %>'><%= number_to_currency(envelope.inclusive_total_amount(organized_envelopes)) %></span>
     <span class='name' title="<%= envelope.name %>"><%= envelope.name %></span>
   </a>
   <% unless organized_envelopes[envelope.id].empty? %>

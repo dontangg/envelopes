@@ -12,7 +12,7 @@
         <% @organized_envelopes['sys'].each do |envelope| %>
           <li>
             <a href='<%= envelope_path(envelope) %>'>
-              <span class='amount'><%= number_to_currency(envelope.total_amount) %></span>
+              <span class='amount <%= 'negative-number' if envelope.total_amount < 0 %>'><%= number_to_currency(envelope.total_amount) %></span>
               <span class='name' title="<%= envelope.name %>"><%= envelope.name %></span>
             </a>
           </li>
