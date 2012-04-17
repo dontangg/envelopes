@@ -41,4 +41,20 @@ class SuggestionCalculatorTest < ActiveSupport::TestCase
     assert_in_delta 2.22, env0.suggested_amount, 0.001
   end
 
+  test "once funded, yearly suggestions are all 0" do
+    env0 = create :envelope
+    env1 = create :envelope, expense: Expense.new(frequency: :yearly, amount: 50.to_d, occurs_on_month: (Date.today - 2.months).month), user: env0.user, parent_envelope: env0
+    env2 = create :envelope, expense: Expense.new(frequency: :yearly, amount: 40.44.to_d, occurs_on_month: (Date.today + 1.months).month), user: env0.user, parent_envelope: env0
+    env3 = create :envelope, expense: Expense.new(frequency: :yearly, amount: 23.22.to_d, occurs_on_month: (Date.today + 2.months).month), user: env0.user, parent_envelope: env0
+    create :transaction, :transfer, posted_at: Date.today, envelope: env2, amount: 21.22.to_d
+
+    organized_envelopes = Envelope.organize([env0, env1, env2, env3])
+    SuggestionCalculator.calculate(organized_envelopes)
+
+    assert_in_delta 0.0, env1.suggested_amount, 0.001
+    assert_in_delta 0.0, env2.suggested_amount, 0.001
+    assert_in_delta 0.0, env3.suggested_amount, 0.001
+    assert_in_delta 0.0, env0.suggested_amount, 0.001
+  end
+
 end
