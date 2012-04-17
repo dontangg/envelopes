@@ -9,8 +9,6 @@ class SuggestionCalculator
     protected
 
     def suggest_envelope(organized_envelopes, current_envelope)
-      return current_envelope.suggested_amount if current_envelope.suggested_amount.present?
-      
       # See if this envelope contains other envelopes
       if organized_envelopes[current_envelope.id].empty?
         if current_envelope.expense.nil?
@@ -29,6 +27,10 @@ class SuggestionCalculator
             end
           end
         end
+
+        puts "s: #{current_envelope.suggested_amount} f: #{current_envelope.amount_funded_this_month} #{current_envelope.suggested_amount - current_envelope.amount_funded_this_month}"
+        current_envelope.suggested_amount = [current_envelope.suggested_amount - current_envelope.amount_funded_this_month, 0.to_d].max
+        puts " #{current_envelope.suggested_amount}"
       else
         # If the envelope has other envelopes, it can't have an expense, so its suggestion is the sum of its children's suggestions
         current_envelope.suggested_amount = 0.to_d
@@ -41,6 +43,8 @@ class SuggestionCalculator
     end
 
     def suggest_yearly(organized_envelopes, current_envelope)
+      return current_envelope.suggested_amount if current_envelope.suggested_amount.present?
+
       # Get all the envelopes with the same parent that are also yearly with a month
       yearlies = []
       organized_envelopes[current_envelope.parent_envelope_id].each do |envelope|
@@ -50,7 +54,7 @@ class SuggestionCalculator
           months -= Date.today.month - 1
           yearlies << {
             sort_by_key: "%02d%02d" % [months, envelope.expense.occurs_on_day || 1],
-            number_of_months_before_due: months,
+            number_of_months_before_due: months.to_d,
             envelope: envelope
           }
         end
@@ -66,7 +70,7 @@ class SuggestionCalculator
       total_amount = 0.to_d
       max_monthly = 0.to_d
       yearlies.each do |yearly|
-        envelope_current_total = yearly[:envelope].total_amount - yearly[:envelope].amount_funded_this_month
+        envelope_current_total = [yearly[:envelope].total_amount - yearly[:envelope].amount_funded_this_month, 0.to_d].max
         total_amount += yearly[:envelope].expense.amount - envelope_current_total
         max_monthly = [max_monthly, total_amount / yearly[:number_of_months_before_due]].max
       end
@@ -77,7 +81,7 @@ class SuggestionCalculator
       yearlies.each do |yearly|
         envelope = yearly[:envelope]
 
-        amount_left_for_this_envelope = [envelope.expense.amount - envelope.total_amount, 0].max
+        amount_left_for_this_envelope = [envelope.expense.amount - envelope.total_amount, 0.to_d].max
         suggested_amount = [amount_left_for_this_envelope, monthly_amount_left].min
         
         monthly_amount_left -= suggested_amount

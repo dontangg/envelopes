@@ -182,14 +182,14 @@ class Envelope < ActiveRecord::Base
   
   # This method is just to be able to populate 
   def amount_funded_this_month=(amount)
-    @amount_funded_this_month = amount
+    @amount_funded_this_month = amount.to_d
   end
 
   def amount_funded_between(start_date = Date.today.beginning_of_month, end_date = Date.today.end_of_month)
     where_clause = Transaction.arel_table[:amount].gt(0)
       .and(Transaction.arel_table[:posted_at].gteq(start_date))
       .and(Transaction.arel_table[:posted_at].lteq(end_date))
-    all_transactions.where(where_clause).sum(:amount)
+    all_transactions.where(where_clause).sum(:amount).to_d
   end
 
   def amount_spent_this_month
@@ -201,7 +201,7 @@ class Envelope < ActiveRecord::Base
     where_clause = transaction_table[:amount].lt(0)
       .and(transaction_table[:posted_at].gteq(start_date))
       .and(transaction_table[:posted_at].lteq(end_date))
-    all_transactions.where(where_clause).sum(:amount)
+    all_transactions.where(where_clause).sum(:amount).to_d
   end
   
   def all_transactions(organized_envelopes = nil)
