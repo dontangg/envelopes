@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120312022505) do
+ActiveRecord::Schema.define(:version => 20120418054700) do
 
   create_table "envelopes", :force => true do |t|
     t.string   "name"
@@ -24,6 +24,7 @@ ActiveRecord::Schema.define(:version => 20120312022505) do
     t.datetime "updated_at"
   end
 
+  add_index "envelopes", ["parent_envelope_id"], :name => "index_envelopes_on_parent_envelope_id"
   add_index "envelopes", ["user_id"], :name => "index_envelopes_on_user_id"
 
   create_table "rules", :force => true do |t|
@@ -36,6 +37,7 @@ ActiveRecord::Schema.define(:version => 20120312022505) do
     t.datetime "updated_at"
   end
 
+  add_index "rules", ["envelope_id"], :name => "index_rules_on_envelope_id"
   add_index "rules", ["order"], :name => "index_rules_on_order"
   add_index "rules", ["user_id"], :name => "index_rules_on_user_id"
 
