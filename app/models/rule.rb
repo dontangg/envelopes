@@ -1,4 +1,6 @@
 class Rule < ActiveRecord::Base
+  attr_accessible :search_text, :replacement_text, :envelope_id, :order, :user_id
+
   default_scope order(arel_table[:order])
   scope :owned_by, lambda { |user_id| where(user_id: user_id) }
 

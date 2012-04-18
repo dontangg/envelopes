@@ -1,4 +1,7 @@
 class Expense
+  include ActiveModel::MassAssignmentSecurity
+
+  attr_accessible :amount, :frequency, :occurs_on_day, :occurs_on_month
 
   def amount
     @amount ||= 0.to_d
@@ -42,7 +45,7 @@ class Expense
 
   def update_attributes(attributes)
     if attributes.respond_to?(:each_pair)
-      attributes.each_pair do |attr_name, attr_value|
+      sanitize_for_mass_assignment(attributes).each do |attr_name, attr_value|
         send("#{attr_name}=", attr_value)
       end
     end
