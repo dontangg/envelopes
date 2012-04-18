@@ -34,6 +34,7 @@ end
 group :test do
   gem 'turn'
   gem 'minitest'
+  gem 'simplecov', :require => false
 end
 
 group :development do
@@ -42,6 +43,9 @@ group :development do
   gem 'rb-fsevent', require: false #if RUBY_PLATFORM =~ /darwin/i
   gem 'foreman'
   gem 'capistrano'
+
+  # For code quality
+  # rails_best_practices
 end
 
 gem 'pg', group: :production
