@@ -62,10 +62,6 @@ class Transaction < ActiveRecord::Base
     end
   end
 
-  def cleared?
-    !pending?
-  end
-
   def <=>(other)
     # Transactions are ordered by posted_at, original_payee, then amount
     result = self.posted_at <=> other.posted_at

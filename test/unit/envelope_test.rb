@@ -17,7 +17,7 @@ class EnvelopeTest < ActiveSupport::TestCase
     env = create :envelope
     create :envelope, user: env.user
     envelopes = Envelope.owned_by(env.user.id)
-  
+
     envelopes.each do |envelope|
       assert_equal env.user.id, envelope.user_id, "owned_by(#{env.user.id}) should only return envelopes owned by user #{env.user.id}"
     end
@@ -26,37 +26,25 @@ class EnvelopeTest < ActiveSupport::TestCase
   test "income scope should return income envelopes" do
     create :income_envelope
     envelopes = Envelope.income
-    
+
     envelopes.each do |envelope|
       assert envelope.income?
     end
   end
-  
+
   test "unassigned scope should return unassigned envelopes" do
     create :unassigned_envelope
     envelopes = Envelope.unassigned
-    
+
     envelopes.each do |envelope|
       assert envelope.unassigned?
     end
   end
-  
-  test "generic scope should return generic envelopes" do
-    create :envelope
-    create :income_envelope
-    create :unassigned_envelope
-    envelopes = Envelope.generic
-    
-    envelopes.each do |envelope|
-      assert !envelope.income?
-      assert !envelope.unassigned?
-    end
-  end
-  
+
   test "parent_envelope returns the parent envelope" do
     parent = create :envelope
     child = create :envelope, user: parent.user, parent_envelope_id: parent.id
-    
+
     assert_equal parent.id, child.parent_envelope.id
   end
 
@@ -160,13 +148,13 @@ class EnvelopeTest < ActiveSupport::TestCase
     assert_equal 12.34, new_envelope.expense.amount
     assert_equal :yearly, new_envelope.expense.frequency
   end
-  
+
   test "to_param returns id-name.parameterize" do
     envelope = create :envelope, name: 'Available Cash'
-    
+
     assert_equal "#{envelope.id}-available-cash", envelope.to_param
   end
-  
+
   test "transactions scope returns all transactions for this envelope" do
     envelope = create :envelope_with_transactions, transactions_count: 6
     assert_equal 6, envelope.transactions.size
@@ -174,7 +162,7 @@ class EnvelopeTest < ActiveSupport::TestCase
     envelope = create :envelope_with_transactions, transactions_count: 3
     assert_equal 3, envelope.transactions.size
   end
-  
+
   test "total_amount returns sum of all transactions" do
     envelope = create :envelope
     create :transaction, envelope: envelope, amount: 1.0
@@ -197,7 +185,7 @@ class EnvelopeTest < ActiveSupport::TestCase
   test "full_name returns this and parent envelope names separated by colons" do
     food_envelope = create :envelope, name: 'Food'
     assert_equal "Food", food_envelope.full_name
-    
+
     groceries_envelope = create :envelope, name: 'Groceries', user: food_envelope.user, parent_envelope: food_envelope
     assert_equal "Food: Groceries", groceries_envelope.full_name
   end
@@ -212,7 +200,7 @@ class EnvelopeTest < ActiveSupport::TestCase
     envelope.expense.frequency = :yearly
     assert_equal 1.0, envelope.simple_monthly_budget
   end
-  
+
   test "all_child_envelope_ids returns an array of all child envelope ids" do
     parent = FactoryGirl.build :envelope, id: 1, user: nil
     child1 = FactoryGirl.build :envelope, id: 2, user: nil, parent_envelope_id: parent.id
@@ -225,7 +213,7 @@ class EnvelopeTest < ActiveSupport::TestCase
     child_envelope_ids = Envelope.all_child_envelope_ids(parent.id, organized_envelopes)
     assert_equal [child1.id, child2.id], child_envelope_ids
   end
-  
+
   test "all_transactions returns all transactions for that envelope and all children" do
     user = create :user
     parent = create :envelope, user: user
@@ -265,7 +253,7 @@ class EnvelopeTest < ActiveSupport::TestCase
     food_envelope = create :envelope, name: 'Food'
     txn1 = create :transaction, envelope: food_envelope
 
-    num_transactions = food_envelope.transactions.count 
+    num_transactions = food_envelope.transactions.count
 
     assert_equal 1, num_transactions
 
@@ -286,7 +274,7 @@ class EnvelopeTest < ActiveSupport::TestCase
     food_envelope = create :envelope, name: 'Food'
     create :transaction, envelope: food_envelope
 
-    assert_equal 1, food_envelope.transactions.count 
+    assert_equal 1, food_envelope.transactions.count
 
     assert !food_envelope.destroy
   end
@@ -294,7 +282,7 @@ class EnvelopeTest < ActiveSupport::TestCase
   test "attempting to destroy an envelope without transactions should succeed" do
     food_envelope = create :envelope, name: 'Food'
 
-    assert_equal 0, food_envelope.transactions.count 
+    assert_equal 0, food_envelope.transactions.count
 
     assert food_envelope.destroy
   end
