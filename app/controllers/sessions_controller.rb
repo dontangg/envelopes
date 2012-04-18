@@ -1,6 +1,6 @@
 class SessionsController < ApplicationController
   skip_before_filter :authenticate
-  
+
   def new
     flash.keep[:return_to]
   end
@@ -16,7 +16,7 @@ class SessionsController < ApplicationController
       render "new"
     end
   end
-  
+
   def destroy
     session[:user_id] = nil
     redirect_to login_url, notice: "Logged out!"

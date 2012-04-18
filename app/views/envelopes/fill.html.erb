@@ -4,7 +4,7 @@
   <header>
     <h1>Fill Envelopes</h1>
   </header>
-  
+
   <%= form_tag perform_fill_envelopes_path do %>
     <ul>
       <li>
@@ -20,11 +20,11 @@
       </li>
       <%= render partial: 'envelope_for_fill', collection: @organized_envelopes[nil], as: :envelope, locals: {organized_envelopes: @organized_envelopes} %>
     </ul>
-  
+
     <%= submit_tag "Fill", class: 'primary' %>
-    
+
   <% end %>
-  
+
 </section>
 <section id='fill_aside'>
   <header>

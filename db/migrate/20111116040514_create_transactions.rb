@@ -9,10 +9,10 @@ class CreateTransactions < ActiveRecord::Migration
       t.integer :to_envelope_id
       t.string :unique_id
       t.boolean :pending
-      
+
       t.timestamps
     end
-    
+
     change_table :transactions do |t|
       t.index :from_envelope_id
       t.index :to_envelope_id

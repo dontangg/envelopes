@@ -16,10 +16,10 @@ when "development"
 
 
   puts "-- creating envelopes"
-  
+
   cash_envelope = Envelope.create name: 'Available Cash', user: test_user, income: true
   unassigned_envelope = Envelope.create name: 'Unassigned', user: test_user, unassigned: true
-  
+
   auto_envelope = Envelope.create name: 'Auto', user: test_user
   fuel_envelope = Envelope.create name: "Fuel", user: test_user, parent_envelope: auto_envelope
   auto_maintenance_envelope = Envelope.create name: "Maintenance", user: test_user, parent_envelope: auto_envelope
@@ -30,7 +30,7 @@ when "development"
   life_insurance_envelope = Envelope.create name: "Life Insurance", user: test_user, parent_envelope: bills_envelope
   mortgage_envelope = Envelope.create name: "Mortgage", user: test_user, parent_envelope: bills_envelope
   credit_card_envelope = Envelope.create name: "Credit Card", user: test_user, parent_envelope: bills_envelope
-  
+
   entertainment_envelope = Envelope.create name: 'Entertainment', user: test_user
   apple_envelope = Envelope.create name: "Apple", user: test_user, parent_envelope: entertainment_envelope
   other_entertainment_envelope = Envelope.create name: "Other", user: test_user, parent_envelope: entertainment_envelope
@@ -55,15 +55,15 @@ when "development"
   subscriptions_envelope = Envelope.create name: 'Subscriptions', user: test_user
   domains_envelope = Envelope.create name: 'Domains', user: test_user, parent_envelope: subscriptions_envelope
   netflix_envelope = Envelope.create name: 'Netflix', user: test_user, parent_envelope: subscriptions_envelope
-  
+
   auto_envelope2 = Envelope.create name: 'Auto', user: test_user2
-  
-  
+
+
   puts "-- creating transactions"
   Transaction.create payee: "Wal-Mart", original_payee: '20397235 WALMART AS2385 SPRINGVILLE, UT', unique_id: 'WALMART-3', posted_at: Date.today - 5.days, amount: -25.64, envelope: groceries_envelope
   Transaction.create payee: "Target", original_payee: '20397235 TARGET AS2385 OREM, UT', unique_id: 'TARGET-3', posted_at: Date.today - 4.days, amount: -39.29, envelope: groceries_envelope
   Transaction.create payee: "Wendy's", original_payee: '20397235 WENDYS AS2385 OREM, UT', unique_id: 'WENDYS-3', posted_at: Date.today - 3.days, amount: -4.56, envelope: eating_out_envelope
-  
+
 
   puts "-- creating rules"
   Rule.create search_text: "WALMART", replacement_text: "Wal-Mart", envelope: groceries_envelope, user: test_user, order: 0
@@ -71,6 +71,6 @@ when "development"
   Rule.create search_text: "COSTCO", replacement_text: "CostCo", envelope: groceries_envelope, user: test_user, order: 2
   Rule.create search_text: "NETFLIX", replacement_text: "Netflix", envelope: netflix_envelope, user: test_user, order: 3
   Rule.create search_text: "MORTGAGE", replacement_text: "Mortgage", envelope: mortgage_envelope, user: test_user, order: 4
-  
+
   Rule.create search_text: "USAA AUTO", replacement_text: "USAA Car Insurance", envelope: auto_envelope2, user: test_user2, order: 0
 end

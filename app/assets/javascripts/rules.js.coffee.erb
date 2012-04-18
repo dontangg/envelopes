@@ -8,20 +8,20 @@ $ ->
   $('#rules .replacement-text input').autocomplete
     source: "<%= CGI.unescape url.suggest_payee_transactions_path %>"
     minLength: 2
-  
+
   $('#rules .search-text input').autocomplete
     source: "<%= CGI.unescape url.suggest_payee_transactions_path %>?original=1"
     minLength: 2
-  
+
   autosave '#rules', 'blur', '.search-text input, .replacement-text input', "<%= CGI.unescape url.rule_path('{id}') %>"
   autosave '#rules', 'change', 'select', "<%= CGI.unescape url.rule_path('{id}') %>"
-  
+
   $('#rules_aside .new').click ->
     modal = showModal
       content: '#new_rule_modal'
       width: 520
       className: 'new-rule-modal'
-    
+
     modal.find('form').on('ajax:beforeSend', ->
       modal.find('.loading').show()
     ).on('ajax:success', (event, data, status, xhr) ->
@@ -35,17 +35,17 @@ $ ->
         errorMessage += "</ul>"
       catch ex
         errorMessage = xhr.responseText
-      
+
       showAlert errorMessage
       modal.find('.loading').hide()
     )
-    
+
     $('#rule_order').val $('#rules li').length
     modal.find('select').selectToAutocomplete()
     modal.find('input[type=text], input:not([type])]').selectOnFocus()
     modal.find('a').on 'click', ->
       hideModal()
-  
+
   setAltRowClass = ->
     helper = $(".ui-sortable-helper")
     rowClasses = ['', 'alt']
@@ -57,7 +57,7 @@ $ ->
       else
         position = if passedHelper then index - 1 else index
         $item.removeClass().addClass rowClasses[position % 2]
-  
+
   $('#rules ul').sortable
     cursor: 'move'
     axis: 'y'
@@ -88,7 +88,7 @@ $ ->
 
             showAlert errorMessage
     sort: setAltRowClass
-  
+
   $('#rules').on 'click', '.destroy', ->
     $this = $(this)
     if confirm("Do you want to delete the rule for " + $this.closest('tr').find('.search-text input').val() + "?")
@@ -110,5 +110,5 @@ $ ->
           errorMessage += "</ul>"
         catch ex
           errorMessage = jqXHR.responseText
-        
+
         showAlert errorMessage

@@ -1,16 +1,16 @@
 class RulesController < ApplicationController
   def index
     @new_rule = Rule.new
-    
+
     @rules = Rule.owned_by(current_user_id)
-    
+
     all_envelopes = Envelope.owned_by(current_user_id).sort
     @envelope_options_for_select = all_envelopes.map {|envelope| [envelope.full_name(all_envelopes), envelope.id] }
   end
 
   def create
     @rule = current_user.rules.build(params[:rule])
-    
+
     if @rule.save
       all_envelopes = Envelope.owned_by(current_user_id).sort
       @envelope_options_for_select = all_envelopes.map {|envelope| [envelope.full_name(all_envelopes), envelope.id] }

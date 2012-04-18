@@ -4,7 +4,7 @@ class TransactionsController < ApplicationController
   def update
     transaction = Transaction.find(params[:id])
     authorize! :update, transaction
-    
+
     if params[:transaction] && params[:transaction][:amount]
       params[:transaction][:amount].gsub!(/[^-0-9.]+/, '')
     end
@@ -15,7 +15,7 @@ class TransactionsController < ApplicationController
       render json: transaction.errors, status: :unprocessable_entity
     end
   end
-  
+
   def update_all
     # If you do want to do this, make sure you remove the dollar sign from the amount so that it doesn't just save zeroes
     #Transaction.update params[:transaction].keys, params[:transaction].values if params[:transaction]
@@ -35,7 +35,7 @@ class TransactionsController < ApplicationController
           @envelope = @all_envelopes.select {|envelope| envelope.id == params[:envelope_id].to_i }.first
           raise CanCan::AccessDenied.new("Not authorized!", :read, Envelope) unless @envelope
         end
-        
+
         @envelope_options_for_select = @all_envelopes.map {|envelope| [envelope.full_name(@all_envelopes), envelope.id] }
 
         @start_date = Date.parse(params[:start_date]) || Date.today - 1.month
@@ -48,18 +48,18 @@ class TransactionsController < ApplicationController
       end
     end
   end
-  
+
   def suggest_payee
-    
+
     term = params[:term].downcase
-    
+
     all_payees = Transaction.payee_suggestions_for_user_id(current_user_id, term, params[:original])
-    
+
     groups = [[], [], [], []]
-    
+
     all_payees.each do |payee|
       payee_downcase = payee.downcase
-      
+
       if payee_downcase.starts_with?("^" + term)
         groups[0] << payee
       elsif payee_downcase.include?(" #{term}")
@@ -70,23 +70,23 @@ class TransactionsController < ApplicationController
         groups[3] << payee
       end
     end
-    
+
     words = groups.flatten.uniq.take(6)
-    
+
     render json: words
   end
-  
+
   def create_transfer
     amount = params[:transfer_amount].gsub(/[^-0-9.]/, '').to_d
 
     if amount > 0 && params[:transfer_from_id] != params[:transfer_to_id]
       @attempted_transfer = true
-      
+
       from_envelope = Envelope.find(params[:transfer_from_id])
       to_envelope = Envelope.find(params[:transfer_to_id])
       authorize! :update, from_envelope
       authorize! :update, to_envelope
-      
+
       from_txn_payee = "Transferred #{number_to_currency(amount)} to #{to_envelope.full_name}"
       to_txn_payee = "Transferred #{number_to_currency(amount)} from #{from_envelope.full_name}"
       Transaction.create_transfer(amount, from_envelope.id, to_envelope.id, from_txn_payee, to_txn_payee)
@@ -111,7 +111,7 @@ class TransactionsController < ApplicationController
     else
       @attempted_transfer = false
     end
-    
+
     respond_to do |format|
       format.js
     end

@@ -4,7 +4,7 @@
   <header>
     <h1>Account</h1>
   </header>
-  
+
   <% if @user.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@user.errors.count, "error") %> prohibited your changes from being saved:</h2>
@@ -16,7 +16,7 @@
       </ul>
     </div>
   <% end %>
-  
+
   <%= form_for @user do |f| %>
     <div class="field">
       <%= f.label :email, 'Email:' %>
@@ -71,7 +71,7 @@
       <%=raw "<small id='last_imported'>(imported #{time_ago_in_words(@user.imported_transactions_at)} ago)</small>" unless @user.imported_transactions_at.nil? %>
     </div>
   <% end %>
-  
+
   <script id='questions_template' type='template'>
     <li>
       <%= text_field_tag "question[index]", nil, placeholder: "Question" %>

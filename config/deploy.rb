@@ -41,7 +41,7 @@ namespace :deploy do
   desc "Stop Unicorn"
   task :stop, roles: :app, :except => { :no_release => true } do
     run "kill -s QUIT `cat /tmp/unicorn.envelopes.pid`"
-  end 
+  end
 
 
   namespace :assets do

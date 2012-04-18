@@ -1,7 +1,7 @@
 class EnvelopesController < ApplicationController
   def index
     all_envelopes = Envelope.owned_by(current_user_id).with_amounts
-    
+
     @organized_envelopes = Envelope.organize(all_envelopes)
   end
 
@@ -25,7 +25,7 @@ class EnvelopesController < ApplicationController
     @all_envelopes.each do |envelope|
       @envelope_options_for_select << [envelope.full_name(@all_envelopes), envelope.id] if @organized_envelopes[envelope.id].empty?
     end
-    
+
     @start_date = params[:start_date].try(:to_date) || Date.today - 1.month
     @end_date = params[:end_date].try(:to_date) || Date.today
     @show_transfers = params[:show_transfers]
@@ -33,7 +33,7 @@ class EnvelopesController < ApplicationController
     # An array of transactions in this envelope
     @transactions = @envelope.all_transactions(@organized_envelopes).starting_at(@start_date).ending_at(@end_date)
     @transactions = @transactions.without_transfers unless @show_transfers
-    
+
     @budgeted_amount = @envelope.simple_monthly_budget
     @spent_amount = @envelope.amount_spent_this_month.abs
     max_spent_funded = [@budgeted_amount, @spent_amount].max
@@ -41,14 +41,14 @@ class EnvelopesController < ApplicationController
     @spent_percent = max_spent_funded == 0 ? 0 : @spent_amount * 100 / max_spent_funded
     @budgeted_percent = max_spent_funded == 0 ? 0 : @budgeted_amount * 100 / max_spent_funded
   end
-  
+
   def fill
     all_envelopes = Envelope.owned_by(current_user_id).with_amounts
     Envelope.add_funded_this_month(all_envelopes, current_user_id)
-    
+
     @organized_envelopes = Envelope.organize(all_envelopes)
     SuggestionCalculator.calculate(@organized_envelopes)
-    
+
     @available_cash_envelope = @organized_envelopes['sys'].select {|envelope| envelope.income }.first
   end
 
@@ -59,11 +59,11 @@ class EnvelopesController < ApplicationController
       match = /fill_envelope_(\d+)/.match(key)
       if match && match.length == 2
         amount = value.gsub(/[^-0-9.]/, '').to_d
-        
+
         if amount > 0
           to_envelope = Envelope.find(match[1])
           authorize! :update, to_envelope
-        
+
           from_txn_payee = "Filled envelope: #{to_envelope.full_name}"
           to_txn_payee = "#{to_envelope.full_name} envelope filled"
           Transaction.create_transfer(amount, available_cash_envelope.id, to_envelope.id, from_txn_payee, to_txn_payee)
@@ -76,7 +76,7 @@ class EnvelopesController < ApplicationController
 
   def create
     @envelope = current_user.envelopes.build(params[:envelope])
-    
+
     params[:envelope][:expense] = Expense.new(params[:envelope][:expense]) if params[:envelope] && params[:envelope][:expense]
 
     if @envelope.save
@@ -114,7 +114,7 @@ class EnvelopesController < ApplicationController
       unless envelope.income || envelope.unassigned
         # Only include 1st or 2nd level envelopes
         if envelope.parent_envelope_id.nil? || top_level_envelope_ids.include?(envelope.parent_envelope_id)
-          @envelope_options_for_create_select << [envelope.full_name(@all_envelopes), envelope.id] 
+          @envelope_options_for_create_select << [envelope.full_name(@all_envelopes), envelope.id]
         end
       end
     end

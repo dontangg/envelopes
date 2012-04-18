@@ -1,5 +1,5 @@
 class Envelope < ActiveRecord::Base
-  
+
   default_scope order(arel_table[:name])
   scope :owned_by, lambda { |user_id| where(user_id: user_id) }
   scope :income, where(income: true)
@@ -13,7 +13,7 @@ class Envelope < ActiveRecord::Base
 
   after_create :move_parents_transactions
   before_destroy :check_for_any_transactions
-  
+
   serialize :expense, Expense
 
   attr_accessor :suggested_amount
@@ -28,27 +28,27 @@ class Envelope < ActiveRecord::Base
     def with_amounts
       et = Envelope.arel_table
       tt = Transaction.arel_table
-      
+
       envelopes_columns = Envelope.column_names.map {|column_name| et[column_name.to_sym] }
-      
+
       sum_function = Arel::Nodes::NamedFunction.new('SUM', [tt[:amount]])
       aggregation = Arel::Nodes::NamedFunction.new('COALESCE', [sum_function, 0], 'total_amount')
-      
+
       select([et[Arel.star], aggregation])
         .joins(Arel::Nodes::OuterJoin.new(tt, Arel::Nodes::On.new(et[:id].eq(tt[:envelope_id]))))
         .group(envelopes_columns)
     end
-    
+
     # Fills in the amount_funded_this_month property for each envelope
     def add_funded_this_month(envelopes, user_id)
       et = Envelope.arel_table
       tt = Transaction.arel_table
-      
+
       envelopes_columns = Envelope.column_names.map {|column_name| et[column_name.to_sym] }
-      
+
       sum_function = Arel::Nodes::NamedFunction.new('SUM', [tt[:amount]])
       aggregation = Arel::Nodes::NamedFunction.new('COALESCE', [sum_function, 0], 'total_amount')
-      
+
       envelopes2 = select([et[:id], aggregation])
         .joins(Arel::Nodes::OuterJoin.new(tt, Arel::Nodes::On.new(et[:id].eq(tt[:envelope_id]))))
         .where(tt[:amount].gt(0).and(tt[:posted_at].gteq(Date.today.beginning_of_month)).and(et[:user_id].eq(user_id)))
@@ -56,7 +56,7 @@ class Envelope < ActiveRecord::Base
 
       funded_map = {}
       envelopes2.each { |env| funded_map[env.id] = env.total_amount }
-      
+
       envelopes.each do |env|
         env.amount_funded_this_month = funded_map[env.id] || 0.to_d
       end
@@ -78,7 +78,7 @@ class Envelope < ActiveRecord::Base
       env.id = 0
       env
     end
-    
+
     # Returns a Hash with all the envelopes organized. ie:
     #
     #   'sys' => [array of all, income, and unassigned envelopes]
@@ -96,9 +96,9 @@ class Envelope < ActiveRecord::Base
           envelopes[envelope.parent_envelope_id] << envelope
         end
       end
-      
+
       envelopes['sys'].unshift(all_envelope(total_amount))
-      
+
       all_envelopes.sort! {|e1, e2| e1.full_name <=> e2.full_name }
 
       envelopes
@@ -133,11 +133,11 @@ class Envelope < ActiveRecord::Base
   def to_param
     "#{id}-#{name.parameterize}" if id
   end
-  
+
   def total_amount
     @total_amount ||= (read_attribute(:total_amount) || transactions.sum(:amount) || "0").to_d
   end
-  
+
   def total_amount=(new_amount)
     @total_amount = new_amount.nil? ? nil : BigDecimal.new(new_amount.to_s)
   end
@@ -154,7 +154,7 @@ class Envelope < ActiveRecord::Base
       self.name
     else
       parent_envelope = all_envelopes ? all_envelopes.select {|envelope| envelope.id == self.parent_envelope_id}.first : Envelope.find(self.parent_envelope_id)
-    
+
       parent_full_name = parent_envelope.full_name(all_envelopes)
 
       "#{parent_full_name}: #{self.name}"
@@ -175,12 +175,12 @@ class Envelope < ActiveRecord::Base
       0
     end
   end
-  
+
   def amount_funded_this_month
     @amount_funded_this_month ||= amount_funded_between(Date.today.beginning_of_month, Date.today.end_of_month)
   end
-  
-  # This method is just to be able to populate 
+
+  # This method is just to be able to populate
   def amount_funded_this_month=(amount)
     @amount_funded_this_month = amount.to_d
   end
@@ -203,7 +203,7 @@ class Envelope < ActiveRecord::Base
       .and(transaction_table[:posted_at].lteq(end_date))
     all_transactions.where(where_clause).sum(:amount).to_d
   end
-  
+
   def all_transactions(organized_envelopes = nil)
     if self.id == 0 && organized_envelopes.present? # All Transactions envelope
       all_child_envelope_ids = []
@@ -216,5 +216,5 @@ class Envelope < ActiveRecord::Base
     end
     Transaction.where(envelope_id: all_child_envelope_ids)
   end
-  
+
 end

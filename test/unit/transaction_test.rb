@@ -3,10 +3,10 @@ require 'test_helper'
 class TransactionTest < ActiveSupport::TestCase
   test "uniq_str generates the correct unique string" do
     txn = build :transaction
-    
+
     assert_equal "#{Date.today.strftime('%F')}~#{txn.original_payee}~#{txn.amount}~#{txn.pending?}~", txn.uniq_str
   end
-  
+
   test "owned_by returns transactions in envelopes owned by the right user" do
     envelope = create :envelope_with_transactions
     create :envelope_with_transactions, user: envelope.user
@@ -16,14 +16,14 @@ class TransactionTest < ActiveSupport::TestCase
     users_envelopes = envelope.user.envelopes.map(&:id)
     assert txns.all? { |txn| users_envelopes.include?(txn.envelope_id) }
   end
-  
+
   test "envelope_id must be present before saving" do
     txn = Transaction.new payee: "t", original_payee: "tt", posted_at: Date.today, amount: 1.0
-    
+
     assert !txn.save
     assert !txn.valid?
   end
-  
+
   test "transactions are ordered by posted_at, then original payee, then amount" do
     transaction0 = Transaction.new original_payee: 'bbb', amount: 2, posted_at: Date.parse('Dec 25, 2011')
     transaction1 = Transaction.new original_payee: 'bbb', amount: 3, posted_at: Date.parse('Dec 25, 2011')
@@ -42,7 +42,7 @@ class TransactionTest < ActiveSupport::TestCase
     assert_equal transaction3, transactions[3]
     assert_not_equal transaction1, transactions[0], "== is not testing equality correctly"
   end
-  
+
   test "without_transfers excludes transactions with a nil unique_id" do
     create_list :transfer_transaction, 3
     create_list :transaction, 3

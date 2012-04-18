@@ -11,41 +11,41 @@ class TransactionImporter
       today = Time.now.in_time_zone('Mountain Time (US & Canada)').to_date
       starting_at = user.imported_transactions_at.nil? ? today - 1.month : user.imported_transactions_at - 1.week
       ending_at = today
-      
+
       income_envelope_id = Envelope.owned_by(user.id).find_by_income(true).id
       unassigned_envelope_id = Envelope.owned_by(user.id).find_by_unassigned(true).id
-      
+
       bank = Syrup.setup_institution(user.bank_id) do |config|
         config.username = user.bank_username
         config.password = user.bank_password
         config.secret_questions = user.bank_secret_questions
       end
-      
+
       import_count = 0
       id_cache = {}
       account = bank.find_account_by_id user.bank_account_id
       account.find_transactions(starting_at, ending_at).each do |raw_transaction|
         next if raw_transaction.status == :pending
-        
+
         transaction = Transaction.new payee: raw_transaction.payee,
                                       amount: raw_transaction.amount,
                                       posted_at: raw_transaction.posted_at,
                                       pending: raw_transaction.status == :pending
 
         # Default to Available Cash if the amount is not negative, Unassigned if it is negative
-        transaction.envelope_id = transaction.amount < 0 ? unassigned_envelope_id : income_envelope_id 
-        
+        transaction.envelope_id = transaction.amount < 0 ? unassigned_envelope_id : income_envelope_id
+
         # Find a truly unique id for this transaction
         uniq_str = transaction.uniq_str
         num = 0
         num = num.next while id_cache[uniq_str + num.to_s]
-        
+
         transaction.unique_id = uniq_str + num.to_s
         id_cache[transaction.unique_id] = true
-        
+
         import_count = import_count.next if import(transaction, user.rules)
       end
-      
+
       # Make sure that our balance matches the bank's balance
       account_balance = account.prior_day_balance || account.current_balance
       my_current_balance = Transaction.owned_by(user.id).sum(:amount)
@@ -60,7 +60,7 @@ class TransactionImporter
 
       user.imported_transactions_at = DateTime.now
       user.save
-      
+
       import_count
     end
 
@@ -69,7 +69,7 @@ class TransactionImporter
       # If the importing transaction has a unique_id and one already exists with the same unique_id,
       # it has already been imported.
       return nil if transaction.unique_id && Transaction.exists?(unique_id: transaction.unique_id)
-      
+
       transaction.original_payee = transaction.payee.dup
 
       # Run any special rules for renaming transactions or moving them into envelopes
@@ -90,7 +90,7 @@ class TransactionImporter
         # Correct the case of the payee
         transaction.payee = transaction.payee.strip.titleize
       end
-      
+
       transaction.save
     end
 

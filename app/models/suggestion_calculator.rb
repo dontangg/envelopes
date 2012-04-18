@@ -74,13 +74,13 @@ class SuggestionCalculator
       # Order the envelopes by which is due next
       yearlies.sort {|a, b| a[:sort_by_key] <=> b[:sort_by_key] }
     end
-    
+
     def suggest_yearly(organized_envelopes, current_envelope)
       return current_envelope.suggested_amount if current_envelope.suggested_amount.present?
 
       # Get all the envelopes with the same parent that are also yearly with a month
       yearlies = gather_yearly_info(organized_envelopes[current_envelope.parent_envelope_id])
-      
+
       # Figure out the total amount to distribute between all these envelopes
       # For each envelope:
       # * Add up all the envelope amounts that are due up to when the current envelope is due (don't count money put in this month)
@@ -101,11 +101,11 @@ class SuggestionCalculator
 
         amount_left_for_this_envelope = [envelope.expense.amount - yearly[:already_funded], 0.to_d].max
         suggested_amount = [amount_left_for_this_envelope, monthly_amount_left].min
-        
+
         monthly_amount_left -= suggested_amount
         envelope.suggested_amount = suggested_amount
       end
-      
+
     end
 
 

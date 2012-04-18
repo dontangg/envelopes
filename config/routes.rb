@@ -21,13 +21,13 @@ Envelopes::Application.routes.draw do
       post 'import'
     end
   end
-  
+
   resources :users, only: [:edit, :update]
 
   get 'login' => 'sessions#new'
   post 'login' => 'sessions#create'
   get 'logout' => 'sessions#destroy'
-  
+
   root to: 'envelopes#index'
-  
+
 end

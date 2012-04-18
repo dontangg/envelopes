@@ -3,7 +3,7 @@ class Expense
   def amount
     @amount ||= 0.to_d
   end
-  
+
   def amount=(new_amount)
     @amount = new_amount.to_d.abs
   end
@@ -29,7 +29,7 @@ class Expense
   def occurs_on_month
     @occurs_on_month
   end
-  
+
   def occurs_on_month=(new_month)
     new_month = new_month.to_i
     @occurs_on_month = new_month.blank? || new_month == 0 ? nil : new_month
@@ -39,7 +39,7 @@ class Expense
   def initialize(attributes = nil)
     update_attributes(attributes)
   end
-  
+
   def update_attributes(attributes)
     if attributes.respond_to?(:each_pair)
       attributes.each_pair do |attr_name, attr_value|

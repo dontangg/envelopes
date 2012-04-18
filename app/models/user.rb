@@ -7,7 +7,7 @@ class User < ActiveRecord::Base
 
   has_many :rules
   has_many :envelopes
-  
+
   serialize :bank_secret_questions
 
   def email=(new_email)
@@ -15,14 +15,14 @@ class User < ActiveRecord::Base
     super
     self.bank_password = pass
   end
- 
+
   def bank_password
     unless self.bank_password_cipher.blank?
       cipher = Gibberish::AES.new(self.email + 's')
       cipher.dec(self.bank_password_cipher)
     end
   end
-  
+
   def bank_password=(unencrypted_password)
     unless unencrypted_password.blank?
       cipher = Gibberish::AES.new(self.email + 's')
