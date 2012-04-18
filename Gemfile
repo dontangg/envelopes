@@ -29,6 +29,9 @@ end
 group :development, :test do
   gem 'sqlite3'
   gem 'factory_girl_rails'
+end
+
+group :test do
   gem 'turn'
   gem 'minitest'
 end
