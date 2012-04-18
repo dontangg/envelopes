@@ -75,8 +75,7 @@ class EnvelopesController < ApplicationController
   end
 
   def create
-    @envelope = Envelope.new(params[:envelope])
-    @envelope.user_id = current_user_id
+    @envelope = current_user.envelopes.build(params[:envelope])
     
     params[:envelope][:expense] = Expense.new(params[:envelope][:expense]) if params[:envelope] && params[:envelope][:expense]
 

@@ -9,8 +9,7 @@ class RulesController < ApplicationController
   end
 
   def create
-    @rule = Rule.new(params[:rule])
-    @rule.user_id = current_user_id
+    @rule = current_user.rules.build(params[:rule])
     
     if @rule.save
       all_envelopes = Envelope.owned_by(current_user_id).sort
