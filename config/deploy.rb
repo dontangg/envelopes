@@ -26,20 +26,31 @@ set :default_environment, {
   "PATH" => "/home/app_user/.rbenv/shims:/home/app_user/.rbenv/bin:$PATH"
 }
 
+desc "Just like desploy, but with restart2"
+task :deploy2, roles: :app, except: { no_release: true } do
+  deploy.update
+  deploy.restart2
+end
 
 namespace :deploy do
   desc "Zero-downtime restart of Unicorn"
-  task :restart, roles: :app, :except => { :no_release => true } do
+  task :restart, roles: :app, except: { no_release: true } do
     run "kill -s USR2 `cat /tmp/unicorn.envelopes.pid`"
   end
 
+  desc "Restart Unicorn with downtime, but will take new gems into account"
+  task :restart2, roles: :app, except: { no_release: true } do
+    stop
+    start
+  end
+
   desc "Start Unicorn"
-  task :start, roles: :app, :except => { :no_release => true } do
+  task :start, roles: :app, except: { no_release: true } do
     run "cd #{current_path} ; bundle exec unicorn_rails -c config/unicorn.rb -D"
   end
 
   desc "Stop Unicorn"
-  task :stop, roles: :app, :except => { :no_release => true } do
+  task :stop, roles: :app, except: { no_release: true } do
     run "kill -s QUIT `cat /tmp/unicorn.envelopes.pid`"
   end
 
@@ -58,7 +69,7 @@ namespace :deploy do
 
       * only runs if assets have changed (add `-s force_assets=true` to force precompilation)
     DESC
-    task :precompile, :roles => :web, :except => { :no_release => true } do
+    task :precompile, roles: :web, except: { no_release: true } do
       # Only precompile assets if any assets changed
       # http://www.bencurtis.com/2011/12/skipping-asset-compilation-with-capistrano/
       from = source.next_revision(current_revision)
