@@ -8,7 +8,6 @@ gem 'cancan', '~> 1.6'
 gem 'syrup', '~> 0.0.12'
 gem 'gibberish'
 gem 'bcrypt-ruby', '~> 3.0.0' # To use ActiveModel has_secure_password
-# gem 'ruby-debug19', :require => 'ruby-debug' # To use debugger
 
 # To use Jbuilder templates for JSON
 # gem 'jbuilder'
@@ -29,6 +28,7 @@ end
 group :development, :test do
   gem 'sqlite3'
   gem 'factory_girl_rails'
+  gem 'debugger'
 end
 
 group :test do
