@@ -10,7 +10,9 @@
         <%= envelope.name %>
         <button class='info image-only' title='More information on this envelope'></button>
       </td>
-      <td class='amount balance'><%= number_to_currency(envelope.inclusive_total_amount(organized_envelopes)) %></td>
+      <td class='amount balance<%= ' negative-number' if envelope.inclusive_total_amount(organized_envelopes) < 0 %>'>
+        <%= number_to_currency(envelope.inclusive_total_amount(organized_envelopes)) %>
+      </td>
       <td class='amount budget'><%= number_to_currency(envelope.expense.try(:amount) || 0) %></td>
       <td class='amount to-fund' title='Already funded <%= number_to_currency(envelope.amount_funded_this_month) %> this month.'>
         <%= number_to_currency(envelope.suggested_amount) %>
