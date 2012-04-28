@@ -1,30 +1,29 @@
 require "bundler/capistrano"
 
+server "money.thewilsonpad.com", :web, :app, :db, primary: true
+
 set :application, "envelopes"
-set :repository,  "git://github.com/dontangg/envelopes.git"
+set :user, "app_user"
+set :deploy_to, "/home/#{user}/apps/#{application}"
 
 set :scm, :git
-
-# set :deploy_to "/u/apps/#{application}"
-
-role :web, "50.56.208.109"                          # Your HTTP server, Apache/etc
-role :app, "50.56.208.109"                          # This may be the same as your `Web` server
-role :db,  "50.56.208.109", :primary => true        # This is where Rails migrations will run
-#role :db,  "your slave db-server here"
-
-set :user, "app_user"
+set :repository,  "git://github.com/dontangg/envelopes.git"
+set :branch, "master"
 
 # It complained about no tty, so use pty... no profile scripts :(
 # http://weblog.jamisbuck.org/2007/10/14/capistrano-2-1
 default_run_options[:pty] = true
+ssh_options[:forward_agent] = true
 
 # Don't show so much! (Log levels: IMPORTANT, INFO, DEBUG, TRACE, MAX_LEVEL)
 logger.level = Capistrano::Logger::DEBUG
 
 # Since we're using pty, load the path ourselves
-set :default_environment, {
-  "PATH" => "/home/app_user/.rbenv/shims:/home/app_user/.rbenv/bin:$PATH"
-}
+#set :default_environment, {
+#  "PATH" => "/home/app_user/.rbenv/shims:/home/app_user/.rbenv/bin:$PATH"
+#}
+
+after "deploy", "deploy:cleanup" # keep only the last 5 releases
 
 desc "Just like desploy, but with restart2"
 task :deploy2, roles: :app, except: { no_release: true } do
@@ -54,6 +53,20 @@ namespace :deploy do
     run "kill -s QUIT `cat /tmp/unicorn.envelopes.pid`"
   end
 
+  task :setup_config, roles: :app do
+    sudo "ln -nfs #{current_path}/config/nginx.conf /etc/nginx/sites-enabled/#{application}"
+  end
+  after "deploy:setup", "deploy:setup_config"
+
+  desc "Make sure local git is in sync with remote."
+  task :check_revision, roles: :web do
+    unless '`git cherry`'.empty?
+      puts "WARNING: HEAD is not the same as origin/master"
+      puts "Run `git push` to sync changes."
+      exit
+    end
+  end
+  before "deploy", "deploy:check_revision"
 
   namespace :assets do
 
