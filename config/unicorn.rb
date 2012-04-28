@@ -1,29 +1,25 @@
+# See http://unicorn.bogomips.org/Unicorn/Configurator.html for complete documentation.
 
 # Set environment to development unless something else is specified
 env = ENV["RAILS_ENV"] || "development"
 
-# See http://unicorn.bogomips.org/Unicorn/Configurator.html for complete documentation.
 worker_processes 2 # amount of unicorn workers to spin up
-
-listen "/tmp/envelopes.socket"
 
 preload_app true
 
 timeout 30         # restarts workers that hang for 30 seconds
 
-pid "/tmp/unicorn.envelopes.pid"
-
 if env == "production"
+  root = "/home/app_user/apps/envelopes/current"
+  pid "#{root}/tmp/pids/unicorn.pid"
+  listen "/tmp/unicorn.envelopes.sock"
+
   # Help ensure your application will always spawn in the symlinked
   # "current" directory that Capistrano sets up.
-  working_directory "/u/apps/envelopes/current"
+  working_directory root
 
-  # feel free to point this anywhere accessible on the filesystem
-  user 'app_user', 'app_user' # 'user', 'group'
-  shared_path = "/u/apps/envelopes/shared"
-
-  stderr_path "#{shared_path}/log/unicorn.stderr.log"
-  stdout_path "#{shared_path}/log/unicorn.stdout.log"
+  stderr_path "#{root}/log/unicorn.log"
+  stdout_path "#{root}/log/unicorn.log"
 end
 
 before_fork do |server, worker|
