@@ -18,11 +18,6 @@ ssh_options[:forward_agent] = true
 # Don't show so much! (Log levels: IMPORTANT, INFO, DEBUG, TRACE, MAX_LEVEL)
 logger.level = Capistrano::Logger::DEBUG
 
-# Since we're using pty, load the path ourselves
-#set :default_environment, {
-#  "PATH" => "/home/app_user/.rbenv/shims:/home/app_user/.rbenv/bin:$PATH"
-#}
-
 after "deploy", "deploy:cleanup" # keep only the last 5 releases
 
 desc "Just like desploy, but with restart2"
@@ -34,7 +29,7 @@ end
 namespace :deploy do
   desc "Zero-downtime restart of Unicorn"
   task :restart, roles: :app, except: { no_release: true } do
-    run "kill -s USR2 `cat /tmp/unicorn.envelopes.pid`"
+    run "kill -s USR2 `cat #{current_path}/tmp/pids/unicorn.pid`"
   end
 
   desc "Restart Unicorn with downtime, but will take new gems into account"
@@ -50,7 +45,7 @@ namespace :deploy do
 
   desc "Stop Unicorn"
   task :stop, roles: :app, except: { no_release: true } do
-    run "kill -s QUIT `cat /tmp/unicorn.envelopes.pid`"
+    run "kill -s QUIT `cat #{current_path}/tmp/pids/unicorn.pid`"
   end
 
   task :setup_config, roles: :app do
@@ -60,7 +55,7 @@ namespace :deploy do
 
   desc "Make sure local git is in sync with remote."
   task :check_revision, roles: :web do
-    unless '`git cherry`'.empty?
+    unless `git rev-parse HEAD` == `git rev-parse origin/master`
       puts "WARNING: HEAD is not the same as origin/master"
       puts "Run `git push` to sync changes."
       exit
@@ -85,8 +80,12 @@ namespace :deploy do
     task :precompile, roles: :web, except: { no_release: true } do
       # Only precompile assets if any assets changed
       # http://www.bencurtis.com/2011/12/skipping-asset-compilation-with-capistrano/
-      from = source.next_revision(current_revision)
-      if fetch(:force_assets, false) || capture("cd #{latest_release} && #{source.local.log(from)} vendor/assets/ app/assets/ lib/assets/ | wc -l").to_i > 0
+      begin
+        from = source.next_revision(current_revision)
+      rescue
+        from = nil
+      end
+      if fetch(:force_assets, false) || from.nil? || capture("cd #{latest_release} && #{source.local.log(from)} vendor/assets/ app/assets/ lib/assets/ | wc -l").to_i > 0
         # Just like original: https://github.com/capistrano/capistrano/blob/master/lib/capistrano/recipes/deploy/assets.rb
         run "cd #{latest_release} && #{rake} RAILS_ENV=#{rails_env} #{asset_env} assets:precompile"
       else
