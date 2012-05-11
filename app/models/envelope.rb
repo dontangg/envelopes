@@ -164,15 +164,19 @@ class Envelope < ActiveRecord::Base
   end
 
   # calculates a very simple budget for this envelope
-  def simple_monthly_budget
-    if self.expense
-      if self.expense.frequency == :monthly
-        self.expense.amount
-      else
-        self.expense.amount / 12
-      end
+  def simple_monthly_budget(organized_envelopes = nil)
+    if organized_envelopes && !organized_envelopes[self.id].empty?
+      organized_envelopes[self.id].inject(0) { |sum, envelope| sum + envelope.simple_monthly_budget(organized_envelopes) }
     else
-      0
+      if self.expense
+        if self.expense.frequency == :monthly
+          self.expense.amount
+        else
+          self.expense.amount / 12
+        end
+      else
+        0
+      end
     end
   end
 

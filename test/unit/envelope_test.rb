@@ -190,7 +190,7 @@ class EnvelopeTest < ActiveSupport::TestCase
     assert_equal "Food: Groceries", groceries_envelope.full_name
   end
 
-  test "can calculate a simple budget for this envelope" do
+  test "can calculate a simple budget" do
     envelope = build :envelope, expense: nil
     assert_equal 0.0, envelope.simple_monthly_budget
 
@@ -199,6 +199,16 @@ class EnvelopeTest < ActiveSupport::TestCase
 
     envelope.expense.frequency = :yearly
     assert_equal 1.0, envelope.simple_monthly_budget
+
+    parent = build :envelope, id: 1, user: nil
+    child1 = build :envelope, id: 2, user: nil, parent_envelope_id: parent.id, expense: Expense.new(frequency: :monthly, amount: 1.0)
+    child2 = build :envelope, id: 3, user: nil, parent_envelope_id: parent.id, expense: Expense.new(frequency: :yearly, amount: 0.12)
+
+    organized_envelopes = Hash.new { |hash, key| hash[key] = [] }
+    organized_envelopes[nil] = [parent]
+    organized_envelopes[parent.id] = [child1, child2]
+
+    assert_equal 1.01, parent.simple_monthly_budget(organized_envelopes)
   end
 
   test "all_child_envelope_ids returns an array of all child envelope ids" do
