@@ -212,9 +212,9 @@ class EnvelopeTest < ActiveSupport::TestCase
   end
 
   test "all_child_envelope_ids returns an array of all child envelope ids" do
-    parent = FactoryGirl.build :envelope, id: 1, user: nil
-    child1 = FactoryGirl.build :envelope, id: 2, user: nil, parent_envelope_id: parent.id
-    child2 = FactoryGirl.build :envelope, id: 3, user: nil, parent_envelope_id: parent.id
+    parent = build :envelope, id: 1, user: nil
+    child1 = build :envelope, id: 2, user: nil, parent_envelope_id: parent.id
+    child2 = build :envelope, id: 3, user: nil, parent_envelope_id: parent.id
 
     organized_envelopes = Hash.new { |hash, key| hash[key] = [] }
     organized_envelopes[nil] = [parent]
