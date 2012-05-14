@@ -135,7 +135,8 @@ $ ->
     #   modal.find('.loading').hide()
     # )
 
-    modal.find('select').selectToAutocomplete()
+    modal.find('select').selectToAutocomplete
+      'remove-valueless-options': false
     modal.find('input[type=text], input:not([type])]').selectOnFocus()
     modal.find('a').on 'click', ->
       hideModal()

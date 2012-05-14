@@ -109,7 +109,7 @@ class EnvelopesController < ApplicationController
     @organized_envelopes = Envelope.organize(@all_envelopes)
 
     top_level_envelope_ids = @organized_envelopes[nil].map {|envelope| envelope.id }
-    @envelope_options_for_create_select = [ ['', ''] ]
+    @envelope_options_for_create_select = [ ['None', ''] ]
     @all_envelopes.each do |envelope|
       unless envelope.income || envelope.unassigned
         # Only include 1st or 2nd level envelopes
