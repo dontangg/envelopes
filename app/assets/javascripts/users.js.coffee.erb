@@ -1,7 +1,9 @@
 <% url = Envelopes::Application.routes.url_helpers %>
 
 $ ->
-  $('#account input').selectOnFocus()
+  $('#account input').selectOnFocus().on 'keydown', (event) ->
+    if event.which == 13
+      event.preventDefault()
 
   $('#account .new').on 'click', (event) ->
     event.preventDefault()
@@ -13,7 +15,7 @@ $ ->
       .slideDown()
       .find('input').selectOnFocus()
 
-  $('#account').on 'click', '.destroy', (event) ->
+  $('#account .questions').on 'click', '.destroy', (event) ->
     event.preventDefault()
     $(this).parent().slideUp ->
       $(this).remove()
