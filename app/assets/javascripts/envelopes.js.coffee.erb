@@ -19,44 +19,46 @@ cancelDatePicker = (event) ->
     setCurrentDateRange()
 
 @setupTransactionsList = ->
-  $('#date_range_picker').click (event) ->
-    event.stopPropagation()
-    $(this).children('.popup').show()
+  if $('#date_range_picker').length > 0
+    $('#date_range_picker').click (event) ->
+      event.stopPropagation()
+      $(this).children('.popup').show()
 
-  $('html').click cancelDatePicker
-  $('#date_range_picker .actions a').click (event) ->
-    event.preventDefault()
-    event.stopPropagation()
-    cancelDatePicker()
-
-  $('#date_range_picker .start').datepicker
-    onSelect: setCurrentDateRange
-    dateFormat: 'yy-mm-dd'
-    altField: '#start_date'
-    defaultDate: $('#date_range_picker .start').data('initialDate')
-  $('#date_range_picker .end').datepicker
-    onSelect: setCurrentDateRange
-    dateFormat: 'yy-mm-dd'
-    altField: '#end_date'
-    defaultDate: $('#date_range_picker .end').data('initialDate')
-  setCurrentDateRange()
-
-  $('select').selectToAutocomplete()
-
-  $('#transactions_list input').selectOnFocus()
-
-  $('#transactions_list .payee input').autocomplete
-    source: "<%= CGI.unescape url.suggest_payee_transactions_path %>"
-    minLength: 2
-
-  $('#update_all_transactions')
-    .on('ajax:beforeSend', ->
+    $('html').click cancelDatePicker
+    $('#date_range_picker .actions a').click (event) ->
+      event.preventDefault()
+      event.stopPropagation()
       cancelDatePicker()
-      $('#update_all_transactions .loading-overlay').css('opacity', 0.7).show()
-    ).on('ajax:error', (event, xhr, status, error) ->
-      showAlert error
-      $('#update_all_transactions .loading-overlay').hide()
-    )
+
+    $('#date_range_picker .start').datepicker
+      onSelect: setCurrentDateRange
+      dateFormat: 'yy-mm-dd'
+      altField: '#start_date'
+      defaultDate: $('#date_range_picker .start').data('initialDate')
+    $('#date_range_picker .end').datepicker
+      onSelect: setCurrentDateRange
+      dateFormat: 'yy-mm-dd'
+      altField: '#end_date'
+      defaultDate: $('#date_range_picker .end').data('initialDate')
+    setCurrentDateRange()
+
+  if $('#transactions_list').length > 0
+    $('select').selectToAutocomplete()
+
+    $('#transactions_list input').selectOnFocus()
+
+    $('#transactions_list .payee input').autocomplete
+      source: "<%= CGI.unescape url.suggest_payee_transactions_path %>"
+      minLength: 2
+
+    $('#update_all_transactions')
+      .on('ajax:beforeSend', ->
+        cancelDatePicker()
+        $('#update_all_transactions .loading-overlay').css('opacity', 0.7).show()
+      ).on('ajax:error', (event, xhr, status, error) ->
+        showAlert error
+        $('#update_all_transactions .loading-overlay').hide()
+      )
 
 
 ###
@@ -74,8 +76,7 @@ $ ->
   # Show envelope
   ###
 
-  if $('#transactions_list').length > 0
-    setupTransactionsList()
+  setupTransactionsList()
 
   autosave '#envelope_details', 'blur', '.payee input, .amount input', "<%= CGI.unescape url.transaction_path('{id}') %>"
   autosave '#envelope_details', 'change', 'select', "<%= CGI.unescape url.transaction_path('{id}') %>"
