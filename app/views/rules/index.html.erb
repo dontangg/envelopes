@@ -5,18 +5,22 @@
     <h1>Rules</h1>
   </header>
 
-  <table>
-    <tr>
-      <th class='search-text'><div>Search Text</div></th>
-      <th class='replacement-text'><div>Replacement Text</div></th>
-      <th class='envelope'><div>Envelope</div></th>
-      <th class='rule-actions'></th>
-    </tr>
-  </table>
-  <ul>
-    <%= render partial: 'rules/rule', collection: @rules, locals: {envelope_options_for_select: @envelope_options_for_select} %>
-  </ul>
-  <p class='autosave-status'></p>
+  <% if @rules.size > 0 %>
+    <table>
+      <tr>
+        <th class='search-text'><div>Search Text</div></th>
+        <th class='replacement-text'><div>Replacement Text</div></th>
+        <th class='envelope'><div>Envelope</div></th>
+        <th class='rule-actions'></th>
+      </tr>
+    </table>
+    <ul>
+      <%= render partial: 'rules/rule', collection: @rules, locals: {envelope_options_for_select: @envelope_options_for_select} %>
+    </ul>
+    <p class='autosave-status'></p>
+  <% else %>
+    <span class='status'>You don't have any rules yet.</span>
+  <% end %>
 </section>
 
 <section id='rules_aside'>
