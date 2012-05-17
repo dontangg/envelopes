@@ -53,7 +53,7 @@ class RuleTest < ActiveSupport::TestCase
     rule.replacement_text = nil
     rule.envelope_id = nil
     run_result = rule.run('There is a test payee in here')
-    assert_equal 'There is a test payee in here', run_result[0]
+    assert_nil run_result[0]
     assert_nil run_result[1]
   end
 
