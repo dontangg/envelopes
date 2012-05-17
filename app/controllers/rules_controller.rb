@@ -4,16 +4,26 @@ class RulesController < ApplicationController
 
     @rules = Rule.owned_by(current_user_id)
 
-    all_envelopes = Envelope.owned_by(current_user_id).sort
-    @envelope_options_for_select = all_envelopes.map {|envelope| [envelope.full_name(all_envelopes), envelope.id] }
+    all_envelopes = Envelope.owned_by(current_user_id)
+    organized_envelopes = Envelope.organize(all_envelopes)
+
+    @envelope_options_for_select = [['No Change', nil]]
+    all_envelopes.each do |envelope|
+      @envelope_options_for_select << [envelope.full_name(all_envelopes), envelope.id] if organized_envelopes[envelope.id].empty?
+    end
   end
 
   def create
     @rule = current_user.rules.build(params[:rule])
 
     if @rule.save
-      all_envelopes = Envelope.owned_by(current_user_id).sort
-      @envelope_options_for_select = all_envelopes.map {|envelope| [envelope.full_name(all_envelopes), envelope.id] }
+      all_envelopes = Envelope.owned_by(current_user_id)
+      organized_envelopes = Envelope.organize(all_envelopes)
+
+      @envelope_options_for_select = [['No Change', nil]]
+      all_envelopes.each do |envelope|
+        @envelope_options_for_select << [envelope.full_name(all_envelopes), envelope.id] if organized_envelopes[envelope.id].empty?
+      end
     else
       render json: @rule.errors, status: :unprocessable_entity
     end

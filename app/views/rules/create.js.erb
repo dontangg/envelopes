@@ -5,16 +5,18 @@ newItem.hide();
 
 $('#rules ul').append(newItem);
 
-newItem.find('select').selectToAutocomplete()
-newItem.find('input[type=text], input:not([type])]').selectOnFocus()
+newItem.find('select').selectToAutocomplete({ 'remove-valueless-options': false });
+newItem.find('input[type=text], input:not([type])]').selectOnFocus();
 
-newItem.find('.replacement-text input').autocomplete
-  source: "<%= CGI.unescape url.suggest_payee_transactions_path %>"
+newItem.find('.replacement-text input').autocomplete({
+  source: "<%= CGI.unescape url.suggest_payee_transactions_path %>",
   minLength: 2
+});
 
-newItem.find('.search-text input').autocomplete
-  source: "<%= CGI.unescape url.suggest_payee_transactions_path %>?original=1"
+newItem.find('.search-text input').autocomplete({
+  source: "<%= CGI.unescape url.suggest_payee_transactions_path %>?original=1",
   minLength: 2
+});
 
 //setAltRowClass()
 hideModal();

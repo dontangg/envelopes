@@ -2,7 +2,9 @@
 <% url = Envelopes::Application.routes.url_helpers %>
 
 $ ->
-  $('#rules select').selectToAutocomplete()
+  $('#rules select').selectToAutocomplete
+    'remove-valueless-options': false
+
   $('#rules input[type=text], #rules input:not([type])]').selectOnFocus()
 
   $('#rules .replacement-text input').autocomplete
@@ -41,7 +43,9 @@ $ ->
     )
 
     $('#rule_order').val $('#rules li').length
-    modal.find('select').selectToAutocomplete()
+    modal.find('select').selectToAutocomplete
+      'remove-valueless-options': false
+
     modal.find('input[type=text], input:not([type])]').selectOnFocus()
     modal.find('a').on 'click', ->
       hideModal()
