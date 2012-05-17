@@ -49,6 +49,10 @@ class RulesControllerTest < ActionController::TestCase
     }
     
     assert_response :success
+
+    rule.reload
+
+    assert_equal 'newtext', rule.search_text
   end
   
   test "should delete a rule" do
@@ -61,6 +65,35 @@ class RulesControllerTest < ActionController::TestCase
     end
 
     assert_response :success
+  end
+
+  test "should run all rules now" do
+    envelope0 = create :unassigned_envelope, user: @user
+    envelope1 = create :envelope, name: 'Groceries', user: @user
+    envelope2 = create :envelope, name: 'Gas', user: @user
+
+    transaction0 = create :transaction, envelope: envelope0, original_payee: 'WALMART1', payee: 'WALMART1'
+    transaction1 = create :transaction, envelope: envelope1, original_payee: 'WALMART2', payee: 'WALMART2'
+    transaction2 = create :transaction, envelope: envelope0, original_payee: 'MAVERIK', payee: 'MAVERIK'
+
+    rule0 = create :rule, search_text: 'WALM', replacement_text: 'Walmart', envelope: nil, order: 0, user: @user
+    rule1 = create :rule, search_text: 'MAVE', replacement_text: nil, envelope_id: envelope2.id, order: 1, user: @user
+
+    post :run_all, { format: :js }
+
+    assert_response :success
+    assert_equal 2, assigns(:changed_count)
+
+    transaction0.reload
+    transaction1.reload
+    transaction2.reload
+
+    assert_equal 'Walmart', transaction0.payee
+    assert_equal envelope0.id, transaction0.envelope_id
+    assert_equal 'WALMART2', transaction1.payee
+    assert_equal envelope1.id, transaction1.envelope_id
+    assert_equal 'MAVERIK', transaction2.payee
+    assert_equal envelope2.id, transaction2.envelope_id
   end
 
 end

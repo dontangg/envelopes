@@ -73,14 +73,7 @@ class TransactionImporter
       transaction.original_payee = transaction.payee.dup
 
       # Run any special rules for renaming transactions or moving them into envelopes
-      rules.each do |rule|
-        rule_result = rule.run(transaction.payee)
-        if rule_result
-          transaction.payee = rule_result[0] if rule_result[0]
-          transaction.envelope_id = rule_result[1] if rule_result[1]
-          break
-        end
-      end
+      Rule.run_all(rules, transaction)
 
       if transaction.payee == transaction.original_payee
         # Clean the payee

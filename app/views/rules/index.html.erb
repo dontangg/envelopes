@@ -26,6 +26,7 @@
 <section id='rules_aside'>
   <ul class='actions'>
     <li><a href='javascript:void(0)' class='button new'>New Rule</a></li>
+    <li><%= link_to 'Run Rules Now', run_all_rules_path, method: :post, remote: true, class: 'button transfer', title: 'Run the rules on any currently unassigned transactions' %></li>
   </ul>
 </section>
 

@@ -1,0 +1,1 @@
+$("<div class='flash notice'><div><%= pluralize(@changed_count, 'transaction') %> were modified.</div></div>").appendTo('body').delay(4000).fadeOut(function() { $(this).remove() });

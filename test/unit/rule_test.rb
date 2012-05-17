@@ -57,6 +57,24 @@ class RuleTest < ActiveSupport::TestCase
     assert_nil run_result[1]
   end
 
+  test "only one successful rule runs when running multiple rules" do
+    rule0 = build :rule, search_text: 'rule0', replacement_text: 'r0'
+    rule1 = build :rule, search_text: 'rule1', replacement_text: 'r1'
+    rule2 = build :rule, search_text: 'rule2', replacement_text: 'r2'
+    rules = [rule0, rule1, rule2]
+
+    transaction0 = build :transaction, original_payee: 'rule0 rule2'
+    transaction1 = build :transaction, original_payee: 'rule1 rule2'
+
+    Rule.run_all(rules, transaction0)
+    assert_equal 'r0', transaction0.payee
+    assert_equal 'rule0 rule2', transaction0.original_payee
+
+    Rule.run_all(rules, transaction1)
+    assert_equal 'r1', transaction1.payee
+    assert_equal 'rule1 rule2', transaction1.original_payee
+  end
+
   test "owned_by should only return rules for the specified user" do
     rule1 = create :rule
     rule2 = create :rule, user: create(:user, email: 'junk not used')
