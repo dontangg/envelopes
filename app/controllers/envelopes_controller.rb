@@ -34,12 +34,16 @@ class EnvelopesController < ApplicationController
     @transactions = @envelope.all_transactions(@organized_envelopes).starting_at(@start_date).ending_at(@end_date)
     @transactions = @transactions.without_transfers unless @show_transfers
 
-    @budgeted_amount = @envelope.simple_monthly_budget
-    @spent_amount = @envelope.amount_spent_this_month.abs
-    max_spent_funded = [@budgeted_amount, @spent_amount].max
+    @show_graphs = @envelope.expense.try(:frequency) == :monthly && @organized_envelopes[@envelope.id].empty?
 
-    @spent_percent = max_spent_funded == 0 ? 0 : @spent_amount * 100 / max_spent_funded
-    @budgeted_percent = max_spent_funded == 0 ? 0 : @budgeted_amount * 100 / max_spent_funded
+    if @show_graphs
+      @budgeted_amount = @envelope.simple_monthly_budget
+      @spent_amount = @envelope.amount_spent_this_month.abs
+      max_spent_funded = [@budgeted_amount, @spent_amount].max
+
+      @spent_percent = max_spent_funded == 0 ? 0 : @spent_amount * 100 / max_spent_funded
+      @budgeted_percent = max_spent_funded == 0 ? 0 : @budgeted_amount * 100 / max_spent_funded
+    end
   end
 
   def fill

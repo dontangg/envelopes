@@ -24,19 +24,21 @@
   <ul class='actions'>
     <li><a href='javascript:void(0)' class='button transfer'>Transfer Money</a></li>
   </ul>
-  <div>
-    <h2><%= @end_date.strftime('%B') %></h2>
-    <table>
-      <tr>
-        <th>Spent</th>
-        <td><div class="chart-bar spent" title="<%= number_to_currency(@spent_amount) %>" style="width:<%= @spent_percent %>%;"></div></td>
-      </tr>
-      <tr>
-        <th>Budget</th>
-        <td><div class="chart-bar budget" title="<%= number_to_currency(@budgeted_amount) %>" style="width:<%= @budgeted_percent %>%;"></div></td>
-      </tr>
-    </table>
-  </div>
+  <% if @show_graphs %>
+    <div>
+      <h2><%= @end_date.strftime('%B') %></h2>
+      <table>
+        <tr>
+          <th>Spent</th>
+          <td><div class="chart-bar spent" title="<%= number_to_currency(@spent_amount) %>" style="width:<%= @spent_percent %>%;"></div></td>
+        </tr>
+        <tr>
+          <th>Budget</th>
+          <td><div class="chart-bar budget" title="<%= number_to_currency(@budgeted_amount) %>" style="width:<%= @budgeted_percent %>%;"></div></td>
+        </tr>
+      </table>
+    </div>
+  <% end %>
 </section>
 
 <script id='transfer_modal' type='template'>
