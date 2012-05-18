@@ -38,6 +38,16 @@
         </tr>
       </table>
     </div>
+    <div>
+      <h2>Spending per month</h2>
+      <table>
+        <tr>
+          <% @spending_months.each do |month, amount| %>
+            <td title='<%= month %>'><%= month[0] %></td>
+          <% end %>
+        </tr>
+      </table>
+    </div>
   <% end %>
 </section>
 

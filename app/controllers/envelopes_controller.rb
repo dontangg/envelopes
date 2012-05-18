@@ -43,6 +43,12 @@ class EnvelopesController < ApplicationController
 
       @spent_percent = max_spent_funded == 0 ? 0 : @spent_amount * 100 / max_spent_funded
       @budgeted_percent = max_spent_funded == 0 ? 0 : @budgeted_amount * 100 / max_spent_funded
+
+      @spending_months = {}
+      12.downto(0) do |i|
+        month = Date.today - i.months
+        @spending_months[month.strftime("%B %Y")] = rand(100)
+      end
     end
   end
 
