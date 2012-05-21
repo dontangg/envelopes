@@ -280,15 +280,39 @@
   td, th {
     padding-top: 6px;
   }
-  .spent {
-    background: #a8f000;
-  }
-  .budget {
-    background: #6a0aab;
-  }
-  .chart-bar {
-    height: 1.4em;
-    overflow: hidden;
+  .graph-monthly-spending {
+    font-size: 12px;
+    position: relative;
+
+    th {
+      width: 18px;
+      text-align: center;
+    }
+    .budget-line {
+      position: absolute;
+      left: 80px;
+      border-right: 1px solid #6a0aab;
+      width: 0;
+      height: 100%;
+    }
+    .budget-amount {
+      position: absolute;
+      top: 100%;
+    }
+    .chart-bar {
+      box-sizing: border-box;
+      float: left;
+      padding: 1px 5px;
+      margin-right: 3px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-align: right;
+      background: #ddd;
+      height: 1.6em;
+    }
+    .alt {
+      background: #a8f000;
+    }
   }
 }
 

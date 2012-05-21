@@ -106,6 +106,22 @@ $ ->
     modal.find('a').click ->
       hideModal()
 
+  graph_container = $('.graph-monthly-spending')
+  if graph_container.length > 0
+    # Put the budget line in the right place
+    budget_line = $('.budget-line', graph_container)
+    budget_line.css
+      left: graph_container.find('th').outerWidth() + graph_container.find('td').width() * budget_line.data('percent') / 100
+    # Put the budget amount in a suitable place
+    budget_amount = $('.budget-amount', graph_container)
+    tmp_left = parseInt(budget_line.css('left')) - budget_amount.outerWidth() / 2
+    tmp_left = 0 if tmp_left < 0 # Make sure it's not off left left end
+    max_left = graph_container.outerWidth() - budget_amount.outerWidth()
+    tmp_left = max_left if tmp_left > max_left # Make sure it's not off right left end
+    budget_amount.css
+      left: tmp_left
+
+
   ###
   # Manage Envelopes
   ###

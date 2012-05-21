@@ -180,6 +180,38 @@ class Envelope < ActiveRecord::Base
     end
   end
 
+  def monthly_spending_report
+    tt = Transaction.arel_table
+
+    case Rails.configuration.database_configuration[Rails.env]['adapter']
+    when 'postgresql'
+      month_func = Arel::Nodes::NamedFunction.new('to_char', [tt[:posted_at], 'YYYY-MM'])
+    when 'sqlite3'
+      month_func = Arel::Nodes::NamedFunction.new('strftime', ['%Y-%m', tt[:posted_at]])
+    end
+
+    beginning_of_this_month = Date.today.beginning_of_month
+    start_date = beginning_of_this_month - 12.months
+
+    arel = tt.project(tt[:amount].sum, month_func.as('month'))
+      .where(tt[:amount].lt(0)
+        .and(tt[:envelope_id].eq(self.id))
+        .and(tt[:posted_at].gteq(start_date)))
+      .group('month')
+      .order('month DESC')
+
+    result = ActiveRecord::Base.connection.execute(arel.to_sql)
+
+    12.downto(0).map do |i|
+      month = beginning_of_this_month - i.months
+
+      data = result.find { |row| row['month'] == month.strftime('%Y-%m') }
+      amount = data.nil? ? 0 : data['sum_id']
+
+      { month: month, amount: amount.to_d }
+    end
+  end
+
   def amount_funded_this_month
     @amount_funded_this_month ||= amount_funded_between(Date.today.beginning_of_month, Date.today.end_of_month)
   end

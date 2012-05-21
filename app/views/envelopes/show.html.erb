@@ -26,27 +26,30 @@
   </ul>
   <% if @show_graphs %>
     <div>
-      <h2><%= @end_date.strftime('%B') %></h2>
-      <table>
-        <tr>
-          <th>Spent</th>
-          <td><div class="chart-bar spent" title="<%= number_to_currency(@spent_amount) %>" style="width:<%= @spent_percent %>%;"></div></td>
-        </tr>
-        <tr>
-          <th>Budget</th>
-          <td><div class="chart-bar budget" title="<%= number_to_currency(@budgeted_amount) %>" style="width:<%= @budgeted_percent %>%;"></div></td>
-        </tr>
-      </table>
-    </div>
-    <div>
       <h2>Spending per month</h2>
-      <table>
-        <tr>
-          <% @spending_months.each do |month, amount| %>
-            <td title='<%= month %>'><%= month[0] %></td>
+      <div class='graph-monthly-spending'>
+        <% if @budgeted_amount > 0 %>
+          <div class='budget-line' title='Budget: <%= number_to_currency(@budgeted_amount) %>' data-amount='<%= @budgeted_amount %>' data-percent='<%= @budgeted_percent %>'></div>
+          <div class='budget-amount' title='Budget: <%= number_to_currency(@budgeted_amount) %>'><%= number_to_currency(@budgeted_amount) %></div>
+        <% end %>
+        <table>
+          <% @spending_months.each do |month_info| %>
+            <tr>
+              <th><%= month_info[:month].strftime("%b")[0] %></th>
+              <td title='<%= month_info[:month].strftime("%B %Y") %> - <%= number_to_currency(month_info[:amount]) %>'>
+                <div class='chart-bar <%= cycle('alt', '') %>' style='width:<%= month_info[:percent] %>%'>
+                  <% if month_info[:percent] > 40 %>
+                    <%= number_to_currency(month_info[:amount]) %>
+                  <% end %>
+                </div>
+                <% if month_info[:percent] <= 40 %>
+                  <%= number_to_currency(month_info[:amount]) %>
+                <% end %>
+              </td>
+            </tr>
           <% end %>
-        </tr>
-      </table>
+        </table>
+      </div>
     </div>
   <% end %>
 </section>

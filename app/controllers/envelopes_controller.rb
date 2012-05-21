@@ -38,16 +38,15 @@ class EnvelopesController < ApplicationController
 
     if @show_graphs
       @budgeted_amount = @envelope.simple_monthly_budget
-      @spent_amount = @envelope.amount_spent_this_month.abs
-      max_spent_funded = [@budgeted_amount, @spent_amount].max
+      @spending_months = @envelope.monthly_spending_report
 
-      @spent_percent = max_spent_funded == 0 ? 0 : @spent_amount * 100 / max_spent_funded
-      @budgeted_percent = max_spent_funded == 0 ? 0 : @budgeted_amount * 100 / max_spent_funded
+      max_amount = @spending_months.inject(@budgeted_amount) { |max, month_data| [max, month_data[:amount].abs].max }
 
-      @spending_months = {}
-      12.downto(0) do |i|
-        month = Date.today - i.months
-        @spending_months[month.strftime("%B %Y")] = rand(100)
+      @budgeted_percent = max_amount == 0 ? 0 : @budgeted_amount * 100 / max_amount
+
+      @spending_months.each do |month_data|
+        month_data[:amount] = month_data[:amount].abs
+        month_data[:percent] = max_amount == 0 ? 0 : month_data[:amount] * 100 / max_amount
       end
     end
   end

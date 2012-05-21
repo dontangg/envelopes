@@ -297,4 +297,17 @@ class EnvelopeTest < ActiveSupport::TestCase
     assert food_envelope.destroy
   end
 
+  test "can create a monthly spending report" do
+    txn1 = create :transaction, posted_at: Date.today, amount: -15.0
+    txn2 = create :transaction, posted_at: Date.today - 1.month, amount: -20.0, envelope: txn1.envelope
+    txn3 = create :transaction, posted_at: Date.today - 1.month, amount: 2.0, envelope: txn1.envelope
+
+    report = txn1.envelope.monthly_spending_report
+
+    assert_equal -15.0, report[12][:amount]
+    assert_equal Date.today.beginning_of_month, report[12][:month]
+    assert_equal -20.0, report[11][:amount]
+    assert_equal Date.today.beginning_of_month - 1.month, report[11][:month]
+  end
+
 end
