@@ -5,7 +5,7 @@ gem 'rails', '3.2.3'
 gem 'unicorn' unless RUBY_PLATFORM =~ /mingw32/i
 gem 'jquery-rails'
 gem 'cancan', '~> 1.6'
-gem 'syrup', '~> 0.0.13'
+gem 'syrup', git: 'git://github.com/dontangg/syrup.git'
 gem 'gibberish'
 gem 'bcrypt-ruby', '~> 3.0.0' # To use ActiveModel has_secure_password
 
@@ -34,7 +34,7 @@ end
 group :test do
   gem 'turn'
   gem 'minitest'
-  gem 'simplecov', :require => false
+  gem 'simplecov', require: false
 end
 
 group :development do
