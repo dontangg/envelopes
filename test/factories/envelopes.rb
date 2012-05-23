@@ -20,7 +20,7 @@ FactoryGirl.define do
         transactions_count 4
       end
 
-      after_create do |envelope, evaluator|
+      after(:create) do |envelope, evaluator|
         FactoryGirl.create_list(:transaction, evaluator.transactions_count, envelope: envelope)
       end
     end
