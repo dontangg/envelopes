@@ -7,7 +7,7 @@ worker_processes 2 # amount of unicorn workers to spin up
 
 preload_app true
 
-timeout 60         # restarts workers that hang for 30 seconds
+timeout 30         # restarts workers that hang for 30 seconds
 
 if env == "production"
   root = "/home/app_user/apps/envelopes/current"
