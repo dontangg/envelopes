@@ -180,7 +180,7 @@ class Envelope < ActiveRecord::Base
     end
   end
 
-  def monthly_spending_report
+  def monthly_report(type = :spending, user_id = nil)
     tt = Transaction.arel_table
 
     case Rails.configuration.database_configuration[Rails.env]['adapter']
@@ -194,11 +194,22 @@ class Envelope < ActiveRecord::Base
     start_date = beginning_of_this_month - 12.months
 
     arel = tt.project(tt[:amount].sum, month_func.as('month'))
-      .where(tt[:amount].lt(0)
-        .and(tt[:envelope_id].eq(self.id))
+      .where((type == :spending ? tt[:amount].lt(0) : tt[:amount].gt(0))
         .and(tt[:posted_at].gteq(start_date)))
       .group('month')
       .order('month DESC')
+
+    if self.all_envelope? && user_id.present?
+      user_id = user_id.id if user_id.respond_to? :id
+      et = Envelope.arel_table
+      arel = arel.where(tt[:envelope_id].in(et.project(et[:id]).where(et[:user_id].eq(user_id)))) # Any transaction for this user
+    else
+      arel = arel.where(tt[:envelope_id].eq(self.id))
+    end
+
+    if type == :earnings || self.all_envelope?
+      arel = arel.where(tt[:unique_id].not_eq(nil)) # No envelope transfers
+    end
 
     result = ActiveRecord::Base.connection.execute(arel.to_sql)
 
@@ -240,8 +251,12 @@ class Envelope < ActiveRecord::Base
     all_transactions.where(where_clause).sum(:amount).to_d
   end
 
+  def all_envelope?
+    self.id == 0
+  end
+
   def all_transactions(organized_envelopes = nil)
-    if self.id == 0 && organized_envelopes.present? # All Transactions envelope
+    if self.all_envelope? && organized_envelopes.present? # All Transactions envelope
       all_child_envelope_ids = []
       organized_envelopes[nil].each do |envelope|
         all_child_envelope_ids.concat Envelope.all_child_envelope_ids(envelope.id, organized_envelopes)

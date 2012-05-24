@@ -55,7 +55,7 @@ class TransactionImporter
                             original_payee: "Bank account balance synchronization",
                             amount: amount,
                             posted_at: Date.today,
-                            envelope_id: Envelope.owned_by(user.id).where(income: true).select(:id).first.id
+                            envelope_id: Envelope.owned_by(user.id).income.select(:id).first.id
       end
 
       user.imported_transactions_at = DateTime.now

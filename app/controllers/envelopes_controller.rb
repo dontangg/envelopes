@@ -34,11 +34,11 @@ class EnvelopesController < ApplicationController
     @transactions = @envelope.all_transactions(@organized_envelopes).starting_at(@start_date).ending_at(@end_date)
     @transactions = @transactions.without_transfers unless @show_transfers
 
-    @show_graphs = @envelope.expense.try(:frequency) == :monthly && @organized_envelopes[@envelope.id].empty?
+    @show_graphs = @envelope.expense.try(:frequency) == :monthly && @organized_envelopes[@envelope.id].empty? && !@envelope.unassigned?
 
     if @show_graphs
       @budgeted_amount = @envelope.simple_monthly_budget
-      @spending_months = @envelope.monthly_spending_report
+      @spending_months = @envelope.monthly_report(@envelope.income? ? :earnings : :spending, current_user_id)
 
       max_amount = @spending_months.inject(@budgeted_amount) { |max, month_data| [max, month_data[:amount].abs].max }
 

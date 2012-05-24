@@ -26,7 +26,7 @@
   </ul>
   <% if @show_graphs %>
     <div>
-      <h2>Spending per month</h2>
+      <h2><%= @envelope.income? ? 'Earnings' : 'Spending' %> per month</h2>
       <div class='graph-monthly-spending'>
         <% if @budgeted_amount > 0 %>
           <div class='budget-line' title='Budget: <%= number_to_currency(@budgeted_amount) %>' data-amount='<%= @budgeted_amount %>' data-percent='<%= @budgeted_percent %>'></div>
