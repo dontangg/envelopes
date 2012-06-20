@@ -55,7 +55,7 @@ class RulesController < ApplicationController
     rules = Rule.owned_by(current_user_id)
 
     @changed_count = 0
-    Envelope.unassigned.first.transactions.without_transfers.each do |transaction|
+    Envelope.owned_by(current_user_id).unassigned.first.transactions.without_transfers.each do |transaction|
       Rule.run_all(rules, transaction)
       if transaction.changed?
         @changed_count += 1 if transaction.save
