@@ -1,5 +1,5 @@
 class Transaction < ActiveRecord::Base
-  attr_accessible :posted_at, :payee, :original_payee, :amount, :envelope_id, :associated_transaction_id, :pending
+  attr_accessible :posted_at, :payee, :original_payee, :amount, :envelope_id, :associated_transaction_id, :pending, :unique_id, :envelope
 
   default_scope order(arel_table[:posted_at].desc)
   scope :starting_at, lambda {|start_date| where(arel_table[:posted_at].gteq(start_date)) }

@@ -1,7 +1,7 @@
 # Gemnasium https://gemnasium.com/dontangg/envelopes
 source 'http://rubygems.org'
 
-gem 'rails', '3.2.3'
+gem 'rails', '~> 3.2.3'
 gem 'unicorn' unless RUBY_PLATFORM =~ /mingw32/i
 gem 'jquery-rails'
 gem 'cancan', '~> 1.6'
