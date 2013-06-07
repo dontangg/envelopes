@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/dontangg/syrup.git
-  revision: 5120fa37e070bdbff62a4c1f0455cf3bcc238983
+  revision: 37e9d73d6eacc5f51179f1a94967234d1f30d6f4
   specs:
     syrup (0.0.14)
       mechanize (>= 1.0.0)
