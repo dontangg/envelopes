@@ -41,6 +41,9 @@ GEM
     bcrypt-ruby (3.0.1)
     bcrypt-ruby (3.0.1-x86-mingw32)
     builder (3.0.4)
+    byebug (2.3.1)
+      columnize (~> 0.3.6)
+      debugger-linecache (~> 1.2.0)
     cancan (1.6.10)
     capistrano (2.15.4)
       highline
@@ -57,12 +60,7 @@ GEM
       execjs
     coffee-script-source (1.6.2)
     columnize (0.3.6)
-    debugger (1.6.0)
-      columnize (>= 0.3.1)
-      debugger-linecache (~> 1.2.0)
-      debugger-ruby_core_source (~> 1.2.1)
     debugger-linecache (1.2.0)
-    debugger-ruby_core_source (1.2.2)
     domain_name (0.5.12)
       unf (>= 0.0.5, < 1.0.0)
     dotenv (0.7.0)
@@ -137,8 +135,8 @@ GEM
     nokogiri (1.5.9)
     nokogiri (1.5.9-x86-mingw32)
     ntlm-http (0.1.1)
-    pg (0.15.1)
-    pg (0.15.1-x86-mingw32)
+    pg (0.17.0)
+    pg (0.17.0-x86-mingw32)
     polyglot (0.3.3)
     pry (0.9.12.2)
       coderay (~> 1.0.5)
@@ -225,17 +223,17 @@ PLATFORMS
 
 DEPENDENCIES
   bcrypt-ruby (~> 3.0.0)
+  byebug
   cancan (~> 1.6)
   capistrano
   coffee-rails (~> 3.2.1)
-  debugger
   factory_girl_rails
   foreman
   gibberish
   guard-minitest
   jquery-rails
   minitest
-  pg
+  pg (~> 0.17.0)
   rails (~> 3.2.3)
   rake
   rb-fsevent

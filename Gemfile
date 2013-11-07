@@ -28,7 +28,10 @@ end
 group :development, :test do
   gem 'sqlite3'
   gem 'factory_girl_rails'
-  gem 'debugger'
+
+  # The debugger gem isn't very compatible with Ruby 2.0, so we'll use byebug
+  #gem 'debugger'
+  gem 'byebug'
 end
 
 group :test do
@@ -48,4 +51,4 @@ group :development do
   # rails_best_practices
 end
 
-gem 'pg', group: :production
+gem 'pg', '~> 0.17.0', group: :production
