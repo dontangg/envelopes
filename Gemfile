@@ -42,7 +42,7 @@ group :development do
   gem 'guard-minitest'
   gem 'rb-fsevent', require: false #if RUBY_PLATFORM =~ /darwin/i
   gem 'foreman'
-  gem 'capistrano'
+  gem 'capistrano', '~> 2.15.4'
 
   # For code quality
   # rails_best_practices
