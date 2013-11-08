@@ -9,7 +9,7 @@ class TransactionsController < ApplicationController
       params[:transaction][:amount].gsub!(/[^-0-9.]+/, '')
     end
 
-    if transaction.update_attributes(params[:transaction])
+    if transaction.update_attributes(transaction_params)
       head :ok
     else
       render json: transaction.errors, status: :unprocessable_entity
@@ -124,4 +124,11 @@ class TransactionsController < ApplicationController
       format.js
     end
   end
+
+  private
+
+  def transaction_params
+    params.require(:transaction).permit(:posted_at, :payee, :original_payee, :amount, :envelope_id, :associated_transaction_id, :pending, :unique_id, :envelope)
+  end
+
 end

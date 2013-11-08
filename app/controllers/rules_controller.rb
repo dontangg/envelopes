@@ -14,7 +14,7 @@ class RulesController < ApplicationController
   end
 
   def create
-    @rule = current_user.rules.build(params[:rule])
+    @rule = current_user.rules.build(rule_params)
 
     if @rule.save
       all_envelopes = Envelope.owned_by(current_user_id)
@@ -33,7 +33,7 @@ class RulesController < ApplicationController
     rule = Rule.find(params[:id])
     authorize! :update, rule
 
-    if rule.update_attributes(params[:rule])
+    if rule.update_attributes(rule_params)
       head :ok
     else
       render json: rule.errors, status: :unprocessable_entity
@@ -61,6 +61,12 @@ class RulesController < ApplicationController
         @changed_count += 1 if transaction.save
       end
     end
+  end
+
+  private
+
+  def rule_params
+    params.require(:rule).permit(:search_text, :replacement_text, :envelope_id, :order, :user_id, :envelope, :user)
   end
 
 end

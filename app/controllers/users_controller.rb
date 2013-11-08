@@ -20,7 +20,7 @@ class UsersController < ApplicationController
       @user.bank_secret_questions = nil
     end
 
-    if @user.update_attributes(params[:user])
+    if @user.update_attributes(user_params)
       redirect_to edit_user_url(@user), notice: 'Your account was successfully updated.'
     else
       @bank_options = Syrup.institutions.map {|institution| [institution.name, institution.id] }
@@ -29,4 +29,11 @@ class UsersController < ApplicationController
       render action: "edit"
     end
   end
+
+  private
+
+  def user_params
+    params.require(:user).permit(:email, :password, :password_confirmation, :bank_id, :bank_username, :bank_password, :bank_secret_questions, :bank_account_id)
+  end
+
 end

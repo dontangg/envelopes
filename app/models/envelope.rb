@@ -1,5 +1,4 @@
 class Envelope < ActiveRecord::Base
-  attr_accessible :name, :income, :unassigned, :parent_envelope_id, :expense, :user_id, :user, :parent_envelope
 
   default_scope order(arel_table[:name])
   scope :owned_by, lambda { |user_id| where(user_id: user_id) }

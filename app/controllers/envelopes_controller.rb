@@ -84,7 +84,7 @@ class EnvelopesController < ApplicationController
   end
 
   def create
-    @envelope = current_user.envelopes.build(params[:envelope])
+    @envelope = current_user.envelopes.build(envelope_params)
 
     params[:envelope][:expense] = Expense.new(params[:envelope][:expense]) if params[:envelope] && params[:envelope][:expense]
 
@@ -103,7 +103,7 @@ class EnvelopesController < ApplicationController
 
     # params[:envelope][:expense] = Expense.new(params[:envelope][:expense]) if params[:envelope] && params[:envelope][:expense]
 
-    if @envelope.update_attributes(params[:envelope])
+    if @envelope.update_attributes(envelope_params)
       #head :ok
       render
     else
@@ -156,6 +156,22 @@ class EnvelopesController < ApplicationController
 
       redirect_to manage_envelopes_url, alert: error_msg
     end
+  end
+
+  private
+
+  def envelope_params
+    params.require(:envelope)
+      .permit(
+        :name,
+        :income,
+        :unassigned,
+        :parent_envelope_id,
+        :user_id,
+        :user,
+        :parent_envelope,
+        expense: [:amount, :frequency, :occurs_on_day, :occurs_on_month]
+      )
   end
 
 end

@@ -126,11 +126,13 @@ THE SOFTWARE.
   var public_methods = {
     init: function( customizations ) {
       
-      if ( $.browser.msie && parseInt($.browser.version, 10) <= 7) {
+      // CHANGED by Don - Nov 7, 2013
+      // $.browser.msie was removed in jQuery 1.9
+      //if ( $.browser.msie && parseInt($.browser.version, 10) <= 7) {
         
-        return this;
+        //return this;
         
-      } else {
+      //} else {
         
         settings = $.extend( settings, customizations );
 
@@ -154,7 +156,7 @@ THE SOFTWARE.
           }
         });
         
-      }
+      //}
       
     }
   };

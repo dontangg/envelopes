@@ -102,7 +102,7 @@ $ ->
     )
 
     modal.find('select').selectToAutocomplete()
-    modal.find('input[type=text], input:not([type])]').selectOnFocus()
+    modal.find('input[type=text], input:not([type])').selectOnFocus()
     modal.find('a').click ->
       hideModal()
 
@@ -126,7 +126,7 @@ $ ->
   # Manage Envelopes
   ###
 
-  $('#manage_envelopes input[type=text], input:not([type])]').selectOnFocus()
+  $('#manage_envelopes input[type=text], input:not([type])').selectOnFocus()
   $('#envelopes_aside .new').click ->
     modal = showModal
       content: '#new_envelope_modal'
@@ -154,7 +154,7 @@ $ ->
 
     modal.find('select').selectToAutocomplete
       'remove-valueless-options': false
-    modal.find('input[type=text], input:not([type])]').selectOnFocus()
+    modal.find('input[type=text], input:not([type])').selectOnFocus()
     modal.find('a').on 'click', ->
       hideModal()
 
@@ -174,7 +174,7 @@ $ ->
     modal.find('form').attr('action', '<%= CGI.unescape url.envelope_path("{id}") %>'.replace("{id}", envelope_id))
     modal.find('#destroy_envelope_name').text envelope_name
     modal.find('select').selectToAutocomplete()
-    modal.find('input[type=text], input:not([type])]').selectOnFocus()
+    modal.find('input[type=text], input:not([type])').selectOnFocus()
     modal.find('a').on 'click', ->
       hideModal()
 

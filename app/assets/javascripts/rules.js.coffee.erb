@@ -5,7 +5,7 @@ $ ->
   $('#rules select').selectToAutocomplete
     'remove-valueless-options': false
 
-  $('#rules input[type=text], #rules input:not([type])]').selectOnFocus()
+  $('#rules input[type=text], #rules input:not([type])').selectOnFocus()
 
   $('#rules .replacement-text input').autocomplete
     source: "<%= CGI.unescape url.suggest_payee_transactions_path %>"
@@ -46,7 +46,7 @@ $ ->
     modal.find('select').selectToAutocomplete
       'remove-valueless-options': false
 
-    modal.find('input[type=text], input:not([type])]').selectOnFocus()
+    modal.find('input[type=text], input:not([type])').selectOnFocus()
     modal.find('a').on 'click', ->
       hideModal()
 
