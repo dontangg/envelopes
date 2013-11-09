@@ -64,6 +64,10 @@
       </ul>
 
     </div>
+    <div class="field">
+      <%= f.label :api_token, 'API Token:' %>
+      <%= @user.api_token || "<none>" %>
+    </div>
     <p><small>Note: Passwords left blank will not be modified.</small></p>
     <div class="field">
       <%= f.submit "Save", class: 'primary' %>

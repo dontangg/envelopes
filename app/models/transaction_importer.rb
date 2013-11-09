@@ -12,7 +12,7 @@ class TransactionImporter
       starting_at = user.imported_transactions_at.nil? ? today - 1.month : user.imported_transactions_at - 1.week
       ending_at = today
 
-      income_envelope_id = Envelope.owned_by(user.id).find_by_income(true).id
+      income_envelope_id = Envelope.owned_by(user.id).find_by(income: true).id
       unassigned_envelope_id = Envelope.owned_by(user.id).find_by_unassigned(true).id
 
       bank = Syrup.setup_institution(user.bank_id) do |config|

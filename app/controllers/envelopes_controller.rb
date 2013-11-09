@@ -3,6 +3,11 @@ class EnvelopesController < ApplicationController
     all_envelopes = Envelope.owned_by(current_user_id).with_amounts
 
     @organized_envelopes = Envelope.organize(all_envelopes)
+
+    respond_to do |format|
+      format.html
+      format.json { render(json: @organized_envelopes) }
+    end
   end
 
   def show

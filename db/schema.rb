@@ -9,11 +9,11 @@
 # from scratch. The latter is a flawed and unsustainable approach (the more migrations
 # you'll amass, the slower it'll run and the greater likelihood for issues).
 #
-# It's strongly recommended to check this file into your version control system.
+# It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120418054700) do
+ActiveRecord::Schema.define(version: 20131108204018) do
 
-  create_table "envelopes", :force => true do |t|
+  create_table "envelopes", force: true do |t|
     t.string   "name"
     t.integer  "user_id"
     t.boolean  "income"
@@ -24,10 +24,10 @@ ActiveRecord::Schema.define(:version => 20120418054700) do
     t.datetime "updated_at"
   end
 
-  add_index "envelopes", ["parent_envelope_id"], :name => "index_envelopes_on_parent_envelope_id"
-  add_index "envelopes", ["user_id"], :name => "index_envelopes_on_user_id"
+  add_index "envelopes", ["parent_envelope_id"], name: "index_envelopes_on_parent_envelope_id"
+  add_index "envelopes", ["user_id"], name: "index_envelopes_on_user_id"
 
-  create_table "rules", :force => true do |t|
+  create_table "rules", force: true do |t|
     t.integer  "user_id"
     t.string   "search_text"
     t.string   "replacement_text"
@@ -37,11 +37,11 @@ ActiveRecord::Schema.define(:version => 20120418054700) do
     t.datetime "updated_at"
   end
 
-  add_index "rules", ["envelope_id"], :name => "index_rules_on_envelope_id"
-  add_index "rules", ["order"], :name => "index_rules_on_order"
-  add_index "rules", ["user_id"], :name => "index_rules_on_user_id"
+  add_index "rules", ["envelope_id"], name: "index_rules_on_envelope_id"
+  add_index "rules", ["order"], name: "index_rules_on_order"
+  add_index "rules", ["user_id"], name: "index_rules_on_user_id"
 
-  create_table "transactions", :force => true do |t|
+  create_table "transactions", force: true do |t|
     t.date     "posted_at"
     t.string   "payee"
     t.string   "original_payee"
@@ -54,11 +54,11 @@ ActiveRecord::Schema.define(:version => 20120418054700) do
     t.datetime "updated_at"
   end
 
-  add_index "transactions", ["associated_transaction_id"], :name => "index_transactions_on_associated_transaction_id"
-  add_index "transactions", ["envelope_id"], :name => "index_transactions_on_envelope_id"
-  add_index "transactions", ["posted_at"], :name => "index_transactions_on_posted_at"
+  add_index "transactions", ["associated_transaction_id"], name: "index_transactions_on_associated_transaction_id"
+  add_index "transactions", ["envelope_id"], name: "index_transactions_on_envelope_id"
+  add_index "transactions", ["posted_at"], name: "index_transactions_on_posted_at"
 
-  create_table "users", :force => true do |t|
+  create_table "users", force: true do |t|
     t.string   "email"
     t.string   "password_digest"
     t.string   "bank_id"
@@ -69,8 +69,10 @@ ActiveRecord::Schema.define(:version => 20120418054700) do
     t.datetime "updated_at"
     t.datetime "imported_transactions_at"
     t.string   "bank_account_id"
+    t.string   "api_token"
   end
 
-  add_index "users", ["email"], :name => "index_users_on_email", :unique => true
+  add_index "users", ["api_token"], name: "index_users_on_api_token"
+  add_index "users", ["email"], name: "index_users_on_email", unique: true
 
 end

@@ -28,4 +28,9 @@ class User < ActiveRecord::Base
       self.bank_password_cipher = cipher.enc(unencrypted_password)
     end
   end
+
+  def generate_api_token
+    self.api_token = rand(3656158440062976).to_s(36).rjust(10, '0')
+    save
+  end
 end
