@@ -24,8 +24,7 @@ class ApplicationController < ActionController::Base
   end
 
   def current_user_id
-    return @current_user.id if @current_user
-    session[:user_id]
+    @current_user ? @current_user.id : session[:user_id]
   end
 
   helper_method :current_user, :current_user_id
