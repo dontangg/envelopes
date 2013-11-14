@@ -225,7 +225,7 @@ $ ->
 
           midLevelEnvelope.amount += amount if amount
 
-          newDataItem.name = "#{rootEnvelope.name}: #{newDataItem.name}"
+          newDataItem.name = "#{midLevelEnvelope.name}: #{newDataItem.name}"
 
           # indentLevel is 2 if it's not 0 or 1
           midLevelEnvelope.children.push newDataItem
