@@ -158,6 +158,82 @@ $ ->
     modal.find('a').on 'click', ->
       hideModal()
 
+  initChart = (chart_data) ->
+    count_function = (d) -> d.amount
+
+    label_function = (d) -> d.name + ": " + numberToCurrency(d.amount)
+
+    legend_function = (d) -> "<h2>" + d.name + "</h2><p>" + numberToCurrency(d.amount) + "</p>"
+
+    color = d3.scale.category20c()
+
+    color_function = (d) -> color(d.name)
+
+    d3.select(self.frameElement).style("height", "800px")
+    init_hierarchy_plot "hierarchy_chart", chart_data, count_function, color_function, label_function, legend_function
+
+  $('#envelopes_aside .chart').click ->
+    modal = showModal
+      content: '#chart_modal'
+      className: 'chart-modal'
+    modal.find('a').on 'click', ->
+      hideModal()
+
+    rootDataItem =
+      name: 'Monthly Budget'
+      amount: 0
+      children: []
+    $('.envelope').each (i, item) ->
+      $envelope = $(item)
+      $name = $envelope.find('.name')
+
+      indentLevel = +$name.attr('class').match(/indent-(\d)/)[1]
+      envelopeName = $name.find('input').val();
+      amount = getAmount $envelope.find('.expense-amount input').val()
+
+      newDataItem =
+        name: envelopeName
+        amount: amount || 0,
+        children: []
+
+      rootEnvelopes = rootDataItem.children
+
+      rootDataItem.amount += amount if amount
+
+      if indentLevel == 0
+        rootEnvelopes.push newDataItem
+      else
+        rootEnvelope = rootEnvelopes[rootEnvelopes.length - 1]
+
+        rootEnvelope.amount += amount if amount
+
+        midLevelEnvelopes = rootEnvelope.children
+
+        newDataItem.name = "#{rootEnvelope.name}: #{newDataItem.name}"
+
+        if indentLevel == 1
+          midLevelEnvelopes.push newDataItem
+        else
+          midLevelEnvelope = midLevelEnvelopes[midLevelEnvelopes.length - 1]
+
+          midLevelEnvelope.amount += amount if amount
+
+          newDataItem.name = "#{rootEnvelope.name}: #{newDataItem.name}"
+
+          # indentLevel is 2 if it's not 0 or 1
+          midLevelEnvelope.children.push newDataItem
+
+      console.log envelopeName, indentLevel, amount
+
+      #frequency_text = $item.closest('tr').find('.expense-frequency div').text()
+      #if frequency_text.indexOf("month") == -1
+      #  monthly_amount += amount / 12
+      #else
+      #  monthly_amount += amount
+
+    initChart rootDataItem
+
+
   autosave '#manage_envelopes', 'blur', 'input, select', "<%= CGI.unescape url.envelope_path('{id}') %>"
 
   $('#manage_envelopes .destroy').click ->

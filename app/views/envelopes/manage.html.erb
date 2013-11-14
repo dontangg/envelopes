@@ -22,6 +22,7 @@
 <section id='envelopes_aside'>
   <ul class='actions'>
     <li><a href='javascript:void(0)' class='button new'>New Envelope</a></li>
+    <li><a href='javascript:void(0)' class='button chart'>View Allocation Chart</a></li>
   </ul>
   <table>
     <tr>
@@ -68,3 +69,14 @@
   <% end %>
 </script>
 
+<script id='chart_modal' type='template'>
+  <h1>Allocation Chart</h1>
+  <div id='hierarchy_chart_legend'><h2>&nbsp;</h2><p>&nbsp;</p></div>
+  <div id='hierarchy_chart'></div>
+
+  <div class='actions'>
+    <a href='javascript:void(0)'>Close</a>
+  </div>
+</script>
+
+<script src="http://d3js.org/d3.v3.js"></script>

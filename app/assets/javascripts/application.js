@@ -12,5 +12,6 @@
 //= require jquery_ujs
 //= require bootstrap-tooltip
 //= require bootstrap-popover
+//= require hierarchy-plot
 //= require main
 //= require_tree .

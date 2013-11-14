@@ -104,6 +104,7 @@
       $(this).remove()
 
 @getAmount = (amountStr) ->
+  return NaN unless amountStr
   amount = parseFloat amountStr.replace(/[^-.0-9]/g, "")
   amount = 0 if isNaN amount
   amount
