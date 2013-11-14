@@ -214,9 +214,8 @@ $ ->
 
         midLevelEnvelopes = rootEnvelope.children
 
-        newDataItem.name = "#{rootEnvelope.name}: #{newDataItem.name}"
-
         if indentLevel == 1
+          newDataItem.name = "#{rootEnvelope.name}: #{newDataItem.name}"
           midLevelEnvelopes.push newDataItem
         else
           midLevelEnvelope = midLevelEnvelopes[midLevelEnvelopes.length - 1]
