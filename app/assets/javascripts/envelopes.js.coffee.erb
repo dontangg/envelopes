@@ -191,6 +191,13 @@ $ ->
       envelopeName = $name.find('input').val();
       amount = getAmount $envelope.find('.expense-amount input').val()
 
+      if amount
+        frequency_text = $envelope.find('.expense-frequency div').text()
+        if frequency_text.indexOf("month") == -1
+          monthly_amount += amount / 12
+        else
+          monthly_amount += amount
+
       newDataItem =
         name: envelopeName
         amount: amount || 0,
@@ -222,14 +229,6 @@ $ ->
 
           # indentLevel is 2 if it's not 0 or 1
           midLevelEnvelope.children.push newDataItem
-
-      console.log envelopeName, indentLevel, amount
-
-      #frequency_text = $item.closest('tr').find('.expense-frequency div').text()
-      #if frequency_text.indexOf("month") == -1
-      #  monthly_amount += amount / 12
-      #else
-      #  monthly_amount += amount
 
     initChart rootDataItem
 
