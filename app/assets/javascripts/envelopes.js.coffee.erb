@@ -194,9 +194,9 @@ $ ->
       if amount
         frequency_text = $envelope.find('.expense-frequency div').text()
         if frequency_text.indexOf("month") == -1
-          monthly_amount += amount / 12
+          amount += amount / 12
         else
-          monthly_amount += amount
+          amount += amount
 
       newDataItem =
         name: envelopeName
