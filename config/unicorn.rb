@@ -11,7 +11,7 @@ timeout 30         # restarts workers that hang for 30 seconds
 
 if env == "production"
   root = "/home/app_user/apps/envelopes/current"
-  pid "#{root}/tmp/pids/unicorn.pid"
+  pid "/home/app_user/apps/envelopes/shared/pids/unicorn.pid"
   listen "/tmp/unicorn.envelopes.sock"
 
   # Help ensure your application will always spawn in the symlinked
