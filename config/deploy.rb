@@ -45,7 +45,7 @@ namespace :deploy do
 
   desc "Stop Unicorn"
   task :stop, roles: :app, except: { no_release: true } do
-    run "kill -s QUIT `cat #{current_path}/tmp/pids/unicorn.pid`"
+    run "kill -s QUIT `cat #{shared_path}/pids/unicorn.pid`"
   end
 
   task :setup_config, roles: :app do
