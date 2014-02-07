@@ -1,17 +1,23 @@
 <%= fields_for "transaction[]", transaction do |f| %>
   <%= content_tag_for :tr, transaction, class: cycle("", "alt") do %>
     <td class='posted-at'><%= transaction.posted_at.strftime('%b %d') %></td>
-    <td class='payee'><%= f.text_field :payee, title: transaction.original_payee, 'data-saved-value' => transaction.payee %></td>
-    <td class='envelope'><%= f.select :envelope_id, envelope_options_for_select, {}, 'data-saved-value' => transaction.envelope_id %></td>
-    <td class='amount <%= 'positive-number' if transaction.amount > 0 %>'>
-      <% if transaction.associated_transaction_id.nil? %>
-        <%= number_to_currency(transaction.amount) %>
-      <% else %>
-        <%= f.text_field :amount,
-          value: number_to_currency(transaction.amount),
-          'data-associated-transaction-id' => transaction.associated_transaction_id,
-          'data-saved-value' => transaction.amount %>
-      <% end %>
-    </td>
+    <% if transaction.pending? %>
+      <td class='payee'><%= transaction.payee %></td>
+      <td class='envelope'><%= envelope_options_for_select.find { |env_arr| env_arr[1] == transaction.envelope_id }[0] %></td>
+      <td class='amount <%= 'positive-number' if transaction.amount > 0 %>'><%= number_to_currency(transaction.amount) %></td>
+    <% else %>
+      <td class='payee'><%= f.text_field :payee, title: transaction.original_payee, 'data-saved-value' => transaction.payee %></td>
+      <td class='envelope'><%= f.select :envelope_id, envelope_options_for_select, {}, 'data-saved-value' => transaction.envelope_id %></td>
+      <td class='amount <%= 'positive-number' if transaction.amount > 0 %>'>
+        <% if transaction.associated_transaction_id.nil? %>
+          <%= number_to_currency(transaction.amount) %>
+        <% else %>
+          <%= f.text_field :amount,
+            value: number_to_currency(transaction.amount),
+            'data-associated-transaction-id' => transaction.associated_transaction_id,
+            'data-saved-value' => transaction.amount %>
+        <% end %>
+      </td>
+    <% end %>
   <% end %>
 <% end %>

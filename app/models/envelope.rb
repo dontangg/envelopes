@@ -4,6 +4,7 @@ class Envelope < ActiveRecord::Base
   scope :owned_by, ->(user_id) { where(user_id: user_id) }
   scope :income, -> { where(income: true) }
   scope :unassigned, -> { where(unassigned: true) }
+  scope :pending, -> { where(pending: true) }
 
   belongs_to :user
   belongs_to :parent_envelope, class_name: 'Envelope', foreign_key: 'parent_envelope_id'
@@ -80,7 +81,7 @@ class Envelope < ActiveRecord::Base
 
     # Returns a Hash with all the envelopes organized. ie:
     #
-    #   'sys' => [array of all, income, and unassigned envelopes]
+    #   'sys' => [array of all, income, unassigned, and pending envelopes]
     #   nil   => [array of all envelopes with parent_envelope_id = nil]
     #   1     => [array of envelopes with parent_envelope_id = 1]
     def organize(all_envelopes)
@@ -89,7 +90,7 @@ class Envelope < ActiveRecord::Base
       all_envelopes.each do |envelope|
         total_amount += envelope.total_amount
         envelope.full_name(all_envelopes) # Have each envelope figure out and memoize its full_name
-        if envelope.income || envelope.unassigned
+        if envelope.income? || envelope.unassigned? || envelope.pending?
           envelopes['sys'] << envelope
         else
           envelopes[envelope.parent_envelope_id] << envelope

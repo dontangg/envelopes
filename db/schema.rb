@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131108204018) do
+ActiveRecord::Schema.define(version: 20140206230122) do
 
   create_table "envelopes", force: true do |t|
     t.string   "name"
@@ -20,8 +20,9 @@ ActiveRecord::Schema.define(version: 20131108204018) do
     t.boolean  "unassigned"
     t.integer  "parent_envelope_id"
     t.string   "expense"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+    t.boolean  "pending"
   end
 
   add_index "envelopes", ["parent_envelope_id"], name: "index_envelopes_on_parent_envelope_id"
@@ -33,8 +34,8 @@ ActiveRecord::Schema.define(version: 20131108204018) do
     t.string   "replacement_text"
     t.integer  "envelope_id"
     t.integer  "order"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
   end
 
   add_index "rules", ["envelope_id"], name: "index_rules_on_envelope_id"
@@ -50,23 +51,23 @@ ActiveRecord::Schema.define(version: 20131108204018) do
     t.integer  "associated_transaction_id"
     t.string   "unique_id"
     t.boolean  "pending"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
   end
 
-  add_index "transactions", ["associated_transaction_id"], name: "index_transactions_on_associated_transaction_id"
-  add_index "transactions", ["envelope_id"], name: "index_transactions_on_envelope_id"
+  add_index "transactions", ["associated_transaction_id"], name: "index_transactions_on_to_envelope_id"
+  add_index "transactions", ["envelope_id"], name: "index_transactions_on_from_envelope_id"
   add_index "transactions", ["posted_at"], name: "index_transactions_on_posted_at"
 
   create_table "users", force: true do |t|
     t.string   "email"
     t.string   "password_digest"
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
     t.string   "bank_id"
-    t.string   "bank_username"
     t.string   "bank_password_cipher"
     t.string   "bank_secret_questions"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.string   "bank_username"
     t.datetime "imported_transactions_at"
     t.string   "bank_account_id"
     t.string   "api_token"

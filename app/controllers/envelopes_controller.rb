@@ -39,7 +39,7 @@ class EnvelopesController < ApplicationController
     @transactions = @envelope.all_transactions(@organized_envelopes).starting_at(@start_date).ending_at(@end_date)
     @transactions = @transactions.without_transfers unless @show_transfers
 
-    @show_graphs = @envelope.expense.try(:frequency) == :monthly && @organized_envelopes[@envelope.id].empty? && !@envelope.unassigned?
+    @show_graphs = @envelope.expense.try(:frequency) == :monthly && @organized_envelopes[@envelope.id].empty? && !@envelope.unassigned? && !@envelope.pending?
 
     if @show_graphs
       @budgeted_amount = @envelope.simple_monthly_budget
@@ -125,7 +125,7 @@ class EnvelopesController < ApplicationController
     top_level_envelope_ids = @organized_envelopes[nil].map {|envelope| envelope.id }
     @envelope_options_for_create_select = [ ['None', ''] ]
     @all_envelopes.each do |envelope|
-      unless envelope.income || envelope.unassigned
+      unless envelope.income? || envelope.unassigned? || envelope.pending?
         # Only include 1st or 2nd level envelopes
         if envelope.parent_envelope_id.nil? || top_level_envelope_ids.include?(envelope.parent_envelope_id)
           @envelope_options_for_create_select << [envelope.full_name(@all_envelopes), envelope.id]
@@ -169,8 +169,6 @@ class EnvelopesController < ApplicationController
     params.require(:envelope)
       .permit(
         :name,
-        :income,
-        :unassigned,
         :parent_envelope_id,
         :user_id,
         :user,
