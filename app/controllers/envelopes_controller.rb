@@ -173,6 +173,7 @@ class EnvelopesController < ApplicationController
         :user_id,
         :user,
         :parent_envelope,
+        :note,
         expense: [:amount, :frequency, :occurs_on_day, :occurs_on_month]
       )
   end

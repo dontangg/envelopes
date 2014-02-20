@@ -127,6 +127,28 @@ $ ->
   ###
 
   $('#manage_envelopes input[type=text], input:not([type])').selectOnFocus()
+  $('#manage_envelopes_list').on 'click', '.note', ->
+    button = $(this)
+    note_input = button.find('input')
+    console.log note_input.val()
+    modal = showModal
+      content: '#envelope_note_modal'
+      width: 500
+      className: 'envelope-note-modal'
+    modal.find('textarea')
+      .on 'blur', ->
+        note_input.val $(this).val().trim()
+        note_input.blur() # Invoke the autosave stuff
+        if note_input.val()
+          button.addClass 'note-present'
+          button.removeClass 'note-blank'
+        else
+          button.addClass 'note-blank'
+          button.removeClass 'note-present'
+      .val note_input.val()
+    modal.find('a').on 'click', ->
+      hideModal()
+
   $('#envelopes_aside .new').click ->
     modal = showModal
       content: '#new_envelope_modal'

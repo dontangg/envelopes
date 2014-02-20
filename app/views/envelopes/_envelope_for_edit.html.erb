@@ -2,6 +2,8 @@
   <%= content_tag_for :li, envelope, class: cycle("", "alt"), data: { 'envelope-id' => envelope.id } do %>
     <table>
       <tr>
+        <%# NOTE: for some reason, putting this below where it belongs results in a missing id in the hidden input's name %>
+        <% note_field = f.hidden_field :note, data: {'saved-value' => envelope.note} %>
         <td class='name indent-<%= indent %>'><%= f.text_field :name, data: {'saved-value' => envelope.name} %></td>
         <%= f.fields_for :expense do |f2| %>
           <td class='expense-amount amount'>
@@ -18,6 +20,13 @@
             <%# f2.hidden_field :occurs_on_month, value: envelope.expense.occurs_on_month %>
           </td>
         <% end %>
+        <td class='envelope-note'>
+          <% if organized_envelopes[envelope.id].empty? %>
+            <button class='note image-only note-<%= envelope.note.present? ? "present" : "blank" %>' title='Read the note' tabindex='-1'>
+              <%= note_field %>
+            </button>
+          <% end %>
+        </td>
         <td class='envelope-actions'>
           <% if organized_envelopes[envelope.id].empty? %>
             <button class='destroy image-only' title='Remove this envelope' tabindex='-1'></button>

@@ -579,7 +579,7 @@ $jquery-ui-border-radius: 0;
         background: #f1f1f1;
 
       }
-      &:hover .destroy {
+      &:hover .destroy, &:hover .note.note-blank {
         visibility: visible;
       }
     }
@@ -588,14 +588,15 @@ $jquery-ui-border-radius: 0;
   table {
     width: 100%;
 
-    .envelope-actions {
+    .envelope-actions, .envelope-note {
       width: 3%;
       min-width: 26px;
       text-align: right;
       padding: 3px 0;
+      vertical-align: middle;
     }
     .name {
-      width: 49%;
+      width: 46%;
 
       &.indent-1 {
         padding-left: 30px;
@@ -634,7 +635,7 @@ $jquery-ui-border-radius: 0;
       padding: 2px 10px;
       vertical-align: bottom;
 
-      .destroy {
+      .destroy, .note.note-blank {
         visibility: hidden;
       }
 
@@ -710,8 +711,12 @@ $jquery-ui-border-radius: 0;
     }
   }
 }
-
-.new-envelope-modal, .destroy-envelope-modal {
+.envelope-note-modal {
+  textarea {
+    width: 98%;
+  }
+}
+.new-envelope-modal, .destroy-envelope-modal, .envelope-note-modal {
   label {
     display: inline-block;
     width: 150px;

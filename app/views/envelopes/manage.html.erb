@@ -10,10 +10,11 @@
       <th class='name'><div>Name</div></th>
       <th class='expense-amount'><div>Amount</div></th>
       <th class='expense-frequency'><div>Frequency</div></th>
+      <th class='envelope-note'></th>
       <th class='envelope-actions'></th>
     </tr>
   </table>
-  <ul>
+  <ul id='manage_envelopes_list'>
     <%= render partial: 'envelopes/envelope_for_edit', collection: @organized_envelopes[nil], as: :envelope, locals: {indent: 0, organized_envelopes: @organized_envelopes} %>
   </ul>
   <p class='autosave-status'></p>
@@ -67,6 +68,14 @@
       <%= f.submit 'Delete', class: 'primary' %>
     </div>
   <% end %>
+</script>
+
+<script id='envelope_note_modal' type='template'>
+  <h1>Envelope Note</h1>
+  <textarea rows='6' placeholder='Enter a note...'></textarea>
+  <div class='actions'>
+    <a href='javascript:void(0)'>Close</a>
+  </div>
 </script>
 
 <script id='chart_modal' type='template'>
