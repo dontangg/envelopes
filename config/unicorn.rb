@@ -5,12 +5,14 @@ env = ENV["RAILS_ENV"] || "development"
 
 worker_processes 2 # amount of unicorn workers to spin up
 
+# This is good for Rails and for New Relic
 preload_app true
 
 timeout 30         # restarts workers that hang for 30 seconds
 
 if env == "production"
   root = "/home/app_user/apps/envelopes/current"
+
   pid "/home/app_user/apps/envelopes/shared/pids/unicorn.pid"
   listen "/tmp/unicorn.envelopes.sock"
 
@@ -39,15 +41,19 @@ before_fork do |server, worker|
   # we send it a QUIT.
   #
   # This enables 0 downtime deploys.
-  #old_pid = "#{pid}.oldbin"
-  #old_pid = "#{server.config[:pid]}.oldbin"
-  #if File.exists?(old_pid) && server.pid != old_pid
-  #  begin
-  #    Process.kill("QUIT", File.read(old_pid).to_i)
-  #  rescue Errno::ENOENT, Errno::ESRCH
-  #    # someone else did our job for us
-  #  end
-  #end
+  old_pid_file = "#{server.config[:pid]}.oldbin"
+  if File.exists?(old_pid_file)
+    old_pid = File.read(old_pid_file).to_i
+    if server.pid != old_pid
+      begin
+        # kill the old unicorn master
+        server.logger.info("sending QUIT to #{old_pid}")
+        Process.kill("QUIT", old_pid)
+      rescue Errno::ENOENT, Errno::ESRCH
+        # someone else did our job for us
+      end
+    end
+  end
 end
 
 after_fork do |server, worker|

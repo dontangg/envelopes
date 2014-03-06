@@ -1,99 +1,99 @@
-require "bundler/capistrano"
+# Documentation here: http://www.capistranorb.com/
+# To setup access to a private repo, check under 'From our servers to the repository host' here: http://www.capistranorb.com/documentation/getting-started/authentication-and-authorisation/#toc_2
 
-server "money.thewilsonpad.com", :web, :app, :db, primary: true
+set :application, 'envelopes'
+set :repo_url, 'git@github.com:dontangg/envelopes.git'
 
-set :application, "envelopes"
-set :user, "app_user"
-set :deploy_to, "/home/#{user}/apps/#{application}"
+# To have it deploy the branch that you're currently on
+# ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }
 
+# Always deploy master
+set :branch, 'master'
+
+set :deploy_to, '~/apps/envelopes'
 set :scm, :git
-set :repository,  "git://github.com/dontangg/envelopes.git"
-set :branch, "master"
 
-# It complained about no tty, so use pty... no profile scripts :(
-# http://weblog.jamisbuck.org/2007/10/14/capistrano-2-1
-default_run_options[:pty] = true
-ssh_options[:forward_agent] = true
+# set :format, :pretty
+# set :log_level, :debug
+# set :pty, true
 
-# Don't show so much! (Log levels: IMPORTANT, INFO, DEBUG, TRACE, MAX_LEVEL)
-logger.level = Capistrano::Logger::DEBUG
+#set :linked_files, %w{config/newrelic.yml config/aws.yml}
+# set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
 
-after "deploy", "deploy:cleanup" # keep only the last 5 releases
+# set :default_env, { path: "/opt/ruby/bin:$PATH" }
+set :keep_releases, 5
 
-desc "Just like desploy, but with restart2"
-task :deploy2, roles: :app, except: { no_release: true } do
-  deploy.update
-  deploy.restart2
-end
+# rbenv settings
+#set :rbenv_type, :user # or :system, depends on your rbenv setup
+#set :rbenv_ruby, '2.0.0-p247'
+#set :rbenv_prefix, "RBENV_ROOT=#{fetch(:rbenv_path)} RBENV_VERSION=#{fetch(:rbenv_ruby)} #{fetch(:rbenv_path)}/bin/rbenv exec"
+#set :rbenv_map_bins, %w{rake gem bundle ruby rails}
+#set :rbenv_roles, :all # default value
 
 namespace :deploy do
-  desc "Zero-downtime restart of Unicorn"
-  task :restart, roles: :app, except: { no_release: true } do
-    run "kill -s USR2 `cat #{current_path}/tmp/pids/unicorn.pid`"
-  end
 
-  desc "Restart Unicorn with downtime, but will take new gems into account"
-  task :restart2, roles: :app, except: { no_release: true } do
-    stop
-    start
-  end
+  desc 'Restart application'
+  after :publishing, :restart do
+    # This will run on all app servers 1 at a time waiting 5 seconds between each one
+    on roles(:app), in: :sequence, wait: 5 do
+      within current_path do
+        pidfile = shared_path.join('pids', 'unicorn.pid')
 
-  desc "Start Unicorn"
-  task :start, roles: :app, except: { no_release: true } do
-    run "cd #{current_path} ; bundle exec unicorn_rails -c config/unicorn.rb -D"
-  end
-
-  desc "Stop Unicorn"
-  task :stop, roles: :app, except: { no_release: true } do
-    run "kill -s QUIT `cat #{shared_path}/pids/unicorn.pid`"
-  end
-
-  task :setup_config, roles: :app do
-    sudo "ln -nfs #{current_path}/config/nginx.conf /etc/nginx/sites-enabled/#{application}"
-  end
-  after "deploy:setup", "deploy:setup_config"
-
-  desc "Make sure local git is in sync with remote."
-  task :check_revision, roles: :web do
-    unless `git rev-parse HEAD` == `git rev-parse origin/master`
-      puts "WARNING: HEAD is not the same as origin/master"
-      puts "Run `git push` to sync changes."
-      exit
+        # if the pid file exists then we need to restart the server
+        if test "[ -f #{pidfile} ]"
+          execute :kill, "-USR2 `cat #{pidfile}`"
+        else
+          # start the server
+          execute :bundle, "exec unicorn_rails -c config/unicorn.rb -D"
+        end
+      end
+      # Your restart mechanism here, for example:
+      # execute :touch, release_path.join('tmp/restart.txt')
     end
   end
-  before "deploy", "deploy:check_revision"
 
-  namespace :assets do
+  desc 'Stop the application'
+  task :stop do
+    on roles(:app) do
+      within current_path do
+        pidfile = shared_path.join('pids', 'unicorn.pid')
 
-    desc <<-DESC
-      Run the asset precompilation rake task. You can specify the full path \
-      to the rake executable by setting the rake variable. You can also \
-      specify additional environment variables to pass to rake via the \
-      asset_env variable. The defaults are:
-
-        set :rake,      "rake"
-        set :rails_env, "production"
-        set :asset_env, "RAILS_GROUPS=assets"
-
-      * only runs if assets have changed (add `-s force_assets=true` to force precompilation)
-    DESC
-    task :precompile, roles: :web, except: { no_release: true } do
-      # Only precompile assets if any assets changed
-      # http://www.bencurtis.com/2011/12/skipping-asset-compilation-with-capistrano/
-      begin
-        from = source.next_revision(current_revision)
-      rescue
-        from = nil
+        # if the pid file exists then we need to restart the server
+        if test "[ -f #{pidfile} ]"
+          execute :kill, "-QUIT `cat #{pidfile}`"
+        end
       end
-      if fetch(:force_assets, false) || from.nil? || capture("cd #{latest_release} && #{source.local.log(from)} vendor/assets/ app/assets/ lib/assets/ | wc -l").to_i > 0
-        # Just like original: https://github.com/capistrano/capistrano/blob/master/lib/capistrano/recipes/deploy/assets.rb
-        run "cd #{latest_release} && #{rake} RAILS_ENV=#{rails_env} #{asset_env} assets:precompile"
-      else
-        logger.info "Skipping asset pre-compilation because there were no asset changes"
-      end
+      # Your restart mechanism here, for example:
+      # execute :touch, release_path.join('tmp/restart.txt')
     end
 
   end
+
+  desc 'Symlink the nginx conf file'
+  after 'symlink:release', 'symlink:nginx' do
+    # This will run on servers in groups of 3 and wait 10 seconds between groups
+    on roles(:web), in: :groups, limit: 3, wait: 10 do
+      target = "/etc/nginx/sites-enabled/envelopes"
+      source = current_path.join("config", "nginx.conf")
+      unless test "[ -L #{target} ]"
+        if test "[ -f #{target} ]"
+          execute :rm, target
+        end
+        execute :ln, '-s', source, target
+      end
+    end
+  end
+
+  #after :restart, :clear_cache do
+  #  on roles(:web), in: :groups, limit: 3, wait: 10 do
+  #    # Here we can do anything such as:
+  #    # within release_path do
+  #    #   execute :rake, 'cache:clear'
+  #    # end
+  #  end
+  #end
+
+  after :finishing, :cleanup
 
 end
 
