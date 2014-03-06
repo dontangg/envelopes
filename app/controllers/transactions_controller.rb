@@ -1,6 +1,16 @@
 class TransactionsController < ApplicationController
   include ActionView::Helpers::NumberHelper
 
+  def index
+    envelope_id = params[:envelope_id].to_i
+    count = params[:count] || 20
+    offset = params[:offset] || 0
+
+    txns = Transaction.owned_by(current_user_id).where(envelope_id: envelope_id).limit(count).offset(offset)
+
+    render json: txns
+  end
+
   def update
     transaction = Transaction.find(params[:id])
     authorize! :update, transaction

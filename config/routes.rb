@@ -15,6 +15,7 @@ Envelopes::Application.routes.draw do
       post 'fill' => 'envelopes#perform_fill', as: :perform_fill
       get 'manage'
     end
+    resources :transactions, only: [:index]
   end
 
   resources :transactions, only: [:update] do
