@@ -6,7 +6,7 @@ class TransactionsController < ApplicationController
     count = params[:count] || 20
     offset = params[:offset] || 0
 
-    txns = Transaction.owned_by(current_user_id).where(envelope_id: envelope_id).limit(count).offset(offset)
+    txns = Transaction.without_transfers.owned_by(current_user_id).where(envelope_id: envelope_id).limit(count).offset(offset)
 
     render json: txns
   end
