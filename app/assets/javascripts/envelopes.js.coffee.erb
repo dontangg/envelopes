@@ -78,6 +78,10 @@ $ ->
 
   setupTransactionsList()
 
+  $('#envelope_details').popover
+    'selector': 'tr.transaction'
+    'trigger': 'hover'
+
   autosave '#envelope_details', 'blur', '.payee input, .amount input', "<%= CGI.unescape url.transaction_path('{id}') %>"
   autosave '#envelope_details', 'change', 'select', "<%= CGI.unescape url.transaction_path('{id}') %>"
 
