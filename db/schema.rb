@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140220194747) do
+ActiveRecord::Schema.define(version: 20140424215128) do
 
   create_table "envelopes", force: true do |t|
     t.string   "name"
@@ -54,6 +54,7 @@ ActiveRecord::Schema.define(version: 20140220194747) do
     t.boolean  "pending"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "notes"
   end
 
   add_index "transactions", ["associated_transaction_id"], name: "index_transactions_on_associated_transaction_id"

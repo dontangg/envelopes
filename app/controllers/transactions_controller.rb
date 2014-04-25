@@ -138,7 +138,7 @@ class TransactionsController < ApplicationController
   private
 
   def transaction_params
-    params.require(:transaction).permit(:posted_at, :payee, :original_payee, :amount, :envelope_id, :associated_transaction_id, :pending, :unique_id, :envelope)
+    params.require(:transaction).permit(:posted_at, :payee, :original_payee, :amount, :envelope_id, :associated_transaction_id, :pending, :unique_id, :envelope, :notes)
   end
 
 end

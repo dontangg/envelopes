@@ -77,3 +77,18 @@
     </div>
   <% end %>
 </script>
+
+<script id='edit_txn_modal' type='template'>
+  <div class='loading'></div>
+  <h1>Edit Transaction</h1>
+  <%= form_tag transaction_url('id'), remote: true, method: :put do %>
+    <div class="field">
+      <%= label_tag 'transaction[notes]', 'Notes' %>
+      <%= text_field_tag 'transaction[notes]', nil %>
+    </div>
+    <div class='actions'>
+      <a href='javascript:void(0)'>Cancel</a>
+      <%= submit_tag 'Save', class: 'primary' %>
+    </div>
+  <% end %>
+</script>

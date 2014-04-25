@@ -79,8 +79,54 @@ $ ->
   setupTransactionsList()
 
   $('#envelope_details').popover
-    'selector': 'tr.transaction'
-    'trigger': 'hover'
+    html: true
+    selector: 'tr.transaction'
+    trigger: 'hover'
+    container: 'body'
+
+  $('#envelope_details').on 'click', 'tr.transaction .actions button', (event) ->
+    event.preventDefault()
+
+    modal = showModal
+      content: '#edit_txn_modal'
+      width: 510
+      className: 'edit-txn-modal'
+
+    tr = $(this).closest('tr')
+    content = $(tr.data('content'))
+
+    # Show loading image
+    modal.find('form').on('ajax:beforeSend', ->
+      modal.find('.loading').show()
+    ).on('ajax:error', (event, xhr, status, error) ->
+      showAlert error
+      modal.find('.loading').hide()
+    ).on('ajax:success', ->
+      # Update the popover
+      notesContainer = content.find('.notes')
+      if notesContainer.length
+        notesContainer.text $('#transaction_notes').val()
+      else
+        content.append('<h4>Notes</h4><div class="notes">' + $('#transaction_notes').val() + '</div>')
+      tr.data('content', content[0].outerHTML)
+      tr.attr('data-content', content[0].outerHTML)
+      hideModal()
+    )
+
+    # Put the notes in the field in the modal
+    $('#transaction_notes').val content.find('.notes').text()
+    # Make sure the popover is hidden
+    tr.popover('destroy')
+
+    # Update the form's action URL to contain the transaction id
+    id = $(this).data('txn-id')
+    form = modal.find('form')
+    url = form.attr('action')
+    form.attr('action', url.replace(/id$/, id))
+
+    # Make the cancel button work
+    modal.find('a').click ->
+      hideModal()
 
   autosave '#envelope_details', 'blur', '.payee input, .amount input', "<%= CGI.unescape url.transaction_path('{id}') %>"
   autosave '#envelope_details', 'change', 'select', "<%= CGI.unescape url.transaction_path('{id}') %>"

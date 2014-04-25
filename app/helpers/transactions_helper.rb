@@ -2,10 +2,13 @@ module TransactionsHelper
 
   def content_for_transaction_popover(transaction)
     content_tag(:div) do
-      concat content_tag(:strong, 'Original Payee')
-      concat content_tag(:p, transaction.original_payee)
+      concat content_tag(:h4, 'Original Payee')
+      concat content_tag(:div, transaction.original_payee)
 
-      # TODO: Display memo/notes when they exist here
+      if transaction.notes.present?
+        concat content_tag(:h4, 'Notes')
+        concat content_tag(:div, transaction.notes, class: 'notes')
+      end
     end.to_str
   end
 

@@ -16,3 +16,12 @@
   }
 }
 
+.popover-content {
+  h4 {
+    margin: 0 0 5px;
+  }
+  div + h4 {
+    margin-top: 10px;
+  }
+}
+
