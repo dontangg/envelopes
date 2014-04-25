@@ -102,6 +102,7 @@ $ ->
       showAlert error
       modal.find('.loading').hide()
     ).on('ajax:success', ->
+      # TODO: get popover content from ajax response (it is a pain to maintain it correctly). I'm currently not handling the case where notes are removed correctly.
       # Update the popover
       notesContainer = content.find('.notes')
       if notesContainer.length
