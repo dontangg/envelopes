@@ -4,7 +4,7 @@
     <span class='name' title="<%= envelope.name %>"><%= envelope.name %></span>
   </a>
   <% unless organized_envelopes[envelope.id].empty? %>
-    <ul>
+    <ul class='list-unstyled'>
       <%= render partial: 'envelope', collection: organized_envelopes[envelope.id], as: :envelope, locals: {organized_envelopes: organized_envelopes} %>
     </ul>
   <% end %>

@@ -1,11 +1,11 @@
 <%= fields_for "rule[]", rule do |f| %>
-  <li<%= cycle("", " class='alt'") %> data-rule-id='<%= rule.id %>' data-rule-order='<%= rule.order %>'>
+  <li<%= raw cycle("", " class='alt'") %> data-rule-id='<%= rule.id %>' data-rule-order='<%= rule.order %>'>
     <table>
       <tr>
-        <td class='search-text'><%= f.text_field :search_text, 'data-saved-value' => rule.search_text %></td>
-        <td class='replacement-text'><%= f.text_field :replacement_text, 'data-saved-value' => rule.replacement_text %></td>
-        <td class='envelope'><%= f.select :envelope_id, envelope_options_for_select, {}, 'data-saved-value' => rule.envelope_id %></td>
-        <td class='rule-actions'><button class='destroy image-only' title='Remove this rule'></button></td>
+        <td class='search-text col-sm-4'><%= f.text_field :search_text, 'data-saved-value' => rule.search_text, class: 'form-control'%></td>
+        <td class='replacement-text col-sm-4'><%= f.text_field :replacement_text, 'data-saved-value' => rule.replacement_text, class:'form-control' %></td>
+        <td class='envelope col-sm-4'><%= f.select :envelope_id, envelope_options_for_select, {}, { 'data-saved-value' => rule.envelope_id, class: 'form-control' }%></td>
+        <td class='rule-actions'><button class='destroy btn btn-link' title='Remove this rule'><span class='glyphicon glyphicon-trash'></span></button></td>
       </tr>
     </table>
   </li>

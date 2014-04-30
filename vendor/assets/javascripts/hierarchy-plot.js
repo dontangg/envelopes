@@ -84,17 +84,18 @@ function init_hierarchy_plot(element_id,data,count_function,color_function,title
     {
         slices.on("mouseover",update_legend)
               .on("mouseout",remove_legend);
-        var legend = d3.select("#"+element_id+"_legend")
+        var legend = d3.select("#"+element_id+"_legend");
             
         function update_legend(d)
         {
             legend.html(legend_function(d));
-            legend.transition().duration(200).style("opacity","1");
+            legend.style("opacity","1");
         }
         
         function remove_legend(d)
         {
-            legend.transition().duration(1000).style("opacity","0");
+            legend.html(legend_function({name:"Hover over a segment"}));
+            legend.style("opacity","0.4");
         }
     }
     function get_start_angle(d,ref)

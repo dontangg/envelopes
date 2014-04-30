@@ -87,22 +87,17 @@ $ ->
   $('#envelope_details').on 'click', 'tr.transaction .actions button', (event) ->
     event.preventDefault()
 
-    modal = showModal
-      content: '#edit_txn_modal'
-      width: 510
-      className: 'edit-txn-modal'
-
     tr = $(this).closest('tr')
     content = $(tr.data('content'))
 
-    # Show loading image
+    modal = $('#edit-txn-modal')
     modal.find('form').on('ajax:beforeSend', ->
-      modal.find('.loading').show()
+      modal.find('.loading').css('display', 'inline-block')
     ).on('ajax:error', (event, xhr, status, error) ->
       showAlert error
       modal.find('.loading').hide()
-    ).on('ajax:success', ->
-      # TODO: get popover content from ajax response (it is a pain to maintain it correctly). I'm currently not handling the case where notes are removed correctly.
+    ).unbind('ajax:success').on('ajax:success', ->
+      # TODO: get popover content from ajax response (it is a pain to maintain it correctly). I'm currently not correctly handling the case where notes are removed.
       # Update the popover
       notesContainer = content.find('.notes')
       if notesContainer.length
@@ -111,7 +106,9 @@ $ ->
         content.append('<h4>Notes</h4><div class="notes">' + $('#transaction_notes').val() + '</div>')
       tr.data('content', content[0].outerHTML)
       tr.attr('data-content', content[0].outerHTML)
-      hideModal()
+
+      $('#edit-txn-modal').modal('hide')
+      modal.find('.loading').hide()
     )
 
     # Put the notes in the field in the modal
@@ -121,13 +118,8 @@ $ ->
 
     # Update the form's action URL to contain the transaction id
     id = $(this).data('txn-id')
-    form = modal.find('form')
-    url = form.attr('action')
-    form.attr('action', url.replace(/id$/, id))
-
-    # Make the cancel button work
-    modal.find('a').click ->
-      hideModal()
+    url = "<%= url.transaction_path('id') %>"
+    modal.find('form').attr('action', url.replace(/id$/, id))
 
   autosave '#envelope_details', 'blur', '.payee input, .amount input', "<%= CGI.unescape url.transaction_path('{id}') %>"
   autosave '#envelope_details', 'change', 'select', "<%= CGI.unescape url.transaction_path('{id}') %>"
@@ -140,10 +132,7 @@ $ ->
       associated_transaction.find('.amount input').val(newAmount.toFixed(2).replace /([.0-9]+)/g, "$$$1")
 
   $('#envelope_aside .transfer').click ->
-    modal = showModal
-      content: '#transfer_modal'
-      width: 510
-      className: 'transfer-modal'
+    modal = '#transfer-modal'
 
     modal.find('form').on('ajax:beforeSend', ->
       modal.find('.loading').show()
@@ -152,10 +141,10 @@ $ ->
       modal.find('.loading').hide()
     )
 
-    modal.find('select').selectToAutocomplete()
+    # Remove the selectToAutocomplete HTML if it was added previously, then setup selectToAutocomplete again
+    modal.find('.ui-helper-hidden-accessible, .ui-autocomplete-input').remove()
+    modal.find('select').show().selectToAutocomplete()
     modal.find('input[type=text], input:not([type])').selectOnFocus()
-    modal.find('a').click ->
-      hideModal()
 
   graph_container = $('.graph-monthly-spending')
   if graph_container.length > 0
@@ -178,14 +167,12 @@ $ ->
   ###
 
   $('#manage_envelopes input[type=text], input:not([type])').selectOnFocus()
+
+  # Setup the note button
   $('#manage_envelopes_list').on 'click', '.note', ->
     button = $(this)
     note_input = button.find('input')
-    console.log note_input.val()
-    modal = showModal
-      content: '#envelope_note_modal'
-      width: 500
-      className: 'envelope-note-modal'
+    modal = $('#envelope-note-modal')
     modal.find('textarea')
       .on 'blur', ->
         note_input.val $(this).val().trim()
@@ -197,46 +184,24 @@ $ ->
           button.addClass 'note-blank'
           button.removeClass 'note-present'
       .val note_input.val()
-    modal.find('a').on 'click', ->
-      hideModal()
 
-  $('#envelopes_aside .new').click ->
-    modal = showModal
-      content: '#new_envelope_modal'
-      width: 520
-      className: 'new-envelope-modal'
+  # Setup the new envelope modal
+  $('#new-envelope-modal').on 'show.bs.modal', ->
+    $(this).find('form')[0].reset()
+    modal = $('#new-envelope-modal')
 
-    # modal.find('form').on('ajax:beforeSend', ->
-    #   modal.find('.loading').show()
-    # ).on('ajax:success', (event, data, status, xhr) ->
-    #   #modal.find('.loading').hide()
-    #   hideModal()
-    # ).on('ajax:error', (event, xhr, status, error) ->
-    #   try
-    #     errors = $.parseJSON(xhr.responseText)
-    #     errorMessage = "The envelope wasn't saved!<ul>"
-    #     for errorField of errors
-    #       errorMessage += "<li>" + errorField + " " + errors[errorField].join(' and ') + "</li>"
-    #     errorMessage += "</ul>"
-    #   catch ex
-    #     errorMessage = xhr.responseText
-    #
-    #   showAlert errorMessage
-    #   modal.find('.loading').hide()
-    # )
-
-    modal.find('select').selectToAutocomplete
+    # Remove the selectToAutocomplete HTML if it was added previously, then setup selectToAutocomplete again
+    modal.find('.ui-helper-hidden-accessible, .ui-autocomplete-input').remove()
+    modal.find('select').show().selectToAutocomplete
       'remove-valueless-options': false
     modal.find('input[type=text], input:not([type])').selectOnFocus()
-    modal.find('a').on 'click', ->
-      hideModal()
 
   initChart = (chart_data) ->
     count_function = (d) -> d.amount
 
     label_function = (d) -> d.name + ": " + numberToCurrency(d.amount)
 
-    legend_function = (d) -> "<h2>" + d.name + "</h2><p>" + numberToCurrency(d.amount) + "</p>"
+    legend_function = (d) -> "<h4>" + d.name + "</h4><p>" + (if d.amount then numberToCurrency(d.amount) else '&nbsp;') + "</p>"
 
     color = d3.scale.category20c()
 
@@ -245,13 +210,8 @@ $ ->
     d3.select(self.frameElement).style("height", "800px")
     init_hierarchy_plot "hierarchy_chart", chart_data, count_function, color_function, label_function, legend_function
 
-  $('#envelopes_aside .chart').click ->
-    modal = showModal
-      content: '#chart_modal'
-      className: 'chart-modal'
-    modal.find('a').on 'click', ->
-      hideModal()
-
+  $('#chart-modal').on 'shown.bs.modal', ->
+    # Update chart data
     rootDataItem =
       name: 'Monthly Budget'
       amount: 0
@@ -308,38 +268,35 @@ $ ->
 
   $('#manage_envelopes .destroy').click ->
     $this = $(this)
-    modal = showModal
-      content: '#destroy_envelope_modal'
-      width: 520
-      className: 'destroy-envelope-modal'
+    modal = $('#destroy-envelope-modal')
 
     $envelope_parent = $this.closest('li')
     envelope_id = $envelope_parent.data('envelope-id')
     envelope_name = $envelope_parent.find('.name input').val()
 
-    modal.find('form').attr('action', '<%= CGI.unescape url.envelope_path("{id}") %>'.replace("{id}", envelope_id))
+    modal.find('form').attr('action', '<%= CGI.unescape url.envelope_path("{id}") %>'.replace("{id}", envelope_id))[0].reset()
     modal.find('#destroy_envelope_name').text envelope_name
-    modal.find('select').selectToAutocomplete()
+
+    # Remove the selectToAutocomplete HTML if it was added previously, then setup selectToAutocomplete again
+    modal.find('.ui-helper-hidden-accessible, .ui-autocomplete-input').remove()
+    modal.find('select').show().selectToAutocomplete()
+
     modal.find('input[type=text], input:not([type])').selectOnFocus()
-    modal.find('a').on 'click', ->
-      hideModal()
 
 
-  $('td.expense-frequency div').popover
-    placement: 'bottom'
-    trigger: 'manual'
-    title: 'Edit Frequency'
-  .click (event) ->
+  # Handle expense frequency popover
+  $('td.expense-frequency > div').click (event) ->
     event.stopPropagation()
     $this = $(this)
-    $('td.expense-frequency div').popover 'hide'
+    $('td.expense-frequency > div').not($this).popover 'hide'
     $this.popover 'show'
-    $('.popover a').click ->
+    $('.popover .btn-default').click ->
       $this.popover 'hide'
-  if $('td.expense-frequency div').length > 0
-    $(document).click ->
-      $('td.expense-frequency div').popover 'hide'
+  if $('td.expense-frequency > div').length > 0
+    $(document).click (event) ->
+      $('td.expense-frequency > div').popover 'hide' unless $(event.target).closest('.popover').length
 
+  # Keep the total monthly budget amount updated
   $('.envelope .amount input').keyup ->
     monthly_amount = 0
 
@@ -388,13 +345,14 @@ $ ->
       $('#fill_aside .remaining').text numberToCurrency(available - total)
 
 
-  $('#fill_envelopes .expand, #fill_envelopes .collapse').click (event) ->
+  $('#fill_envelopes .collapse-button').click (event) ->
     event.preventDefault()
     $this = $(this)
     childEnvelopes = $this.closest('li').children('ul')
     childEnvelopes.slideToggle ->
+      icon = $this.find('.glyphicon')
       if childEnvelopes.is ':visible'
-        $this.removeClass('expand').addClass('collapse')
+        icon.addClass('glyphicon-collapse-down').removeClass('glyphicon-expand')
       else
-        $this.removeClass('collapse').addClass('expand')
+        icon.addClass('glyphicon-expand').removeClass('glyphicon-collapse-down')
 

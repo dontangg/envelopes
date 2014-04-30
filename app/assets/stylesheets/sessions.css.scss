@@ -3,24 +3,5 @@
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
 .login-box {
-  margin: 0 auto;
   width: 300px;
-  
-  h1 {
-    text-align: center;
-  }
-  
-  label {
-    width: 90px;
-    float: left;
-  }
-  
-  input[type=email], input[type=password] {
-    width: 194px;
-    float: left;
-  }
-  
-  .actions {
-    padding-left: 90px;
-  }
 }

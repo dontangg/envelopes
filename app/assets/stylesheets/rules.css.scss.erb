@@ -1,24 +1,14 @@
 // Place all the styles related to the rules controller here.
 
 #rules {
-  float: left;
-  width: 79%;
-  padding-right: 2%;
-
   header {
     padding-bottom: 2%;
   }
 
   ul {
-    font-size: 14px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
     border-top: solid 1px #ccc;
 
     li {
-      visibility: visible !important;
-
       &.alt {
         background: #f1f1f1;
 
@@ -36,28 +26,18 @@
     width: 100%;
 
     .rule-actions {
-      min-width: 16px;
+      min-width: 40px;
       text-align: right;
       padding: 3px 0;
-    }
-    .search-text, .replacement-text, .envelope {
-      width: 33%;
+      vertical-align: middle;
     }
 
     th {
       font-weight: 300;
       text-align: left;
-      padding: 2px 10px;
-
-      div {
-        padding: 3px 5px;
-      }
     }
 
     td {
-      padding: 2px 10px;
-      vertical-align: bottom;
-
       .destroy {
         visibility: hidden;
       }
@@ -67,6 +47,9 @@
         background-color: transparent;
         border: 1px solid transparent;
         border-collapse: separate; /* needed for IE to display box-shadow */
+        -webkit-box-shadow: none;
+        box-shadow: none;
+
         -webkit-appearance: initial;
 
         &:hover, &:focus {
@@ -78,13 +61,7 @@
 }
 
 #rules_aside {
-  float: left;
-  width: 18.5%;
-
   ul {
-    list-style: none;
-    margin: 0;
-
     a {
       display: block;
     }
@@ -95,26 +72,3 @@
   }
 }
 
-.new-rule-modal {
-  label {
-    display: inline-block;
-    width: 150px;
-  }
-  input[type=text], input:not([type]) {
-    width: 350px;
-  }
-  .amount {
-    text-align: left;
-    input {
-      text-align: left;
-    }
-  }
-  .actions {
-    padding: 20px 0 0;
-    text-align: right;
-
-    a {
-      margin-right: 15px;
-    }
-  }
-}

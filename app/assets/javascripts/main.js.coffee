@@ -97,11 +97,8 @@
   $(parentSelector).on eventName, childSelector, changedCallback
 
 @showAlert = (alertMessage) ->
-  $("<div class='flash alert'><div>" + alertMessage + "</div></div>")
-    .insertAfter('#header_nav')
-    .delay(4000)
-    .fadeOut ->
-      $(this).remove()
+  $("<div class='container-fluid'><div class='alert alert-danger alert-dismissable'><button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>" + alertMessage + "</div></div>")
+    .insertAfter('#header-nav')
 
 @getAmount = (amountStr) ->
   return NaN unless amountStr

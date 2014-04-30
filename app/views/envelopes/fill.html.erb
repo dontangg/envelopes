@@ -1,47 +1,49 @@
 <% title 'Fill' %>
 
-<section id='fill_envelopes'>
-  <header>
-    <h1>Fill Envelopes</h1>
-  </header>
+<div class='row'>
+  <section id='fill_envelopes' class='col-sm-10'>
+    <header>
+      <h1>Fill Envelopes</h1>
+    </header>
 
-  <%= form_tag perform_fill_envelopes_path do %>
-    <ul>
-      <li>
-        <table class='header'>
-          <tr>
-            <td class='name'>Envelope</td>
-            <td class='amount balance'>Balance</td>
-            <td class='amount budget'>Budget</td>
-            <td class='amount to-fund'>Suggestion</td>
-            <td class='amount input'>Amount</td>
-          </tr>
-        </table>
-      </li>
-      <%= render partial: 'envelope_for_fill', collection: @organized_envelopes[nil], as: :envelope, locals: {organized_envelopes: @organized_envelopes} %>
-    </ul>
+    <%= form_tag perform_fill_envelopes_path do %>
+      <ul class='list-unstyled'>
+        <li>
+          <table class='header'>
+            <tr>
+              <td class='name'>Envelope</td>
+              <td class='amount balance'>Balance</td>
+              <td class='amount budget'>Budget</td>
+              <td class='amount to-fund'>Suggestion</td>
+              <td class='amount input sum'>Amount</td>
+            </tr>
+          </table>
+        </li>
+        <%= render partial: 'envelope_for_fill', collection: @organized_envelopes[nil], as: :envelope, locals: {organized_envelopes: @organized_envelopes} %>
+      </ul>
 
-    <%= submit_tag "Fill", class: 'primary' %>
+      <%= submit_tag "Fill", class: 'btn btn-primary' %>
 
-  <% end %>
+    <% end %>
 
-</section>
-<section id='fill_aside'>
-  <header>
-    <h1>Fill Summary</h1>
-  </header>
-  <table>
-    <tr>
-      <th><%= @available_cash_envelope.name %></th>
-      <td class='amount available'><%= number_to_currency(@available_cash_envelope.total_amount) %></td>
-    </tr>
-    <tr>
-      <th>Allocation</th>
-      <td class='amount allocation'>-$0.00</td>
-    </tr>
-    <tr class='total'>
-      <th>Remaining</th>
-      <td class='amount remaining'><%= number_to_currency(@available_cash_envelope.total_amount) %></td>
-    </tr>
-  </table>
-</section>
+  </section>
+  <section id='fill_aside' class='col-sm-2'>
+    <header>
+      <h1>Fill Summary</h1>
+    </header>
+    <table>
+      <tr>
+        <th><%= @available_cash_envelope.name %></th>
+        <td class='amount available'><%= number_to_currency(@available_cash_envelope.total_amount) %></td>
+      </tr>
+      <tr>
+        <th>Allocation</th>
+        <td class='amount allocation'>-$0.00</td>
+      </tr>
+      <tr class='total'>
+        <th>Remaining</th>
+        <td class='amount remaining'><%= number_to_currency(@available_cash_envelope.total_amount) %></td>
+      </tr>
+    </table>
+  </section>
+</div>

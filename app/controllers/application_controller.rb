@@ -12,7 +12,7 @@ class ApplicationController < ActionController::Base
   def authenticate
     unless current_user
       flash[:return_to] = request.fullpath
-      redirect_to login_url
+      redirect_to sign_in_url
     end
   end
 

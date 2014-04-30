@@ -18,14 +18,11 @@ $ ->
   autosave '#rules', 'blur', '.search-text input, .replacement-text input', "<%= CGI.unescape url.rule_path('{id}') %>"
   autosave '#rules', 'change', 'select', "<%= CGI.unescape url.rule_path('{id}') %>"
 
-  $('#rules_aside .new').click ->
-    modal = showModal
-      content: '#new_rule_modal'
-      width: 520
-      className: 'new-rule-modal'
+  $('#new-rule-modal').on 'show.bs.modal', ->
+    modal = $('#new-rule-modal')
 
     modal.find('form').on('ajax:beforeSend', ->
-      modal.find('.loading').show()
+      modal.find('.loading').css 'display', 'inline-block'
     ).on('ajax:success', (event, data, status, xhr) ->
       setAltRowClass()
     ).on('ajax:error', (event, xhr, status, error) ->
@@ -40,15 +37,16 @@ $ ->
 
       showAlert errorMessage
       modal.find('.loading').hide()
-    )
+    )[0].reset()
 
     $('#rule_order').val $('#rules li').length
-    modal.find('select').selectToAutocomplete
+
+    # Remove the selectToAutocomplete HTML if it was added previously, then setup selectToAutocomplete again
+    modal.find('.ui-helper-hidden-accessible, .ui-autocomplete-input').remove()
+    modal.find('select').show().selectToAutocomplete
       'remove-valueless-options': false
 
     modal.find('input[type=text], input:not([type])').selectOnFocus()
-    modal.find('a').on 'click', ->
-      hideModal()
 
   setAltRowClass = ->
     helper = $(".ui-sortable-helper")

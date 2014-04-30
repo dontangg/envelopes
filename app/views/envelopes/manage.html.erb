@@ -1,91 +1,138 @@
 <% title 'Manage Envelopes' %>
 
-<section id='manage_envelopes'>
-  <header>
-    <h1>Manage Envelopes</h1>
-  </header>
+<div class='row'>
+  <section id='manage_envelopes' class='col-sm-10'>
+    <header>
+      <h1>Manage Envelopes</h1>
+    </header>
 
-  <table>
-    <tr>
-      <th class='name'><div>Name</div></th>
-      <th class='expense-amount'><div>Amount</div></th>
-      <th class='expense-frequency'><div>Frequency</div></th>
-      <th class='envelope-note'></th>
-      <th class='envelope-actions'></th>
-    </tr>
-  </table>
-  <ul id='manage_envelopes_list'>
-    <%= render partial: 'envelopes/envelope_for_edit', collection: @organized_envelopes[nil], as: :envelope, locals: {indent: 0, organized_envelopes: @organized_envelopes} %>
-  </ul>
-  <p class='autosave-status'></p>
-</section>
+    <div class='col-sm-12'>
+      <div class='row'>
+        <table>
+          <tr>
+            <th class='name col-sm-6'>Name</th>
+            <th class='expense-amount col-sm-2'>Amount</th>
+            <th class='expense-frequency col-sm-3'>Frequency</th>
+            <th class='envelope-note'></th>
+            <th class='envelope-actions'></th>
+          </tr>
+        </table>
+        <ul id='manage_envelopes_list' class='list-unstyled'>
+          <%= render partial: 'envelopes/envelope_for_edit', collection: @organized_envelopes[nil], as: :envelope, locals: {indent: 0, organized_envelopes: @organized_envelopes} %>
+        </ul>
+      </div>
+    </div>
+    <p class='autosave-status'></p>
+  </section>
 
-<section id='envelopes_aside'>
-  <ul class='actions'>
-    <li><a href='javascript:void(0)' class='button new'>New Envelope</a></li>
-    <li><a href='javascript:void(0)' class='button chart'>View Allocation Chart</a></li>
-  </ul>
-  <table>
-    <tr>
-      <th>Monthly Budget</th>
-      <td class='amount budgeted'></td>
-    </tr>
-  </table>
-</section>
+  <section id='envelopes_aside' class='col-sm-2'>
+    <ul class='actions list-unstyled'>
+      <li><button class='btn btn-primary new' data-toggle='modal' data-target='#new-envelope-modal'>New Envelope</button></li>
+      <li><button class='btn btn-primary chart' data-toggle='modal' data-target='#chart-modal'>View Allocation Chart</button></li>
+    </ul>
+    <table>
+      <tr>
+        <th>Monthly Budget</th>
+        <td class='amount budgeted'></td>
+      </tr>
+    </table>
+  </section>
+</div>
 
-<script id='new_envelope_modal' type='template'>
-  <div class='loading'></div>
-  <h1>New Envelope</h1>
-  <%= form_for @new_envelope do |f| %>
-    <div class="field">
-      <%= f.label :name, 'Name' %>
-      <%= f.text_field :name, placeholder: 'Groceries' %>
-    </div>
-    <div class="field">
-      <%= f.label :parent_envelope_id, 'Parent Envelope' %>
-      <%= f.select :parent_envelope_id, @envelope_options_for_create_select %>
-    </div>
-    <small>Note: If the parent envelope has transactions, its transactions will be moved into this new envelope</small>
-    <div class='actions'>
-      <a href='javascript:void(0)'>Cancel</a>
-      <%= f.submit 'Save', class: 'primary' %>
-    </div>
-  <% end %>
-</script>
 
-<script id='destroy_envelope_modal' type='template'>
-  <h1>Delete Envelope</h1>
-  <%= form_for @new_envelope, method: :delete do |f| %>
-    <div>
-      Are you sure you want to delete the envelope: <span id='destroy_envelope_name'></span>?
-    </div>
-    <div class="field">
-      <%= label_tag :destination_envelope_id, 'Move transactions to' %>
-      <%= select_tag :destination_envelope_id, options_for_select(@envelopes_with_transactions) %>
-    </div>
-    <div class='actions'>
-      <a href='javascript:void(0)'>Cancel</a>
-      <%= f.submit 'Delete', class: 'primary' %>
-    </div>
-  <% end %>
-</script>
+<%# ****** MODALS ****** %>
 
-<script id='envelope_note_modal' type='template'>
-  <h1>Envelope Note</h1>
-  <textarea rows='6' placeholder='Enter a note...'></textarea>
-  <div class='actions'>
-    <a href='javascript:void(0)'>Close</a>
+<div class="modal fade" id='new-envelope-modal'>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <%= form_for @new_envelope do |f| %>
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">New Envelope</h4>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <%= f.label :name, 'Name' %>
+            <%= f.text_field :name, placeholder: 'Groceries', class: 'form-control' %>
+          </div>
+          <div class="form-group">
+            <%= f.label :parent_envelope_id, 'Parent Envelope' %>
+            <%= f.select :parent_envelope_id, @envelope_options_for_create_select, {}, class: 'form-control' %>
+            <p class='help-block'>Note: If the parent envelope has transactions, its transactions will be moved into this new envelope</p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          <%= f.submit 'Save', class: 'btn btn-primary' %>
+        </div>
+      <% end %>
+    </div>
   </div>
-</script>
+</div>
 
-<script id='chart_modal' type='template'>
-  <h1>Allocation Chart</h1>
-  <div id='hierarchy_chart_legend'><h2>&nbsp;</h2><p>&nbsp;</p></div>
-  <div id='hierarchy_chart'></div>
 
-  <div class='actions'>
-    <a href='javascript:void(0)'>Close</a>
+
+<div class="modal fade" id='destroy-envelope-modal'>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <%= form_for @new_envelope, method: :delete do |f| %>
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Delete Envelope</h4>
+        </div>
+        <div class="modal-body">
+          <p> Are you sure you want to delete the envelope: <span id='destroy_envelope_name'></span>?</p>
+          <div class="form-group">
+            <%= label_tag :destination_envelope_id, 'Move transactions to' %>
+            <%= select_tag :destination_envelope_id, options_for_select(@envelopes_with_transactions), class: 'form-control' %>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          <%= f.submit 'Delete', class: 'btn btn-primary' %>
+        </div>
+      <% end %>
+    </div>
   </div>
-</script>
+</div>
+
+
+
+<div class="modal fade" id='envelope-note-modal'>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Envelope Note</h4>
+      </div>
+      <div class="modal-body">
+        <textarea rows='6' placeholder='Enter a note...' class='form-control'></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="modal" id='chart-modal'>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Allocation Chart</h4>
+      </div>
+      <div class="modal-body">
+        <div id='hierarchy_chart_legend'><h4>&nbsp;</h4><p>&nbsp;</p></div>
+        <div id='hierarchy_chart'></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script src="http://d3js.org/d3.v3.js"></script>

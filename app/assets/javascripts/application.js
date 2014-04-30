@@ -10,8 +10,7 @@
 //= require jquery.select-to-autocomplete
 //= require jquery.select-on-focus
 //= require jquery_ujs
-//= require bootstrap-tooltip
-//= require bootstrap-popover
+//= require bootstrap.min
 //= require hierarchy-plot
 //= require main
 //= require_tree .

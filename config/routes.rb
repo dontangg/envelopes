@@ -29,9 +29,9 @@ Envelopes::Application.routes.draw do
 
   resources :users, only: [:edit, :update]
 
-  get 'login' => 'sessions#new'
-  post 'login' => 'sessions#create'
-  get 'logout' => 'sessions#destroy'
+  get 'sign_in' => 'sessions#new'
+  post 'sign_in' => 'sessions#create'
+  get 'sign_out' => 'sessions#destroy'
 
   root to: 'envelopes#index'
 

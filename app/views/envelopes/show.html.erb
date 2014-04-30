@@ -1,94 +1,125 @@
 <% title @envelope.full_name(@all_envelopes) %>
 
-<section id='sidebar'>
-  <nav>
-    <ul>
-      <%= render partial: 'envelope', collection: @organized_envelopes[nil], as: :envelope, locals: {organized_envelopes: @organized_envelopes} %>
+<div class='row'>
+  <section id='sidebar' class='col-sm-2'>
+    <nav>
+      <ul class='list-unstyled'>
+        <%= render partial: 'envelope', collection: @organized_envelopes[nil], as: :envelope, locals: {organized_envelopes: @organized_envelopes} %>
+      </ul>
+    </nav>
+  </section>
+  <section id='envelope_details' class='col-sm-8'>
+    <header>
+      <h1>
+        <%= @envelope.full_name(@all_envelopes) %>
+        <span class='balance <%= @envelope.total_amount < 0 ? "negative" : "positive" %>-number'>
+          <%= number_to_currency(@envelope.inclusive_total_amount(@organized_envelopes)) %>
+        </span>
+      </h1>
+    </header>
+
+    <%= render partial: 'transactions/list_transactions', locals: { start_date: @start_date, end_date: @end_date, envelope: @envelope, transactions: @transactions, show_transfers: @show_transfers, envelope_options_for_select: @envelope_options_for_select } %>
+
+  </section>
+  <section id='envelope_aside' class='col-sm-2'>
+    <ul class='actions'>
+      <li><a class='btn btn-primary transfer' data-toggle='modal' data-target='#transfer-modal'>Transfer Money</a></li>
     </ul>
-  </nav>
-</section>
-<section id='envelope_details'>
-  <header>
-    <h1>
-      <%= @envelope.full_name(@all_envelopes) %>
-      <span class='balance <%= @envelope.total_amount < 0 ? "negative" : "positive" %>-number'>
-        <%= number_to_currency(@envelope.inclusive_total_amount(@organized_envelopes)) %>
-      </span>
-    </h1>
-  </header>
-
-  <%= render partial: 'transactions/list_transactions', locals: { start_date: @start_date, end_date: @end_date, envelope: @envelope, transactions: @transactions, show_transfers: @show_transfers, envelope_options_for_select: @envelope_options_for_select } %>
-
-</section>
-<section id='envelope_aside'>
-  <ul class='actions'>
-    <li><a href='javascript:void(0)' class='button transfer'>Transfer Money</a></li>
-  </ul>
-  <% if @show_graphs %>
-    <div>
-      <h2><%= @envelope.income? ? 'Earnings' : 'Spending' %> per month</h2>
-      <div class='graph-monthly-spending'>
-        <% if @budgeted_amount > 0 %>
-          <div class='budget-line' title='Budget: <%= number_to_currency(@budgeted_amount) %>' data-amount='<%= @budgeted_amount %>' data-percent='<%= @budgeted_percent %>'></div>
-          <div class='budget-amount' title='Budget: <%= number_to_currency(@budgeted_amount) %>'><%= number_to_currency(@budgeted_amount) %></div>
-        <% end %>
-        <table>
-          <% @spending_months.each do |month_info| %>
-            <tr>
-              <th><%= month_info[:month].strftime("%b")[0] %></th>
-              <td title='<%= month_info[:month].strftime("%B %Y") %> - <%= number_to_currency(month_info[:amount]) %>'>
-                <div class='chart-bar <%= cycle('alt', '') %>' style='width:<%= month_info[:percent] %>%'>
-                  <% if month_info[:percent] > 40 %>
+    <% if @show_graphs %>
+      <div>
+        <h2><%= @envelope.income? ? 'Earnings' : 'Spending' %> per month</h2>
+        <div class='graph-monthly-spending'>
+          <% if @budgeted_amount > 0 %>
+            <div class='budget-line' title='Budget: <%= number_to_currency(@budgeted_amount) %>' data-amount='<%= @budgeted_amount %>' data-percent='<%= @budgeted_percent %>'></div>
+            <div class='budget-amount' title='Budget: <%= number_to_currency(@budgeted_amount) %>'><%= number_to_currency(@budgeted_amount) %></div>
+          <% end %>
+          <table>
+            <% @spending_months.each do |month_info| %>
+              <tr>
+                <th><%= month_info[:month].strftime("%b")[0] %></th>
+                <td title='<%= month_info[:month].strftime("%B %Y") %> - <%= number_to_currency(month_info[:amount]) %>'>
+                  <div class='chart-bar <%= cycle('alt', '') %>' style='width:<%= month_info[:percent] %>%'>
+                    <% if month_info[:percent] > 40 %>
+                      <%= number_to_currency(month_info[:amount]) %>
+                    <% end %>
+                  </div>
+                  <% if month_info[:percent] <= 40 %>
                     <%= number_to_currency(month_info[:amount]) %>
                   <% end %>
-                </div>
-                <% if month_info[:percent] <= 40 %>
-                  <%= number_to_currency(month_info[:amount]) %>
-                <% end %>
-              </td>
-            </tr>
-          <% end %>
-        </table>
+                </td>
+              </tr>
+            <% end %>
+          </table>
+        </div>
       </div>
-    </div>
-  <% end %>
-</section>
+    <% end %>
+  </section>
+</div>
 
-<script id='transfer_modal' type='template'>
-  <div class='loading'></div>
-  <h1>Transfer Money</h1>
-  <%= form_tag create_transfer_transactions_url, remote: true do %>
-    <%= hidden_field_tag 'current_envelope_id', @envelope.id %>
-    <div class="field">
-      <%= label_tag :transfer_from_id, 'Transfer from:' %>
-      <%= select_tag :transfer_from_id, options_from_collection_for_select(@all_envelopes, :id, :full_name, @envelope.id) %>
-    </div>
-    <div class="field">
-      <%= label_tag :transfer_to_id, 'Transfer to:' %>
-      <%= select_tag :transfer_to_id, options_from_collection_for_select(@all_envelopes, :id, :full_name, @envelope.id) %>
-    </div>
-    <div class="field amount">
-      <%= label_tag :transfer_amount, 'Amount:' %>
-      <%= text_field_tag :transfer_amount, nil, placeholder: '$50.00' %>
-    </div>
-    <div class='actions'>
-      <a href='javascript:void(0)'>Cancel</a>
-      <%= submit_tag 'Transfer', class: 'primary' %>
-    </div>
-  <% end %>
-</script>
 
-<script id='edit_txn_modal' type='template'>
-  <div class='loading'></div>
-  <h1>Edit Transaction</h1>
-  <%= form_tag transaction_url('id'), remote: true, method: :put do %>
-    <div class="field">
-      <%= label_tag 'transaction[notes]', 'Notes' %>
-      <%= text_field_tag 'transaction[notes]', nil %>
+<%# ***** MODALS ***** %>
+
+<div class="modal fade" id='transfer-modal'>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <%= form_tag create_transfer_transactions_url, remote: true, class: 'form-horizontal' do %>
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Transfer Money</h4>
+        </div>
+        <div class="modal-body">
+          <%= hidden_field_tag 'current_envelope_id', @envelope.id %>
+          <div class="form-group">
+            <%= label_tag :transfer_from_id, 'Transfer from', class: 'control-label col-sm-3' %>
+            <div class='col-sm-9'>
+              <%= select_tag :transfer_from_id, options_from_collection_for_select(@all_envelopes, :id, :full_name, @envelope.id), class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group">
+            <%= label_tag :transfer_to_id, 'Transfer to', class: 'control-label col-sm-3' %>
+            <div class='col-sm-9'>
+              <%= select_tag :transfer_to_id, options_from_collection_for_select(@all_envelopes, :id, :full_name, @envelope.id), class: 'form-control' %>
+            </div>
+          </div>
+          <div class="form-group amount">
+            <%= label_tag :transfer_amount, 'Amount', class: 'control-label col-sm-3' %>
+            <div class='col-sm-9'>
+              <%= text_field_tag :transfer_amount, nil, placeholder: '$50.00', class: 'form-control' %>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class='loading'></div>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          <%= submit_tag 'Transfer', class: 'btn btn-primary' %>
+        </div>
+      <% end %>
     </div>
-    <div class='actions'>
-      <a href='javascript:void(0)'>Cancel</a>
-      <%= submit_tag 'Save', class: 'primary' %>
+  </div>
+</div>
+
+
+<div class="modal fade" id='edit-txn-modal'>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <%= form_tag transaction_url('id'), remote: true, method: :put do %>
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Edit Transaction</h4>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <%= label_tag 'transaction[notes]', 'Notes' %>
+            <%= text_field_tag 'transaction[notes]', nil, class: 'form-control' %>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class='loading'></div>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          <%= submit_tag 'Save', class: 'btn btn-primary' %>
+        </div>
+      <% end %>
     </div>
-  <% end %>
-</script>
+  </div>
+</div>
+

@@ -1,3 +1,3 @@
 $('#last_imported').text("(imported just now)");
-hideModal();
-$("<div class='flash notice'><div><%= pluralize(@import_count, 'transaction') %> imported!</div></div>").appendTo('body').delay(4000).fadeOut(function() { $(this).remove() });
+$('#import-modal .modal-footer').removeClass('hidden');
+$('#import-modal .modal-body').html("<span class='text-success'><%= pluralize(@import_count, 'transaction') %> imported!</span>");

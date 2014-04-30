@@ -3,12 +3,12 @@
     <tr>
       <td class='name'>
         <% if organized_envelopes[envelope.id].empty? %>
-          <span class='image-only-spacer'></span>
+          <span class='btn-glyphicon-spacer'></span>
         <% else %>
-          <button class='collapse image-only' title='Expand'></button>
+          <button class='btn btn-link collapse-button' title='Expand'><span class='glyphicon glyphicon-collapse-down'></span></button>
         <% end %>
         <%= envelope.name %>
-        <button class='info image-only' title='More information on this envelope'></button>
+        <button class='info btn btn-link' title='Coming someday: More information on this envelope'><span class='glyphicon glyphicon-info-sign'></span></button>
       </td>
       <td class='amount balance<%= ' negative-number' if envelope.inclusive_total_amount(organized_envelopes) < 0 %>'>
         <%= number_to_currency(envelope.inclusive_total_amount(organized_envelopes)) %>
@@ -21,7 +21,7 @@
       </td>
       <% if organized_envelopes[envelope.id].empty? %>
         <td class='amount input'>
-          <%= text_field_tag "fill_envelope_#{envelope.id}", number_to_currency(0) %>
+          <%= text_field_tag "fill_envelope_#{envelope.id}", number_to_currency(0), class: 'form-control pull-right' %>
         </td>
       <% else %>
         <td class='amount sum'><%= number_to_currency(0) %></td>
@@ -29,7 +29,7 @@
     </tr>
   </table>
   <% unless organized_envelopes[envelope.id].empty? %>
-    <ul>
+    <ul class='list-unstyled'>
       <%= render partial: 'envelope_for_fill', collection: organized_envelopes[envelope.id], as: :envelope, locals: {organized_envelopes: organized_envelopes} %>
     </ul>
   <% end %>

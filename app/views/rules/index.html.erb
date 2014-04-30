@@ -1,55 +1,72 @@
 <% title 'Rules' %>
 
-<section id='rules'>
-  <header>
-    <h1>Rules</h1>
-  </header>
+<div class='row'>
+  <section id='rules' class='col-sm-10'>
+    <header>
+      <h1>Rules</h1>
+    </header>
 
-  <% if @rules.size > 0 %>
-    <table>
-      <tr>
-        <th class='search-text'><div>Search Text</div></th>
-        <th class='replacement-text'><div>Replacement Text</div></th>
-        <th class='envelope'><div>Envelope</div></th>
-        <th class='rule-actions'></th>
-      </tr>
-    </table>
-    <ul>
-      <%= render partial: 'rules/rule', collection: @rules, locals: {envelope_options_for_select: @envelope_options_for_select} %>
+    <div class='col-sm-12'>
+      <div class='row'>
+        <% if @rules.size > 0 %>
+          <table>
+            <tr>
+              <th class='search-text col-sm-4'>Search Text</th>
+              <th class='replacement-text col-sm-4'>Replacement Text</th>
+              <th class='envelope col-sm-4'>Envelope</th>
+              <th class='rule-actions'></th>
+            </tr>
+          </table>
+          <ul class='list-unstyled'>
+            <%= render partial: 'rules/rule', collection: @rules, locals: {envelope_options_for_select: @envelope_options_for_select} %>
+          </ul>
+          <p class='autosave-status'></p>
+        <% else %>
+          <span class='status'>You don't have any rules yet.</span>
+        <% end %>
+      </div>
+    </div>
+  </section>
+
+  <section id='rules_aside' class='col-sm-2'>
+    <ul class='actions list-unstyled'>
+      <li><a class='btn btn-primary new' data-toggle="modal" data-target="#new-rule-modal">New Rule</a></li>
+      <li><%= link_to 'Run Rules Now', run_all_rules_path, method: :post, remote: true, class: 'btn btn-primary transfer', title: 'Run the rules on any currently unassigned transactions' %></li>
     </ul>
-    <p class='autosave-status'></p>
-  <% else %>
-    <span class='status'>You don't have any rules yet.</span>
-  <% end %>
-</section>
+  </section>
+</div>
 
-<section id='rules_aside'>
-  <ul class='actions'>
-    <li><a href='javascript:void(0)' class='button new'>New Rule</a></li>
-    <li><%= link_to 'Run Rules Now', run_all_rules_path, method: :post, remote: true, class: 'button transfer', title: 'Run the rules on any currently unassigned transactions' %></li>
-  </ul>
-</section>
 
-<script id='new_rule_modal' type='template'>
-  <div class='loading'></div>
-  <h1>New Rule</h1>
-  <%= form_for @new_rule, remote: true do |f| %>
-    <%= f.hidden_field :order %>
-    <div class="field">
-      <%= f.label :search_text, 'Search text:' %>
-      <%= f.text_field :search_text, placeholder: 'WAL-MART' %>
+<div class="modal fade" id='new-rule-modal'>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <%= form_for @new_rule, remote: true do |f| %>
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">New Rule</h4>
+        </div>
+        <div class="modal-body">
+          <%= f.hidden_field :order %>
+          <div class="form-group">
+            <%= f.label :search_text, 'Search text:' %>
+            <%= f.text_field :search_text, placeholder: 'WAL-MART', class: 'form-control' %>
+          </div>
+          <div class="form-group">
+            <%= f.label :replacement_text, 'Replacement text:' %>
+            <%= f.text_field :replacement_text, placeholder: 'Walmart', class: 'form-control' %>
+          </div>
+          <div class="form-group">
+            <%= f.label :envelope_id, 'Envelope:' %>
+            <%= f.select :envelope_id, @envelope_options_for_select, {}, class: 'form-control' %>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class='loading'></div>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          <%= f.submit 'Save', class: 'btn btn-primary' %>
+        </div>
+      <% end %>
     </div>
-    <div class="field">
-      <%= f.label :replacement_text, 'Replacement text:' %>
-      <%= f.text_field :replacement_text, placeholder: 'Walmart' %>
-    </div>
-    <div class="field amount">
-      <%= f.label :envelope_id, 'Envelope:' %>
-      <%= f.select :envelope_id, @envelope_options_for_select %>
-    </div>
-    <div class='actions'>
-      <a href='javascript:void(0)'>Cancel</a>
-      <%= f.submit 'Save', class: 'primary' %>
-    </div>
-  <% end %>
-</script>
+  </div>
+</div>
+

@@ -1,17 +1,17 @@
-<% title "Log In" %>
+<% title "Sign In" %>
 <% show_mobile_head %>
 
-<section class='login-box'>
-  <h1>Envelopes</h1>
-  <%= form_tag login_path do %>
-    <div class="field">
+<section class='login-box center-block'>
+  <h1 class='text-center'>Envelopes</h1>
+  <%= form_tag sign_in_path do %>
+    <div class="form-group">
       <%= label_tag :email %>
-      <%= email_field_tag :email, params[:email], placeholder: 'email', :autofocus => true %>
+      <%= email_field_tag :email, params[:email], placeholder: 'email', autofocus: true, class: 'form-control' %>
     </div>
-    <div class="field">
+    <div class="form-group">
       <%= label_tag :password %>
-      <%= password_field_tag :password, nil, placeholder: 'password' %>
+      <%= password_field_tag :password, nil, placeholder: 'password', class: 'form-control' %>
     </div>
-    <div class="actions"><%= submit_tag "Log In", class:'primary' %></div>
+    <%= submit_tag "Sign in", class:'btn btn-primary' %>
   <% end %>
 </section>
