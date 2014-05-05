@@ -1,43 +1,4 @@
 
-@hideModal = ->
-  $('#overlay').hide()
-  $('#modal').hide()
-
-@showModal = (options) ->
-  defaults =
-    width: 400
-  
-  options = $.extend(defaults, options)
-  
-  overlay = $('#overlay')
-  overlay = $("<div id='overlay'></div>").appendTo(document.body) unless overlay.length > 0
-  overlay.show().css
-    width: $(document).width()
-    height: $(document).height()
-    opacity: 0.6
-  
-  modal = $('#modal').removeClass()
-  unless modal.length > 0
-    modal = $("<section id='modal'></section>")
-      .appendTo(document.body)
-      .on('keyup', (event) ->
-        if event.which == $.ui.keyCode.ESCAPE
-          hideModal()
-      )
-  modal.addClass(options['className']) if options['className']
-  modal
-    .html($(options['content']).html())
-    .show()
-    .css
-      top: 100
-      width: options['width']
-      marginLeft: - options['width'] / 2
-  
-  input = modal.find 'input:visible, select:visible'
-  input[0].focus() if input.length > 0
-  
-  modal
-
 @getTimeString = ->
   now = new Date()
   hour = now.getHours()
@@ -123,12 +84,6 @@
   valueStr
 
 $ ->
-  $('.flash').each (index, item) ->
-    $(item)
-      .delay(4000)
-      .fadeOut ->
-        $(this).remove()
-
   $(document).on('blur', '.amount input', ->
     $this = $(this)
     value = getAmount $this.val()
