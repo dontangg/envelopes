@@ -1,7 +1,7 @@
 # Gemnasium https://gemnasium.com/dontangg/envelopes
 source 'http://rubygems.org'
 
-gem 'rails', '~> 4.0.1'
+gem 'rails', '~> 4.1.8'
 gem 'unicorn' unless RUBY_PLATFORM =~ /mingw32/i
 gem 'jquery-rails'
 gem 'cancan', '~> 1.6'
@@ -32,7 +32,6 @@ group :development, :test do
 end
 
 group :test do
-  gem 'turn'
   gem 'minitest'
   gem 'simplecov', require: false
 end

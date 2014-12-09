@@ -16,7 +16,7 @@ FactoryGirl.define do
     end
 
     factory :envelope_with_transactions do
-      ignore do
+      transient do
         transactions_count 4
       end
 

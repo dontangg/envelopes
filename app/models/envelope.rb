@@ -99,7 +99,7 @@ class Envelope < ActiveRecord::Base
 
       envelopes['sys'].unshift(all_envelope(total_amount))
 
-      all_envelopes.sort! {|e1, e2| e1.full_name <=> e2.full_name }
+      all_envelopes.to_a.sort! {|e1, e2| e1.full_name <=> e2.full_name }
 
       envelopes
     end

@@ -3,7 +3,6 @@ class SessionsController < ApplicationController
 
   def new
     flash.keep[:return_to]
-    p flash.notice
   end
 
   def create
@@ -20,7 +19,7 @@ class SessionsController < ApplicationController
 
   def destroy
     session[:user_id] = nil
-    p 'destroying session'
+
     redirect_to sign_in_url, notice: "You have signed out!"
   end
 end

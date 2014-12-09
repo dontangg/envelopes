@@ -76,7 +76,7 @@ class EnvelopesControllerTest < ActionController::TestCase
       envelope: {
         name: 'Fuel!',
         expense: {
-          amount: 120.5
+          amount: '120.5'
         }
       },
       format: :js

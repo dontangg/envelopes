@@ -24,7 +24,7 @@ class SessionsControllerTest < ActionController::TestCase
   
   test "sessions#destroy should set session[:used_id] to nil" do
     get :destroy
-    assert_redirected_to login_url, "didn't get redirected to login page after logging out"
+    assert_redirected_to sign_in_url, "didn't get redirected to login page after logging out"
     assert_nil session[:user_id], ":user_id session value was not cleared"
   end
 end

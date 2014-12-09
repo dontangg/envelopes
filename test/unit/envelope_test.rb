@@ -302,7 +302,7 @@ class EnvelopeTest < ActiveSupport::TestCase
     txn2 = create :transaction, posted_at: Date.today - 1.month, amount: -20.0, envelope: txn1.envelope
     txn3 = create :transaction, posted_at: Date.today - 1.month, amount: 2.0, envelope: txn1.envelope
 
-    report = txn1.envelope.monthly_spending_report
+    report = txn1.envelope.monthly_report
 
     assert_equal -15.0, report[12][:amount]
     assert_equal Date.today.beginning_of_month, report[12][:month]
