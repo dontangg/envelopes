@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   before_filter :authenticate
+  before_filter :check_new_experience
   protect_from_forgery
 
   rescue_from CanCan::AccessDenied do |exception|
@@ -25,6 +26,18 @@ class ApplicationController < ActionController::Base
 
   def current_user_id
     @current_user ? @current_user.id : session[:user_id]
+  end
+
+  def check_new_experience
+    if params[:ne].to_i == 1
+      cookies[:new_experience] = true
+    elsif params[:ne].to_i == 0
+      cookies.delete :new_experience
+    end
+  end
+
+  def new_experience?
+    cookies[:new_experience] == true
   end
 
   helper_method :current_user, :current_user_id
