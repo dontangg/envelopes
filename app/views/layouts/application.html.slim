@@ -1,0 +1,52 @@
+doctype html
+html
+  head
+    meta http-equiv="X-UA-Compatible" content="IE=edge"
+    meta name="viewport" content="width=device-width, initial-scale=1"
+
+    title
+      = yield(:title) + ' | ' if content_for?(:title)
+      | Envelopes
+    = yield(:mobile_head) if content_for?(:mobile_head)
+
+    link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300" rel="stylesheet" type="text/css"
+
+    = stylesheet_link_tag    "application"
+    = javascript_include_tag "application"
+    = csrf_meta_tags
+body
+  | New Experience
+
+  - if current_user
+    header id='header-nav' class='navbar'
+      div class='container-fluid'
+        div class='navbar-header'
+          button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#header-nav"
+            span class="sr-only" Toggle navigation
+            span class="icon-bar"
+            span class="icon-bar"
+            span class="icon-bar"
+          = link_to 'Envelopes', root_url, class: 'navbar-brand'
+
+        nav class='collapse navbar-collapse'
+          ul class='nav navbar-nav'
+            li class=(current_page?(root_url) ? "active" : "") = link_to 'Dashboard', root_url
+            li class=(current_page?(fill_envelopes_url) ? "active" : "") = link_to 'Fill Envelopes', fill_envelopes_url
+            li class=(current_page?(rules_url) ? "active" : "") = link_to 'Rules', rules_url
+            li class=(current_page?(manage_envelopes_path) ? "active" : "") = link_to 'Manage Envelopes', manage_envelopes_path
+
+          ul class='nav navbar-nav navbar-right'
+            li class=(current_page?(edit_user_url(current_user_id)) ? "active" : "") = link_to current_user.email, edit_user_url(current_user_id)
+            li = link_to 'Log Out', sign_out_url
+
+  - if flash[:notice]
+    div class='container-fluid'
+      <div class='alert alert-info alert-dismissable'><button type="button" class="close" data-dismiss="alert">&times;</button><div><%= flash.notice %></div></div>
+  - if flash[:alert]
+    div class='container-fluid'
+      <div class='alert alert-danger alert-dismissable'><button type="button" class="close" data-dismiss="alert">&times;</button><div><%= flash.alert %></div></div>
+
+  div class='container-fluid clearfix' = yield
+
+  footer &copy; #{Date.today.year} Don Wilson
+
