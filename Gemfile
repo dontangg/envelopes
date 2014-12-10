@@ -13,12 +13,14 @@ gem 'bcrypt-ruby', '~> 3.1.2' # To use ActiveModel has_secure_password
 # gem 'jbuilder'
 
 gem 'sass-rails',   '~> 4.0.0'
-gem 'coffee-rails', '~> 4.0.0'
+gem 'coffee-rails', '~> 4.1.0'
 
 # See https://github.com/sstephenson/execjs#readme for more supported runtimes
 # gem 'therubyracer', :platform => :ruby
 
 gem 'uglifier',     '>= 1.3.0'
+
+gem 'slim-rails'
 
 # Put test-only gems in this group so their generators
 # and rake tasks are available in development mode:
