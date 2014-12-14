@@ -9,13 +9,13 @@ html
       | Envelopes
     = yield(:mobile_head) if content_for?(:mobile_head)
 
-    link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700' rel='stylesheet' type='text/css'
+    link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700' rel='stylesheet'
+    link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet"
 
     = stylesheet_link_tag    'application'
     = javascript_include_tag 'application'
     = csrf_meta_tags
 body
-  | New Experience
 
   - if current_user
     header id='header-nav' class='navbar navbar-default navbar-fixed-top'
@@ -28,7 +28,7 @@ body
         = link_to 'Envelopes', root_url, class: 'navbar-brand'
 
       nav class='collapse navbar-collapse box-shadow bg-white'
-        ul class='nav navbar-nav'
+        ul.nav.navbar-nav
           li class=(current_page?(root_url) ? 'active' : '') = link_to 'Dashboard', root_url
           li class=(current_page?(fill_envelopes_url) ? 'active' : '') = link_to 'Fill Envelopes', fill_envelopes_url
           li class=(current_page?(rules_url) ? 'active' : '') = link_to 'Rules', rules_url
@@ -39,7 +39,7 @@ body
             a class='dropdown-toggle' data-toggle='dropdown' href='#'
               = current_user.email
               span class="caret"
-            ul class='dropdown-menu'
+            ul class='dropdown-menu animated fade-in-right'
               li = link_to 'Account', edit_user_url(current_user_id)
               li class='divider'
               li = link_to 'Log Out', sign_out_url
@@ -55,7 +55,7 @@ body
         button type='button' class='close' data-dismiss='alert' &times;
         div = flash.alert
 
-  div class='container-fluid clearfix' = yield
+  = yield
 
   footer &copy; #{Date.today.year} Don Wilson
 

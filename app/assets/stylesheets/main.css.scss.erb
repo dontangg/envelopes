@@ -4,24 +4,54 @@
 
 body {
   font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  padding-top: 70px;
+  padding-top: 50px;
   -webkit-font-smoothing: antialiased;
+}
+
+a {
+  text-decoration: none;
+  color: #363f44;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+
+// Generic classes
+
+.box-shadow {
+  box-shadow: 0 2px 2px rgba(0,0,0,0.05),0 1px 0 rgba(0,0,0,0.05);
 }
 
 .bg-dark {
   color: #c4d0d9;
   background-color: #1c2b36;
 
-  a {
-    color: #c4d0d9 !important;
+  .text-muted {
+    color: #5c798f;
   }
 }
+
+.bg-white {
+  background-color: #fff;
+}
+
+
+// Navbar
 
 .app-aside, .navbar-header {
   width: 200px;
 }
+.navbar-collapse, .app-content {
+  margin-left: 200px;
+}
 
+.navbar {
+  border-width: 0;
+}
 .navbar-brand {
+  color: #c4d0d9 !important;
   background: url(<%= image_path("icon.svg") %>) no-repeat 10px 15px;
   background-size: 30px;
   padding-left: 45px;
@@ -33,26 +63,72 @@ body {
   margin-right: 0;
 }
 
-.navbar-default .nav > li > a:hover, .navbar-default .nav > li > a:focus {
-  background-color: #f6f8f8;
-}
-
-.box-shadow {
-  box-shadow: 0 2px 2px rgba(0,0,0,0.05),0 1px 0 rgba(0,0,0,0.05);
-}
-
-.bg-white {
-  background-color: #fff;
-}
-
-a {
-  text-decoration: none;
+.navbar-default .nav > li > a {
   color: #363f44;
-
-  &:hover {
-    text-decoration: underline;
+  &:hover, &:focus {
+    background-color: #f6f8f8;
   }
 }
+
+
+
+.app-aside {
+  float: left;
+
+  // To make the column 100% high
+  &:before {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    z-index: -1;
+    width: inherit;
+    background-color: inherit;
+    border: inherit;
+    content: "";
+  }
+
+  nav {
+    padding-top: 20px;
+  }
+
+  .nav .nav-cat {
+    font-size: 12px;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-bottom: 10px;
+  }
+
+  .nav > li > a {
+    color: #869fb1;
+    &:hover, &:focus {
+      background-color: #16232d;
+    }
+  }
+  .nav > li.active > a {
+    color: #fff;
+    background-color: #131e26;
+    &:hover, &:focus {
+      background-color: #16232d;
+    }
+  }
+  .nav-sub {
+    background-color: #131e26;
+
+    li a {
+      padding-left: 30px;
+    }
+  }
+
+  .line {
+    background-color: #131e26;
+    font-size: 0;
+    height: 2px;
+    margin: 10px 0;
+    overflow: hidden;
+    width: 100%;
+  }
+}
+
 
 
 

@@ -1,11 +1,13 @@
 <% title 'Dashboard' %>
 <% show_mobile_head %>
 
-<section id='dashboard'>
+<%= render partial: 'envelope_side_bar' %>
+
+<section id='dashboard' class='app-content'>
   <header>
     <h1>Dashboard</h1>
   </header>
-
+<!--
   <ul>
     <li class='system'>
       <ul>
@@ -21,4 +23,5 @@
     </li>
     <%= render partial: 'envelope', collection: @organized_envelopes[nil], as: :envelope, locals: {organized_envelopes: @organized_envelopes} %>
   </ul>
+  -->
 </section>
