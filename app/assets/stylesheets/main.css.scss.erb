@@ -91,15 +91,18 @@ a {
     padding-top: 20px;
   }
 
-  .nav .nav-cat {
+  .nav-cat > span {
+    display: block;
     font-size: 12px;
+    margin-bottom: 10px;
+    margin-top: 10px;
     padding-left: 15px;
     padding-right: 15px;
-    margin-bottom: 10px;
   }
 
   .nav > li > a {
     color: #869fb1;
+    transition: background-color .2s ease-in-out 0s;
     &:hover, &:focus {
       background-color: #16232d;
     }
@@ -111,8 +114,12 @@ a {
       background-color: #16232d;
     }
   }
+  .active .nav-sub {
+    display: block;
+  }
   .nav-sub {
     background-color: #131e26;
+    display: none;
 
     li a {
       padding-left: 30px;

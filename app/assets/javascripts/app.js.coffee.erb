@@ -1,0 +1,57 @@
+
+app = angular.module 'envelopes', ['ngRoute']
+  .config ($routeProvider, $locationProvider) ->
+
+    if window.history && window.history.pushState
+      $locationProvider.html5Mode true
+
+
+app.directive 'leftNav', ->
+  restrict: 'E'
+  scope: {}
+  templateUrl: '/Scripts/app/partials/CategoryComponent.html'
+  controller: ($scope, $http, $attrs) ->
+    $http
+      url: "api/FeaturedProducts/" + $attrs.catName
+      method: "get"
+    .success (data, status, headers, config) ->
+      $scope.Cat = data
+    .error (data, status, headers, config) ->
+      $scope.data = data
+      $scope.status = status
+
+
+app.directive 'leftPanel', ->
+  restrict: 'EA' #E = element, A = attribute, C = class, M = comment
+  #template: '<ul><li data-ng-repeat="envelope in envelopes">{{ envelope.name }}<ul data-ng-if="envelope.children"><li data-ng-repeat="envelope2 in envelope.children">{{ envelope2.name }} <span>{{ envelope2.amount | currency }}</span><ul data-ng-if="envelope.children"><li data-ng-repeat="envelope3 in envelope2.children">{{ envelope3.name }} <span>{{ envelope3.amount | currency }}</span></li></ul></li></ul></li></ul>'
+  templateUrl: '<%= asset_path('partials/left_panel.html') %>'
+  controller: ($scope) ->
+    $scope.envelopes = [
+        name: 'Bills',
+        children: [
+            {
+                name: 'Yearly',
+                children: [
+                    { name: 'Football tickets', amount: 124.6 },
+                    { name: 'Domain names', amount: 10 }
+                ]
+            }
+        ]
+    ,
+        name: 'Gifts & Donations',
+        children: [
+        ]
+    ,
+        name: 'Shopping',
+        children: [
+            {
+                name: 'Food',
+                children: [
+                    { name: 'Groceries', amount: 350 },
+                    { name: 'Eating Out', amount: 204.21 }
+                ]
+            },
+            { name: 'Makeup', amount: 120 }
+        ]
+    ]
+

@@ -1,0 +1,27 @@
+
+div.app-aside.bg-dark
+  nav
+    ul.nav
+      li.text-muted.text-xs.nav-cat data-ng-repeat="envelope_category in envelopes"
+        span
+          | {{ envelope_category.name }}
+        ul.nav
+          li data-ng-repeat="envelope_l1 in envelope_category.children"
+            /! .active
+            a href="#"
+              b.badge.bg-info.pull-right data-ng-if="envelope_l1.amount"
+                | {{ envelope_l1.amount | currency }}
+              span.pull-right.text-muted data-ng-if="envelope_l1.children"
+                i.fa.fa-fw.fa-angle-up
+                i.fa.fa-fw.fa-angle-down
+              span
+                | {{ envelope_l1.name }}
+            ul.nav.nav-sub data-ng-if="envelope_l1.children"
+              li data-ng-repeat="envelope_l2 in envelope_l1.children"
+                a href="#"
+                  b.badge.bg-info.pull-right
+                    | {{ envelope_l2.amount | currency }}
+                  span
+                    | {{ envelope_l2.name }}
+      li.line
+
