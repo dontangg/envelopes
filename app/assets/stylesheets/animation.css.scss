@@ -34,6 +34,21 @@
 }
 
 
+@include keyframes(fade-in-left) {
+    0% {
+        opacity: 0;
+        transform: translateX(-20px)
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0)
+    }
+}
+.fade-in-left {
+  @include animation(fade-in-left);
+}
+
+
 @include keyframes(fade-in-right) {
     0% {
         opacity: 0;
@@ -44,7 +59,7 @@
         transform: translateX(0)
     }
 }
-
 .fade-in-right {
   @include animation(fade-in-right);
 }
+
