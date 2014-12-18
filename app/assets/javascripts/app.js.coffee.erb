@@ -22,8 +22,6 @@ app.directive 'leftNav', ->
 
 
 app.directive 'leftPanel', ->
-  restrict: 'EA' #E = element, A = attribute, C = class, M = comment
-  #template: '<ul><li data-ng-repeat="envelope in envelopes">{{ envelope.name }}<ul data-ng-if="envelope.children"><li data-ng-repeat="envelope2 in envelope.children">{{ envelope2.name }} <span>{{ envelope2.amount | currency }}</span><ul data-ng-if="envelope.children"><li data-ng-repeat="envelope3 in envelope2.children">{{ envelope3.name }} <span>{{ envelope3.amount | currency }}</span></li></ul></li></ul></li></ul>'
   templateUrl: '<%= asset_path('partials/left_panel.html') %>'
   controller: ($scope) ->
     $scope.envelopes = [
