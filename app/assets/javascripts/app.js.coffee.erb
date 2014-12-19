@@ -6,21 +6,6 @@ app = angular.module 'envelopes', ['ngRoute']
       $locationProvider.html5Mode true
 
 
-app.directive 'leftNav', ->
-  restrict: 'E'
-  scope: {}
-  templateUrl: '/Scripts/app/partials/CategoryComponent.html'
-  controller: ($scope, $http, $attrs) ->
-    $http
-      url: "api/FeaturedProducts/" + $attrs.catName
-      method: "get"
-    .success (data, status, headers, config) ->
-      $scope.Cat = data
-    .error (data, status, headers, config) ->
-      $scope.data = data
-      $scope.status = status
-
-
 app.factory 'envelopeService', ($http) ->
 
   envelopes = null
