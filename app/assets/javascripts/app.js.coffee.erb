@@ -21,36 +21,32 @@ app.directive 'leftNav', ->
       $scope.status = status
 
 
+app.factory 'envelopeService', ($http) ->
+
+  envelopes = null
+  getEnvelopes = (callback) ->
+    callback envelopes if envelopes
+
+    $http.get('/envelopes.json').success (data) ->
+      organized_envelopes = data[""]
+      stack = data[""].slice()
+
+      while stack.length
+        env = stack.pop()
+        if data[env.id]
+          stack = stack.concat data[env.id]
+          env.children = data[env.id]
+
+      envelopes = organized_envelopes
+      callback organized_envelopes
+
+  all: getEnvelopes
+
+
+
 app.directive 'leftPanel', ->
   templateUrl: '<%= asset_path('partials/left_panel.html') %>'
-  controller: ($scope) ->
-    $scope.envelopes = [
-        name: 'Bills',
-        children: [
-            {
-                name: 'Yearly',
-                visible: true,
-                children: [
-                    { name: 'Football tickets', amount: 124.6 },
-                    { name: 'Domain names', amount: 10 }
-                ]
-            }
-        ]
-    ,
-        name: 'Gifts & Donations',
-        children: [
-        ]
-    ,
-        name: 'Shopping',
-        children: [
-            {
-                name: 'Food',
-                children: [
-                    { name: 'Groceries', amount: 350 },
-                    { name: 'Eating Out', amount: 204.21 }
-                ]
-            },
-            { name: 'Makeup', amount: 120 }
-        ]
-    ]
+  controller: ($scope, envelopeService) ->
+    envelopeService.all (env) ->
+      $scope.envelopes = env
 
