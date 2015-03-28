@@ -14,7 +14,7 @@ app.factory 'envelopeService', ($http) ->
 
     $http.get('/envelopes.json').success (data) ->
       organized_envelopes = data[""]
-      stack = data[""].slice()
+      stack = data[""].slice() # Make a copy of the root-level array
 
       while stack.length
         env = stack.pop()

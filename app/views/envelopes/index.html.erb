@@ -1,28 +1,9 @@
 <% title 'Dashboard' %>
-<% show_mobile_head %>
 
-<%# render partial: 'envelope_side_bar' %>
 <div data-left-panel></div>
 
 <section id='dashboard' class='app-content'>
   <header>
     <h1>Dashboard</h1>
   </header>
-<!--
-  <ul>
-    <li class='system'>
-      <ul>
-        <% @organized_envelopes['sys'].each do |envelope| %>
-          <li>
-            <a href='<%= envelope_path(envelope) %>'>
-              <span class='amount <%= 'negative-number' if envelope.total_amount < 0 %>'><%= number_to_currency(envelope.total_amount) %></span>
-              <span class='name' title="<%= envelope.name %>"><%= envelope.name %></span>
-            </a>
-          </li>
-        <% end %>
-      </ul>
-    </li>
-    <%= render partial: 'envelope', collection: @organized_envelopes[nil], as: :envelope, locals: {organized_envelopes: @organized_envelopes} %>
-  </ul>
-  -->
 </section>

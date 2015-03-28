@@ -4,23 +4,10 @@
  * the top of the compiled file, but it's generally better to create a new file per style scope.
  *= require_self
  *= require bootstrap.min
- *= require jquery-ui-1.8.16.custom
- *= require_tree . 
+ * require jquery-ui-1.8.16.custom
+ * require_tree . 
+ *= require animation.css
+ *= require main.css
 */
 
-/* For the Twitter bootstrap popover */
-.popover {
-  h3, p {
-    margin: 0;
-  }
-}
-
-.popover-content {
-  h4 {
-    margin: 0 0 5px;
-  }
-  div + h4 {
-    margin-top: 10px;
-  }
-}
 
