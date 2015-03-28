@@ -5,6 +5,7 @@
 body {
   font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   padding-top: 50px;
+  position: relative; // To get the footer to the bottom, etc.
   -webkit-font-smoothing: antialiased;
 }
 
@@ -47,7 +48,7 @@ a {
 .app-aside, .navbar-header {
   width: 200px;
 }
-.navbar-collapse, .app-content {
+.navbar-collapse, .app-content, .app-footer {
   margin-left: 200px;
 }
 
@@ -141,8 +142,33 @@ a {
 }
 
 
+.app-content {
+  height: 100%;
+
+  &:before, &:after {
+    display: table;
+    content: " ";
+  }
+  &:after {
+    clear: both;
+  }
+}
 
 
+
+
+// Footer
+footer.app-footer {
+  background-color: #edf1f2;
+  border-top: 1px solid #dee5e7;
+  bottom: 0;
+  color: #58666e;
+  left: 0;
+  padding: 15px;
+  position: absolute;
+  right: 0;
+  z-index: 1005;
+}
 
 
 
