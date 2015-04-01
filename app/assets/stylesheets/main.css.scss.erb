@@ -1,11 +1,11 @@
-*, *:before, *:after {
-  -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
+
+html, body {
+  height: 100%;
 }
 
 body {
+  background-color: #f0f3f4;
   font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  padding-top: 50px;
-  position: relative; // To get the footer to the bottom, etc.
   -webkit-font-smoothing: antialiased;
 }
 
@@ -18,11 +18,49 @@ a {
   }
 }
 
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 300;
+}
+
+h1, .h1 {
+  font-size: 24px;
+  font-weight: 300;
+  margin: 0;
+}
+
+.app {
+  padding-top: 50px;
+  position: relative; // To get the footer to the bottom, etc.
+  min-height: 100%;
+  height: auto;
+}
+
+
 
 // Generic classes
 
+.wrapper {
+  padding: 20px;
+}
+
 .box-shadow {
   box-shadow: 0 2px 2px rgba(0,0,0,0.05),0 1px 0 rgba(0,0,0,0.05);
+}
+
+// Get the background to stretch to the height of the parent
+.bg-auto:before {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: -1;
+  width: inherit;
+  background-color: inherit;
+  border: inherit;
+  content: "";
+}
+
+.bg-light {
+  background-color: #f6f8f8;
 }
 
 .bg-dark {
@@ -41,6 +79,38 @@ a {
 .badge-error {
   background-color: #f05050;
 }
+
+.table {
+  border-spacing: 0;
+  display: table;
+  height: 100%;
+  table-layout: fixed;
+  width: 100%;
+
+  .col {
+    display: table-cell;
+    float: none;
+    height: 100%;
+    vertical-align: top;
+  }
+}
+
+.b-l {
+  border-left: 1px solid #dee5e7;
+}
+
+.b-b {
+  border-bottom: 1px solid #dee5e7;
+}
+
+.text-muted {
+  color: #98a6ad;
+}
+
+.w-md {
+  width: 240px;
+}
+
 
 
 // Navbar
@@ -78,22 +148,24 @@ a {
 
 
 .app-aside {
+  bottom: 0;
   float: left;
+  left: 0;
+  overflow: hidden;
+  position: fixed;
+  top: 50px;
+  width: 200px;
 
-  // To make the column 100% high
-  &:before {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    z-index: -1;
-    width: inherit;
-    background-color: inherit;
-    border: inherit;
-    content: "";
+  .app-aside-wrap {
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    width: 217px;
   }
 
   nav {
     padding-top: 20px;
+    width: 200px;
   }
 
   .nav-cat > span {
@@ -144,26 +216,21 @@ a {
 
 .app-content {
   height: 100%;
-
-  &:before, &:after {
-    display: table;
-    content: " ";
-  }
-  &:after {
-    clear: both;
-  }
+  margin-left: 200px;
+  padding-bottom: 50px;
 }
 
 
 
 
 // Footer
-footer.app-footer {
+.app-footer {
   background-color: #edf1f2;
   border-top: 1px solid #dee5e7;
   bottom: 0;
   color: #58666e;
   left: 0;
+  margin-left: 200px;
   padding: 15px;
   position: absolute;
   right: 0;
@@ -193,9 +260,6 @@ footer.app-footer {
   padding: 0.5em 0;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-weight: 300;
-}
 
 th {
   text-align: left;

@@ -19,46 +19,46 @@ html data-ng-app='envelopes'
     = javascript_include_tag 'application'
     = csrf_meta_tags
 body
+  .app
+    - if current_user
+      header id='header-nav' class='navbar navbar-default navbar-fixed-top'
+        div class='navbar-header bg-dark'
+          button type='button' class='navbar-toggle' data-toggle='collapse' data-target='#header-nav'
+            span class='sr-only' Toggle navigation
+            span class='icon-bar'
+            span class='icon-bar'
+            span class='icon-bar'
+          = link_to 'Envelopes', root_url, class: 'navbar-brand'
 
-  - if current_user
-    header id='header-nav' class='navbar navbar-default navbar-fixed-top'
-      div class='navbar-header bg-dark'
-        button type='button' class='navbar-toggle' data-toggle='collapse' data-target='#header-nav'
-          span class='sr-only' Toggle navigation
-          span class='icon-bar'
-          span class='icon-bar'
-          span class='icon-bar'
-        = link_to 'Envelopes', root_url, class: 'navbar-brand'
+        nav class='collapse navbar-collapse box-shadow bg-white'
+          ul.nav.navbar-nav
+            li class=(current_page?(root_url) ? 'active' : '') = link_to 'Dashboard', root_url
+            li class=(current_page?(fill_envelopes_url) ? 'active' : '') = link_to 'Fill Envelopes', fill_envelopes_url
+            li class=(current_page?(rules_url) ? 'active' : '') = link_to 'Rules', rules_url
+            li class=(current_page?(manage_envelopes_path) ? 'active' : '') = link_to 'Manage Envelopes', manage_envelopes_path
 
-      nav class='collapse navbar-collapse box-shadow bg-white'
-        ul.nav.navbar-nav
-          li class=(current_page?(root_url) ? 'active' : '') = link_to 'Dashboard', root_url
-          li class=(current_page?(fill_envelopes_url) ? 'active' : '') = link_to 'Fill Envelopes', fill_envelopes_url
-          li class=(current_page?(rules_url) ? 'active' : '') = link_to 'Rules', rules_url
-          li class=(current_page?(manage_envelopes_path) ? 'active' : '') = link_to 'Manage Envelopes', manage_envelopes_path
+          ul class='nav navbar-nav navbar-right'
+            li class='dropdown'
+              a class='dropdown-toggle' data-toggle='dropdown' href='#'
+                = current_user.email
+                span class="caret"
+              ul class='dropdown-menu animated fade-in-right'
+                li = link_to 'Account', edit_user_url(current_user_id)
+                li class='divider'
+                li = link_to 'Log Out', sign_out_url
 
-        ul class='nav navbar-nav navbar-right'
-          li class='dropdown'
-            a class='dropdown-toggle' data-toggle='dropdown' href='#'
-              = current_user.email
-              span class="caret"
-            ul class='dropdown-menu animated fade-in-right'
-              li = link_to 'Account', edit_user_url(current_user_id)
-              li class='divider'
-              li = link_to 'Log Out', sign_out_url
+    - if flash[:notice]
+      div class='container-fluid'
+        div class='alert alert-info alert-dismissable'
+          button type='button' class='close' data-dismiss='alert' &times;
+          div = flash.notice
+    - if flash[:alert]
+      div class='container-fluid'
+        div class='alert alert-danger alert-dismissable'
+          button type='button' class='close' data-dismiss='alert' &times;
+          div = flash.alert
 
-  - if flash[:notice]
-    div class='container-fluid'
-      div class='alert alert-info alert-dismissable'
-        button type='button' class='close' data-dismiss='alert' &times;
-        div = flash.notice
-  - if flash[:alert]
-    div class='container-fluid'
-      div class='alert alert-danger alert-dismissable'
-        button type='button' class='close' data-dismiss='alert' &times;
-        div = flash.alert
+    = yield
 
-  = yield
-
-  footer.app-footer &copy; #{Date.today.year} Don Wilson
+    footer.app-footer &copy; #{Date.today.year} Don Wilson
 
