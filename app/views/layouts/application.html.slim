@@ -4,6 +4,8 @@ html data-ng-app='envelopes'
     meta http-equiv='X-UA-Compatible' content='IE=edge'
     meta name='viewport' content='width=device-width, initial-scale=1'
 
+    base href="/"
+
     title
       = yield(:title) + ' | ' if content_for?(:title)
       | Envelopes

@@ -8,7 +8,7 @@
             | {{ envelope_category.name }}
           ul.nav
             li data-ng-repeat="envelope_l1 in envelope_category.children" data-ng-class="{active: envelope_l1.visible}"
-              a href="javascript:void(0)" data-ng-click="envelope_l1.visible = !envelope_l1.visible && envelope_l1.children"
+              a data-ng-href="{{ envelope_l1 | envelopeUrl }}" data-ng-click="envelope_l1.visible = !envelope_l1.visible && envelope_l1.children"
                 span.pull-right.text-muted data-ng-if="envelope_l1.children"
                   i.fa.fa-fw data-ng-class="{'fa-angle-up': envelope_l1.visible, 'fa-angle-down': !envelope_l1.visible}"
                 b.badge.pull-right data-ng-if="envelope_l1.total_amount && !envelope_l1.children" data-ng-class="{'badge-error': envelope_l1.total_amount < 0}"
@@ -17,7 +17,7 @@
                   | {{ envelope_l1.name }}
               ul.nav.nav-sub.animated.fade-in-left data-ng-if="envelope_l1.children"
                 li data-ng-repeat="envelope_l2 in envelope_l1.children"
-                  a href="javascript:void(0)"
+                  a data-ng-href="{{ envelope_l2 | envelopeUrl }}"
                     b.badge.pull-right
                       | {{ envelope_l2.total_amount | currency }}
                     span

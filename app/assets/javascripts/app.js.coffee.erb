@@ -5,6 +5,20 @@ app = angular.module 'envelopes', ['ngRoute']
     if window.history && window.history.pushState
       $locationProvider.html5Mode true
 
+    $routeProvider
+      .when "/envelopes/:envelopeId",
+        templateUrl: '<%= asset_path('partials/envelope.html') %>'
+        controller: 'EnvelopeCtrl'
+
+
+app.filter 'envelopeUrl', ->
+  (envelope) ->
+    name = envelope.name.toLowerCase().replace " ", "-"
+    name = name.replace /[^a-zA-Z-]/, ""
+    "/envelopes/#{envelope.id}-#{name}"
+
+
+
 
 app.factory 'envelopeService', ($http) ->
 
@@ -25,13 +39,46 @@ app.factory 'envelopeService', ($http) ->
       envelopes = organized_envelopes
       callback organized_envelopes
 
+  findById = (id, callback) ->
+    unless envelopes?
+      getEnvelopes ->
+        findById id, callback
+      return
+
+    stack = envelopes.slice()
+    id = parseInt id
+    console.log "looking for env id: #{id}"
+    while stack.length
+      env = stack.pop()
+      if env.id == id
+        callback env
+        return
+
+      stack = stack.concat env.children if env.children
+
+    false
+
+
+
   all: getEnvelopes
+  find: findById
 
 
 
 app.directive 'leftPanel', ->
   templateUrl: '<%= asset_path('partials/left_panel.html') %>'
   controller: ($scope, envelopeService) ->
-    envelopeService.all (env) ->
-      $scope.envelopes = env
+    envelopeService.all (envelopes) ->
+      $scope.envelopes = envelopes
+      console.log envelopes
+
+
+
+app.controller 'EnvelopeCtrl', ['$scope', '$routeParams', 'envelopeService',
+  ($scope, $routeParams, envelopeService) ->
+    console.log "showing envelope: #{$routeParams.envelopeId}"
+    envelopeService.find $routeParams.envelopeId, (envelope) ->
+      console.log envelope
+      $scope.envelope = envelope
+]
 
