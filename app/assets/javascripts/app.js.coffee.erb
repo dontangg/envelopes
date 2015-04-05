@@ -1,3 +1,7 @@
+# TODO:
+# * Handle errors
+# * Handle authorization
+# * Always use callbacks?
 
 app = angular.module 'envelopes', ['ngRoute']
   .config ($routeProvider, $locationProvider) ->
@@ -26,18 +30,21 @@ app.factory 'envelopeService', ($http) ->
   getEnvelopes = (callback) ->
     callback envelopes if envelopes
 
-    $http.get('/envelopes.json').success (data) ->
-      organized_envelopes = data[""]
-      stack = data[""].slice() # Make a copy of the root-level array
+    $http.get('/envelopes.json')
+      .success (data) ->
+        organized_envelopes = data[""]
+        stack = data[""].slice() # Make a copy of the root-level array
 
-      while stack.length
-        env = stack.pop()
-        if data[env.id]
-          stack = stack.concat data[env.id]
-          env.children = data[env.id]
+        while stack.length
+          env = stack.pop()
+          if data[env.id]
+            stack = stack.concat data[env.id]
+            env.children = data[env.id]
 
-      envelopes = organized_envelopes
-      callback organized_envelopes
+        envelopes = organized_envelopes
+        callback organized_envelopes
+      .error (data) ->
+        console.log data
 
   findById = (id, callback) ->
     unless envelopes?
@@ -47,7 +54,6 @@ app.factory 'envelopeService', ($http) ->
 
     stack = envelopes.slice()
     id = parseInt id
-    console.log "looking for env id: #{id}"
     while stack.length
       env = stack.pop()
       if env.id == id
@@ -59,9 +65,23 @@ app.factory 'envelopeService', ($http) ->
     false
 
 
-
   all: getEnvelopes
   find: findById
+
+app.factory 'transactionService', ($http) ->
+
+  find: (options, callback) ->
+    envelopeId = options.envelopeId
+    options =
+      params:
+        show_transfers: options.showTransfers
+
+    $http.get("/envelopes/#{envelopeId}/transactions.json", options)
+      .success (data) ->
+        console.log data
+        callback data
+      .error (data) ->
+        console.log data
 
 
 
@@ -74,11 +94,16 @@ app.directive 'leftPanel', ->
 
 
 
-app.controller 'EnvelopeCtrl', ['$scope', '$routeParams', 'envelopeService',
-  ($scope, $routeParams, envelopeService) ->
-    console.log "showing envelope: #{$routeParams.envelopeId}"
+app.controller 'EnvelopeCtrl', ['$scope', '$routeParams', 'envelopeService', 'transactionService',
+  ($scope, $routeParams, envelopeService, transactionService) ->
     envelopeService.find $routeParams.envelopeId, (envelope) ->
-      console.log envelope
       $scope.envelope = envelope
+
+      transactionService.find
+        envelopeId: envelope.id
+        showTransfers: true
+        , (transactions) ->
+          $scope.transactions = undefined #transactions
+
 ]
 

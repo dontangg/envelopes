@@ -3,10 +3,19 @@ class TransactionsController < ApplicationController
 
   def index
     envelope_id = params[:envelope_id].to_i
-    count = params[:count] || 20
-    offset = params[:offset] || 0
 
-    txns = Transaction.without_transfers.owned_by(current_user_id).where(envelope_id: envelope_id).limit(count).offset(offset)
+    txns = Transaction.owned_by(current_user_id).where(envelope_id: envelope_id)
+    txns = txns.without_transfers unless params[:show_transfers]
+
+    if params[:start_date] || params[:end_date]
+      start_date = params[:start_date].try(:to_date) || Date.today - 1.month
+      end_date = params[:end_date].try(:to_date) || Date.today
+      txns = txns.starting_at(start_date).ending_at(end_date)
+    else
+      count = params[:count] || 20
+      offset = params[:offset] || 0
+      txns = txns.limit(count).offset(offset)
+    end
 
     render json: txns
   end

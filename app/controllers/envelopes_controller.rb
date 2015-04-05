@@ -1,16 +1,22 @@
 class EnvelopesController < ApplicationController
   def index
-    all_envelopes = Envelope.owned_by(current_user_id).with_amounts
-
-    @organized_envelopes = Envelope.organize(all_envelopes)
 
     respond_to do |format|
       format.html
-      format.json { render(json: @organized_envelopes) }
+      format.json {
+        all_envelopes = Envelope.owned_by(current_user_id).with_amounts
+        organized_envelopes = Envelope.organize(all_envelopes)
+
+        render json: organized_envelopes
+      }
     end
+
   end
 
   def show
+    render "index"
+    return
+
     # An array of all envelopes, used by transaction partial to create envelopes dropdown
     @all_envelopes = Envelope.owned_by(current_user_id).with_amounts
 

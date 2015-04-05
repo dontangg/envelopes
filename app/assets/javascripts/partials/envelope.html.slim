@@ -11,7 +11,8 @@ section.app-content.fade-in-up
               | {{ envelope.name }}
             small.text-muted Bills : Monthly
           .col-sm-6.text-right
-            .h1 $2,000.00
+            .h1
+              | {{ envelope.total_amount | currency }}
 
       .wrapper
         .panel.panel-default
@@ -34,18 +35,15 @@ section.app-content.fade-in-up
 
           table.table.table-striped
             tbody
-              tr
+              tr data-ng-if="trasnactions === undefined"
+                td.text-center
+                  span.glyphicon.glyphicon-refresh
+              tr data-ng-repeat="transaction in transactions"
                 td Mar 25
-                td USAA Credit Card Payment
-                td.text-right -$395.24
-              tr
-                td Mar 26
-                td Bank of America
-                td.text-right -$1.30
-              tr
-                td Mar 27
-                td Bills: Debt: Credit Card envelope filled
-                td.text-right $416.00
+                td
+                  | {{ transaction.payee }}
+                td.text-right
+                  | {{ transaction.amount }}
 
     .col.bg-white.b-l.w-md.bg-auto
 
