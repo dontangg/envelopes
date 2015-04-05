@@ -9,8 +9,8 @@ gem 'syrup', git: 'git://github.com/dontangg/syrup.git'
 gem 'gibberish'
 gem 'bcrypt-ruby', '~> 3.1.2' # To use ActiveModel has_secure_password
 
-# To use Jbuilder templates for JSON
-# gem 'jbuilder'
+# Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
+#gem 'jbuilder', '~> 2.0'
 
 gem 'sass-rails',   '~> 5.0.3'
 gem 'coffee-rails', '~> 4.1.0'
@@ -29,9 +29,11 @@ group :development, :test do
   gem 'factory_girl_rails'
   gem 'web-console', '~> 2.0'
 
-  # The debugger gem isn't very compatible with Ruby 2.0, so we'll use byebug
-  #gem 'debugger'
+  # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
+
+  # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
+  #gem 'spring'
 end
 
 group :test do
