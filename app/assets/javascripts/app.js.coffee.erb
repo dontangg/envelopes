@@ -2,6 +2,7 @@
 # * Handle errors
 # * Handle authorization
 # * Always use callbacks?
+# * Don't change content until loaded - right now we're changing envelopes, then AJAX-ing content in
 
 app = angular.module 'envelopes', ['ngRoute']
   .config ($routeProvider, $locationProvider) ->
@@ -103,7 +104,7 @@ app.controller 'EnvelopeCtrl', ['$scope', '$routeParams', 'envelopeService', 'tr
         envelopeId: envelope.id
         showTransfers: true
         , (transactions) ->
-          $scope.transactions = undefined #transactions
+          $scope.transactions = transactions
 
 ]
 

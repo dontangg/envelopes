@@ -13,53 +13,72 @@
 
 
 @mixin keyframes($animation-name) {
-  @-webkit-keyframes $animation-name {
+  @-webkit-keyframes #{$animation-name} {
     @content;
   }
-  @-moz-keyframes $animation-name {
+  @-moz-keyframes #{$animation-name} {
     @content;
   }
-  @-o-keyframes $animation-name {
+  @-o-keyframes #{$animation-name} {
     @content;
   }
-  @keyframes $animation-name {
+  @keyframes #{$animation-name} {
     @content;
   }
 }
-@mixin animation($animation-name) {
+@mixin animation-name($animation-name) {
   -webkit-animation-name: $animation-name;
   -moz-animation-name: $animation-name;
   -o-animation-name: $animation-name;
   animation-name: $animation-name;
 }
+@mixin animation($name, $duration, $count, $curve) {
+  -webkit-animation: spin 1.5s infinite linear;
+  -moz-animation: spin 1.5s infinite linear;
+  -ms-animation: spin 1.5s infinite linear;
+  -o-animation: spin 1.5s infinite linear;
+  animation: spin 1.5s infinite linear;
+}
 
 
 @include keyframes(fade-in-left) {
-    0% {
-        opacity: 0;
-        transform: translateX(-20px)
-    }
-    100% {
-        opacity: 1;
-        transform: translateX(0)
-    }
+  0% {
+    opacity: 0;
+    transform: translateX(-20px)
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0)
+  }
 }
 .fade-in-left {
-  @include animation(fade-in-left);
+  @include animation-name(fade-in-left);
 }
 
 
 @include keyframes(fade-in-right) {
-    0% {
-        opacity: 0;
-        transform: translateX(20px)
-    }
-    100% {
-        opacity: 1;
-        transform: translateX(0)
-    }
+  0% {
+    opacity: 0;
+    transform: translateX(20px)
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0)
+  }
 }
 .fade-in-right {
-  @include animation(fade-in-right);
+  @include animation-name(fade-in-right);
+}
+
+@include keyframes(spin) {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.spin {
+  @include animation(spin, 1.5s, infinite, linear);
 }
 
