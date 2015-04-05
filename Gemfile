@@ -1,7 +1,7 @@
 # Gemnasium https://gemnasium.com/dontangg/envelopes
 source 'http://rubygems.org'
 
-gem 'rails', '~> 4.1.8'
+gem 'rails', '~> 4.2.1'
 gem 'unicorn' unless RUBY_PLATFORM =~ /mingw32/i
 gem 'jquery-rails'
 gem 'cancan', '~> 1.6'
@@ -12,7 +12,7 @@ gem 'bcrypt-ruby', '~> 3.1.2' # To use ActiveModel has_secure_password
 # To use Jbuilder templates for JSON
 # gem 'jbuilder'
 
-gem 'sass-rails',   '~> 4.0.0'
+gem 'sass-rails',   '~> 5.0.3'
 gem 'coffee-rails', '~> 4.1.0'
 
 # See https://github.com/sstephenson/execjs#readme for more supported runtimes
@@ -27,6 +27,7 @@ gem 'slim-rails'
 group :development, :test do
   gem 'sqlite3'
   gem 'factory_girl_rails'
+  gem 'web-console', '~> 2.0'
 
   # The debugger gem isn't very compatible with Ruby 2.0, so we'll use byebug
   #gem 'debugger'
