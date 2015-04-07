@@ -35,6 +35,8 @@ section.app-content.fade-in-up
                     a href="#" data-ng-click="toggleTransfers()"
                       span> Show transfers
                       span.glyphicon.glyphicon-ok data-ng-if="showTransfers"
+          .butterbar data-ng-class="{active: txnsLoading, hide: !txnsLoading}"
+            span.bar
 
           table.table.table-striped
             tbody

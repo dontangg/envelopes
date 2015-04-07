@@ -114,8 +114,12 @@ envCtrl = app.controller 'EnvelopeCtrl', ['$scope', '$routeParams', '$rootScope'
       $scope.toggleTransfers = ->
         # TODO: Show progress & handle failures
         $rootScope.showTransfers = !$rootScope.showTransfers
-        $injector.invoke(envCtrl.loadData).then (data) ->
-          $scope.transactions = data
+        $scope.txnsLoading = true
+        $injector.invoke(envCtrl.loadData)
+          .then (data) ->
+            $scope.transactions = data
+          .finally ->
+            $scope.txnsLoading = false
 ]
 
 envCtrl.loadData = ['$route', '$rootScope', 'transactionService', ($route, $rootScope, transactionService) ->
