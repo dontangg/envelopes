@@ -17,13 +17,13 @@ app = angular.module 'envelopes', ['ngRoute']
         resolve:
           data: envCtrl.loadData
 
-app.run ['$rootScope', ($root) ->
-  $root.$on '$routeChangeStart', ->
-    # $root.loadingView = true
-    console.log 'starting route change'
-  $root.$on '$routeChangeSuccess', ->
-    console.log 'route changed'
-  $root.$on '$routeChangeError', (e, curr, prev, rejection) ->
+app.run ['$rootScope', ($rootScope) ->
+  $rootScope.$on '$routeChangeStart', ->
+    $rootScope.loading = true
+  $rootScope.$on '$routeChangeSuccess', ->
+    $rootScope.loading = false
+  $rootScope.$on '$routeChangeError', (e, curr, prev, rejection) ->
+    $rootScope.loading = false
     console.log 'route error', e, curr, prev, rejection
 ]
 

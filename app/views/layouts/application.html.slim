@@ -48,6 +48,8 @@ body
                 li = link_to 'Account', edit_user_url(current_user_id)
                 li class='divider'
                 li = link_to 'Log Out', sign_out_url
+          .butterbar data-ng-class="{active: loading, hide: !loading}"
+            span.bar
 
     - if flash[:notice]
       div class='container-fluid'

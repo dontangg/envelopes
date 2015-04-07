@@ -17,7 +17,6 @@ class TransactionsController < ApplicationController
       txns = txns.limit(count).offset(offset)
     end
 
-    #nil.awef
     render json: txns
   end
 
