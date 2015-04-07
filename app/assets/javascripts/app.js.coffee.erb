@@ -105,7 +105,7 @@ envCtrl = app.controller 'EnvelopeCtrl', ['$scope', '$routeParams', '$rootScope'
           parentId2 = parentEnvelope1.parent_envelope_id
           if parentId2
             envelopeService.find(parentId2).then (parentEnvelope2) ->
-              $scope.fullParentName = "#{parentEnvelope1.name}: #{parentEnvelope2.name}"
+              $scope.fullParentName = "#{parentEnvelope2.name}: #{parentEnvelope1.name}"
           else
             $scope.fullParentName = parentEnvelope1.name
 
