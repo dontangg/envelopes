@@ -1,8 +1,7 @@
 # TODO:
 # * Handle errors
 # * Handle authorization
-# * Always use callbacks?
-# * Don't change content until loaded - right now we're changing envelopes, then AJAX-ing content in
+# * Include SCSS with SASS include, not Sprockets
 
 app = angular.module 'envelopes', ['ngRoute']
   .config ($routeProvider, $locationProvider) ->
@@ -100,6 +99,16 @@ app.directive 'leftPanel', ->
 envCtrl = app.controller 'EnvelopeCtrl', ['$scope', '$routeParams', 'envelopeService', 'data',
   ($scope, $routeParams, envelopeService, data) ->
     envelopeService.find($routeParams.envelopeId).then (envelope) ->
+      parentId1 = envelope.parent_envelope_id
+      if parentId1
+        envelopeService.find(parentId1).then (parentEnvelope1) ->
+          parentId2 = parentEnvelope1.parent_envelope_id
+          if parentId2
+            envelopeService.find(parentId2).then (parentEnvelope2) ->
+              $scope.fullParentName = "#{parentEnvelope1.name}: #{parentEnvelope2.name}"
+          else
+            $scope.fullParentName = parentEnvelope1.name
+
       $scope.envelope = envelope
       $scope.transactions = data
 ]
