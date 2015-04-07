@@ -14,7 +14,18 @@ app = angular.module 'envelopes', ['ngRoute']
       .when "/envelopes/:envelopeId",
         templateUrl: '<%= asset_path('partials/envelope.html') %>'
         controller: 'EnvelopeCtrl'
+        resolve:
+          data: envCtrl.loadData
 
+app.run ['$rootScope', ($root) ->
+  $root.$on '$routeChangeStart', ->
+    # $root.loadingView = true
+    console.log 'starting route change'
+  $root.$on '$routeChangeSuccess', ->
+    console.log 'route changed'
+  $root.$on '$routeChangeError', (e, curr, prev, rejection) ->
+    console.log 'route error', e, curr, prev, rejection
+]
 
 app.filter 'envelopeUrl', ->
   (envelope) ->
@@ -25,14 +36,15 @@ app.filter 'envelopeUrl', ->
 
 
 
-app.factory 'envelopeService', ($http) ->
+app.factory 'envelopeService', ['$http', '$q', ($http, $q) ->
 
-  envelopes = null
-  getEnvelopes = (callback) ->
-    callback envelopes if envelopes
+  envelopesPromise = null
+  getEnvelopes = ->
+    return envelopesPromise if envelopesPromise
 
-    $http.get('/envelopes.json')
-      .success (data) ->
+    envelopesPromise = $http.get('/envelopes.json')
+      .then (response) ->
+        data = response.data
         organized_envelopes = data[""]
         stack = data[""].slice() # Make a copy of the root-level array
 
@@ -42,69 +54,60 @@ app.factory 'envelopeService', ($http) ->
             stack = stack.concat data[env.id]
             env.children = data[env.id]
 
-        envelopes = organized_envelopes
-        callback organized_envelopes
-      .error (data) ->
-        console.log data
+        organized_envelopes
 
-  findById = (id, callback) ->
-    unless envelopes?
-      getEnvelopes ->
-        findById id, callback
-      return
+  findById = (id) ->
+    getEnvelopes().then (envelopes) ->
+      $q (resolve, reject) ->
+        id = parseInt id
+        stack = envelopes.slice()
+        while stack.length
+          envelope = stack.pop()
+          if envelope.id == id
+            resolve envelope
+            return
+          stack = stack.concat envelope.children if envelope.children
 
-    stack = envelopes.slice()
-    id = parseInt id
-    while stack.length
-      env = stack.pop()
-      if env.id == id
-        callback env
-        return
-
-      stack = stack.concat env.children if env.children
-
-    false
-
+        reject "Unable to find envelope id: #{id}"
 
   all: getEnvelopes
   find: findById
+]
 
-app.factory 'transactionService', ($http) ->
+app.factory 'transactionService', ['$http', ($http) ->
 
-  find: (options, callback) ->
+  find: (options) ->
     envelopeId = options.envelopeId
     options =
       params:
         show_transfers: options.showTransfers
 
     $http.get("/envelopes/#{envelopeId}/transactions.json", options)
-      .success (data) ->
-        console.log data
-        callback data
-      .error (data) ->
-        console.log data
-
+      .then (response) ->
+        response.data
+]
 
 
 app.directive 'leftPanel', ->
   templateUrl: '<%= asset_path('partials/left_panel.html') %>'
-  controller: ($scope, envelopeService) ->
-    envelopeService.all (envelopes) ->
+  controller: ['$scope', 'envelopeService', ($scope, envelopeService) ->
+    envelopeService.all().then (envelopes) ->
       $scope.envelopes = envelopes
-      console.log envelopes
+  ]
 
 
 
-app.controller 'EnvelopeCtrl', ['$scope', '$routeParams', 'envelopeService', 'transactionService',
-  ($scope, $routeParams, envelopeService, transactionService) ->
-    envelopeService.find $routeParams.envelopeId, (envelope) ->
+envCtrl = app.controller 'EnvelopeCtrl', ['$scope', '$routeParams', 'envelopeService', 'data',
+  ($scope, $routeParams, envelopeService, data) ->
+    envelopeService.find($routeParams.envelopeId).then (envelope) ->
       $scope.envelope = envelope
+      $scope.transactions = data
+]
 
-      transactionService.find
-        envelopeId: envelope.id
-        showTransfers: true
-        , (transactions) ->
-          $scope.transactions = transactions
-
+envCtrl.loadData = ['$route', 'transactionService', ($route, transactionService) ->
+  envelopeId = $route.current.params.envelopeId
+  transactionService.find
+    envelopeId: envelopeId
+    showTransfers: true
 ]
 
