@@ -5,7 +5,7 @@ class TransactionsController < ApplicationController
     envelope_id = params[:envelope_id].to_i
 
     txns = Transaction.owned_by(current_user_id).where(envelope_id: envelope_id)
-    txns = txns.without_transfers unless params[:show_transfers]
+    txns = txns.without_transfers unless params[:show_transfers] == 'true'
 
     if params[:start_date] || params[:end_date]
       start_date = params[:start_date].try(:to_date) || Date.today - 1.month

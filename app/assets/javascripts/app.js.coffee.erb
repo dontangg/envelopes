@@ -96,8 +96,8 @@ app.directive 'leftPanel', ->
 
 
 
-envCtrl = app.controller 'EnvelopeCtrl', ['$scope', '$routeParams', 'envelopeService', 'data',
-  ($scope, $routeParams, envelopeService, data) ->
+envCtrl = app.controller 'EnvelopeCtrl', ['$scope', '$routeParams', '$rootScope', '$injector', 'envelopeService', 'data',
+  ($scope, $routeParams, $rootScope, $injector, envelopeService, data) ->
     envelopeService.find($routeParams.envelopeId).then (envelope) ->
       parentId1 = envelope.parent_envelope_id
       if parentId1
@@ -111,12 +111,17 @@ envCtrl = app.controller 'EnvelopeCtrl', ['$scope', '$routeParams', 'envelopeSer
 
       $scope.envelope = envelope
       $scope.transactions = data
+      $scope.toggleTransfers = ->
+        # TODO: Show progress & handle failures
+        $rootScope.showTransfers = !$rootScope.showTransfers
+        $injector.invoke(envCtrl.loadData).then (data) ->
+          $scope.transactions = data
 ]
 
-envCtrl.loadData = ['$route', 'transactionService', ($route, transactionService) ->
+envCtrl.loadData = ['$route', '$rootScope', 'transactionService', ($route, $rootScope, transactionService) ->
   envelopeId = $route.current.params.envelopeId
   transactionService.find
     envelopeId: envelopeId
-    showTransfers: true
+    showTransfers: $rootScope.showTransfers
 ]
 
