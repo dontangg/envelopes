@@ -46,7 +46,8 @@ section.app-content.fade-in-up
               tr data-ng-if="transactions && transactions.length === 0"
                 td.text-center.text-muted There are no transactions
               tr data-ng-repeat="transaction in transactions"
-                td Mar 25
+                td title="{{ transaction.posted_at | date: 'fullDate' }}"
+                  | {{ transaction.posted_at | date: 'MMM d' }}
                 td
                   | {{ transaction.payee }}
                 td.text-right
