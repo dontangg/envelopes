@@ -35,7 +35,7 @@ app.filter 'envelopeUrl', ->
 
 
 
-app.factory 'envelopeService', ['$http', '$q', ($http, $q) ->
+app.factory 'EnvelopeService', ['$http', '$q', ($http, $q) ->
 
   envelopesPromise = null
   getEnvelopes = ->
@@ -73,7 +73,7 @@ app.factory 'envelopeService', ['$http', '$q', ($http, $q) ->
   find: findById
 ]
 
-app.factory 'transactionService', ['$http', ($http) ->
+app.factory 'TransactionService', ['$http', ($http) ->
 
   find: (options) ->
     envelopeId = options.envelopeId
@@ -89,22 +89,22 @@ app.factory 'transactionService', ['$http', ($http) ->
 
 app.directive 'leftPanel', ->
   templateUrl: '<%= asset_path('partials/left_panel.html') %>'
-  controller: ['$scope', 'envelopeService', ($scope, envelopeService) ->
-    envelopeService.all().then (envelopes) ->
+  controller: ['$scope', 'EnvelopeService', ($scope, EnvelopeService) ->
+    EnvelopeService.all().then (envelopes) ->
       $scope.envelopes = envelopes
   ]
 
 
 
-envCtrl = app.controller 'EnvelopeCtrl', ['$scope', '$routeParams', '$rootScope', '$injector', 'envelopeService', 'data',
-  ($scope, $routeParams, $rootScope, $injector, envelopeService, data) ->
-    envelopeService.find($routeParams.envelopeId).then (envelope) ->
+envCtrl = app.controller 'EnvelopeCtrl', ['$scope', '$routeParams', '$rootScope', '$injector', 'EnvelopeService', 'data',
+  ($scope, $routeParams, $rootScope, $injector, EnvelopeService, data) ->
+    EnvelopeService.find($routeParams.envelopeId).then (envelope) ->
       parentId1 = envelope.parent_envelope_id
       if parentId1
-        envelopeService.find(parentId1).then (parentEnvelope1) ->
+        EnvelopeService.find(parentId1).then (parentEnvelope1) ->
           parentId2 = parentEnvelope1.parent_envelope_id
           if parentId2
-            envelopeService.find(parentId2).then (parentEnvelope2) ->
+            EnvelopeService.find(parentId2).then (parentEnvelope2) ->
               $scope.fullParentName = "#{parentEnvelope2.name}: #{parentEnvelope1.name}"
           else
             $scope.fullParentName = parentEnvelope1.name
@@ -122,9 +122,9 @@ envCtrl = app.controller 'EnvelopeCtrl', ['$scope', '$routeParams', '$rootScope'
             $scope.txnsLoading = false
 ]
 
-envCtrl.loadData = ['$route', '$rootScope', 'transactionService', ($route, $rootScope, transactionService) ->
+envCtrl.loadData = ['$route', '$rootScope', 'TransactionService', ($route, $rootScope, TransactionService) ->
   envelopeId = $route.current.params.envelopeId
-  transactionService.find
+  TransactionService.find
     envelopeId: envelopeId
     showTransfers: $rootScope.showTransfers
 ]
