@@ -33,6 +33,7 @@ h1, .h1 {
   position: relative; // To get the footer to the bottom, etc.
   min-height: 100%;
   height: auto;
+  overflow-x: hidden;
 }
 
 
@@ -127,7 +128,7 @@ h1, .h1 {
 }
 .navbar-brand {
   color: #c4d0d9 !important;
-  background: url(asset-path("icon.svg")) no-repeat 10px 15px;
+  background: asset-url("icon.svg") no-repeat 10px 15px;
   background-size: 30px;
   padding-left: 45px;
   font-size: 20px;
@@ -285,7 +286,7 @@ th {
 .loading {
   width: 32px;
   height: 32px;
-  background: url(asset-path("loading_32x32.gif")) no-repeat center center;
+  background: asset-url("loading_32x32.gif") no-repeat center center;
   display: none;
   vertical-align: bottom;
   margin-right: 5px;
