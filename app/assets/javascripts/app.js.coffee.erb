@@ -80,6 +80,8 @@ app.factory 'TransactionService', ['$http', ($http) ->
     options =
       params:
         show_transfers: options.showTransfers
+        start_date: options.startDate
+        end_date: options.endDate
 
     $http.get("/envelopes/#{envelopeId}/transactions.json", options)
       .then (response) ->
@@ -93,6 +95,73 @@ app.directive 'leftPanel', ->
     EnvelopeService.all().then (envelopes) ->
       $scope.envelopes = envelopes
   ]
+
+
+app.directive 'dateRangeControl', ->
+  templateUrl: '<%= asset_path('partials/date_range.html') %>'
+  scope:
+    start: '@'
+    end: '@'
+    apply: '&'
+  link: (scope, element, attrs) ->
+    inputs = element.find 'input'
+
+    storageDateFormat = 'YYYY-MM-DD'
+    visualDateFormat = 'll'
+    supportedDateFormats = ['YYYY-MM-DD', 'YYYY-M-D', 'MMMM D, YYYY', 'M/D/YYYY', 'M-D-YYYY']
+
+    appliedStart = ''
+    appliedEnd = ''
+
+    scope.getParams = ->
+      startM = moment scope.start, supportedDateFormats
+      endM = moment scope.end, supportedDateFormats
+
+      startDate: startM.format(storageDateFormat)
+      endDate: endM.format(storageDateFormat)
+
+    # observe attribute changes (not isolate scope changes)
+    attrs.$observe 'start', (newStart) ->
+      appliedStart = newStart
+      scope.start = moment(newStart, storageDateFormat).format visualDateFormat
+      scope.hasChanged = false
+      scope.hasError = false
+
+    attrs.$observe 'end', (newEnd) ->
+      appliedEnd = newEnd
+      scope.end = moment(newEnd, storageDateFormat).format visualDateFormat
+      scope.hasChanged = false
+      scope.hasError = false
+
+    validate = ->
+      bothValid = true
+      dateArray = [scope.start, scope.end]
+      for i in [0..1]
+        if dateArray[i] == 'today'
+          dateArray[i] = moment().format visualDateFormat
+        m = moment dateArray[i], supportedDateFormats
+        bothValid = false unless m.isValid()
+      scope.hasError = !bothValid
+
+      if bothValid
+        start = moment(dateArray[0], supportedDateFormats).format storageDateFormat
+        end = moment(dateArray[1], supportedDateFormats).format storageDateFormat
+        scope.hasChanged = start != appliedStart || end != appliedEnd
+
+    scope.format = (varName) ->
+      if scope[varName] == 'today'
+        m = moment()
+      else
+        m = moment scope[varName], supportedDateFormats
+
+      if m.isValid()
+        scope[varName] = m.format(visualDateFormat)
+
+    scope.$watch 'start', ->
+      validate()
+
+    scope.$watch 'end', ->
+      validate()
 
 
 
@@ -111,21 +180,43 @@ envCtrl = app.controller 'EnvelopeCtrl', ['$scope', '$routeParams', '$rootScope'
 
       $scope.envelope = envelope
       $scope.transactions = data
-      $scope.toggleTransfers = ->
-        # TODO: Show progress & handle failures
-        $rootScope.showTransfers = !$rootScope.showTransfers
+
+      loadTransactions = ->
+        # TODO: handle failures
         $scope.txnsLoading = true
         $injector.invoke(envCtrl.loadData)
           .then (data) ->
             $scope.transactions = data
           .finally ->
             $scope.txnsLoading = false
+
+      $scope.toggleTransfers = ->
+        $rootScope.showTransfers = !$rootScope.showTransfers
+        loadTransactions()
+
+      $scope.applyDates = (startDate, endDate) ->
+        $rootScope.startDate = startDate
+        $rootScope.endDate = endDate
+        loadTransactions()
 ]
 
+# TODO: refactor this into a service/factory
 envCtrl.loadData = ['$route', '$rootScope', 'TransactionService', ($route, $rootScope, TransactionService) ->
   envelopeId = $route.current.params.envelopeId
+
+  if $rootScope.showTransfers == undefined
+    $rootScope.showTransfers = false
+
+  unless $rootScope.startDate
+    $rootScope.startDate = moment().subtract(1, 'months').format 'YYYY-MM-DD'
+
+  unless $rootScope.endDate
+    $rootScope.endDate = moment().format 'YYYY-MM-DD'
+
   TransactionService.find
     envelopeId: envelopeId
     showTransfers: $rootScope.showTransfers
+    startDate: $rootScope.startDate
+    endDate: $rootScope.endDate
 ]
 

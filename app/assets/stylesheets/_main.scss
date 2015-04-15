@@ -222,6 +222,13 @@ h1, .h1 {
 }
 
 
+.input-group .form-control + .input-group-addon {
+  border-left: 0;
+}
+.input-group .input-group-addon + .form-control {
+  border-left: 0;
+}
+
 
 
 // Footer

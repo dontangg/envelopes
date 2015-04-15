@@ -18,14 +18,9 @@ section.app-content.fade-in-up.animated-slow
       .wrapper
         .panel.panel-default
           .panel-body
-            .btn-toolbar.pull-right
-              .btn-group
-                button.btn.btn-default type="button" Transfer money
-            .btn-toolbar
-              .btn-group
-                button.btn.btn-default
-                  span> Feb 1, 2015 - Mar 1, 2015
-                  span.caret
+            button.btn.btn-default.pull-right type="button" Transfer money
+            .form-inline
+              span data-date-range-control="" start="{{ startDate }}" end="{{ endDate }}" apply="applyDates(startDate, endDate)"
               .btn-group
                 button.btn.btn-default.dropdown-toggle type="button" data-toggle="dropdown"
                   span> Filter

@@ -1,0 +1,6 @@
+.input-group data-ng-class="{'has-error': hasError}"
+  input.form-control data-ng-model="start" data-ng-blur="format('start')"
+  span.input-group-addon<> to
+  input.form-control data-ng-model="end" data-ng-blur="format('end')"
+  span.input-group-btn
+    button.btn.btn-default data-ng-click="apply(getParams())" data-ng-class="{'btn-info':hasChanged && !hasError}" data-ng-disabled="!hasChanged || hasError" Apply

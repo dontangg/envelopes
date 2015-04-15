@@ -11,6 +11,7 @@
 // require jquery.select-on-focus
 // require jquery_ujs
 //= require bootstrap.min
+//= require moment.min
 // require hierarchy-plot
 // require main
 // require_tree .
