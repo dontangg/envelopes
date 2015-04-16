@@ -104,7 +104,6 @@ app.directive 'dateRangeControl', ->
     end: '@'
     apply: '&'
   link: (scope, element, attrs) ->
-    inputs = element.find 'input'
 
     storageDateFormat = 'YYYY-MM-DD'
     visualDateFormat = 'll'
