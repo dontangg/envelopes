@@ -1,5 +1,4 @@
 # TODO:
-# * Handle errors
 # * Handle authorization
 # * Organize CSS better
 
@@ -33,15 +32,75 @@ app.filter 'envelopeUrl', ->
     "/envelopes/#{envelope.id}-#{name}"
 
 
+app.factory 'NotificationService', ['$rootScope', ($rootScope) ->
 
+  notifications = []
+  #notifications = [
+  #  {title:'Oh boy!', message:'This is getting interesting.', useTimer:true, isDismissible:true},
+  #  {title:'Oh snap!', message:'There was a problem loading transactions.', type:'danger', useTimer:true}
+  #]
 
-app.factory 'EnvelopeService', ['$http', '$q', ($http, $q) ->
+  get: ->
+    notifications
+  remove: (notification) ->
+    index = notifications.indexOf notification
+    notifications.splice index, 1 if index != -1
+  add: (notification) ->
+    notification.isDismissible = true unless notification.isDismissible == false
+    notification.useTimer = true unless notification.useTimer == false
+    notifications.push notification
+]
+
+app.controller 'GrowlController', ['$scope', 'NotificationService', ($scope, NotificationService) ->
+  $scope.notifications = NotificationService.get()
+]
+
+app.directive 'growl', ['NotificationService', (NotificationService) ->
+  templateUrl: '<%= asset_path('partials/growl.html') %>'
+  scope:
+    notification: '='
+  link: (scope, element, attrs) ->
+    n = scope.notification
+
+    validAlertTypes = ['success', 'info', 'warning', 'danger']
+    type = if validAlertTypes.indexOf(n.type) == -1 then 'info' else n.type
+    element.addClass "growl alert alert-#{type}"
+
+    scope.remove = ->
+      NotificationService.remove(n)
+
+    if n.useTimer
+      whichTransitionEvent = ->
+        el = document.createElement('fakeelement')
+        transitions =
+          'animation':'animationend'
+          'OAnimation':'oAnimationEnd'
+          'MozAnimation':'animationend'
+          'WebkitAnimation':'webkitAnimationEnd'
+
+        for t of transitions
+          if el.style[t] != undefined
+            return transitions[t]
+
+      transitionEvent = whichTransitionEvent()
+
+      element[0].addEventListener transitionEvent, ->
+        scope.$apply ->
+          scope.remove()
+]
+
+app.factory 'EnvelopeService', ['$http', '$q', 'NotificationService', ($http, $q, NotificationService) ->
 
   envelopesPromise = null
   getEnvelopes = ->
     return envelopesPromise if envelopesPromise
 
     envelopesPromise = $http.get('/envelopes.json')
+      .error ->
+        NotificationService.add
+          type: 'danger'
+          title: 'Oh snap!'
+          message: 'There was a problem getting envelopes.'
       .then (response) ->
         data = response.data
         organized_envelopes = data[""]
@@ -73,7 +132,7 @@ app.factory 'EnvelopeService', ['$http', '$q', ($http, $q) ->
   find: findById
 ]
 
-app.factory 'TransactionService', ['$http', ($http) ->
+app.factory 'TransactionService', ['$http', 'NotificationService', ($http, NotificationService) ->
 
   find: (options) ->
     envelopeId = options.envelopeId
@@ -84,6 +143,11 @@ app.factory 'TransactionService', ['$http', ($http) ->
         end_date: options.endDate
 
     $http.get("/envelopes/#{envelopeId}/transactions.json", options)
+      .error ->
+        NotificationService.add
+          type: 'danger'
+          title: 'Oh snap!'
+          message: 'There was a problem getting transactions.'
       .then (response) ->
         response.data
 ]
@@ -181,7 +245,6 @@ envCtrl = app.controller 'EnvelopeCtrl', ['$scope', '$routeParams', '$rootScope'
       $scope.transactions = data
 
       loadTransactions = ->
-        # TODO: handle failures
         $scope.txnsLoading = true
         $injector.invoke(envCtrl.loadData)
           .then (data) ->

@@ -10,6 +10,8 @@
  * require _main.css
 */
 
-@import 'animation';
+/* Include main first, then the rest alphabetically */
 @import 'main';
+@import 'animation';
+@import 'growl';
 

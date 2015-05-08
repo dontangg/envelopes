@@ -1,0 +1,6 @@
+button.close type="button"
+  span data-ng-if="notification.isDismissible" data-ng-click="remove()" &times;
+strong>
+  | {{ notification.title }}
+| {{ notification.message }}
+.timer data-ng-if="notification.useTimer"

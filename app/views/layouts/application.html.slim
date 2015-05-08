@@ -48,6 +48,10 @@ body
           .butterbar data-ng-class="{active: loading, hide: !loading}"
             span.bar
 
+    .growl-container data-ng-controller="GrowlController"
+      div data-ng-repeat="n in notifications" data-growl="" notification="n"
+
+
     - if flash[:notice]
       div class='container-fluid'
         div class='alert alert-info alert-dismissable'
