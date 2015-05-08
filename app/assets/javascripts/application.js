@@ -5,6 +5,8 @@
 // the compiled file.
 //
 //= require jquery
+//= require angular.min
+//= require angular-route.min
 // require jquery.masonry
 // require jquery-ui-1.8.16.custom.min
 // require jquery.select-to-autocomplete
