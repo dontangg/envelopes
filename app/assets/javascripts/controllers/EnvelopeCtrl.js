@@ -2,7 +2,7 @@
 
 var app = angular.module('envelopes');
 
-app.factory('envelopeCtrlPreloader', ['$route', '$rootScope', 'transactionService', function($route, $rootScope, transactionService) {
+app.factory('envelopeCtrlPreloader', ['$route', '$rootScope', 'transactionService', 'storageDateFormat', function($route, $rootScope, transactionService, storageDateFormat) {
   return {
     load: function() {
       var envelopeId = $route.current.params.envelopeId;
@@ -11,11 +11,10 @@ app.factory('envelopeCtrlPreloader', ['$route', '$rootScope', 'transactionServic
         $rootScope.showTransfers = false;
       }
       if (!$rootScope.startDate) {
-        // TODO: register constants with Angular for these formats
-        $rootScope.startDate = moment().subtract(1, 'months').format('YYYY-MM-DD');
+        $rootScope.startDate = moment().subtract(1, 'months').format(storageDateFormat);
       }
       if (!$rootScope.endDate) {
-        $rootScope.endDate = moment().format('YYYY-MM-DD');
+        $rootScope.endDate = moment().format(storageDateFormat);
       }
 
       return transactionService.find({

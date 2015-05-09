@@ -1,7 +1,7 @@
 (function() {
 
 var app = angular.module('envelopes');
-app.directive('dateRangeControl', function() {
+app.directive('dateRangeControl', ['storageDateFormat', function(storageDateFormat) {
   return {
     templateUrl: '/assets/partials/date_range.html',
     scope: {
@@ -10,7 +10,6 @@ app.directive('dateRangeControl', function() {
       apply: '&'
     },
     link: function(scope, element, attrs) {
-      var storageDateFormat = 'YYYY-MM-DD';
       var visualDateFormat = 'll';
       var supportedDateFormats = ['YYYY-MM-DD', 'YYYY-M-D', 'MMMM D, YYYY', 'M/D/YYYY', 'M-D-YYYY'];
 
@@ -78,6 +77,6 @@ app.directive('dateRangeControl', function() {
       });
     }
   };
-});
+}]);
 
 })();

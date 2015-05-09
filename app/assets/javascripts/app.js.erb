@@ -2,7 +2,6 @@
 # TODO:
 # * Handle authorization
 # * Organize CSS better
-# * Register constants for date formats
 # * Move show transfers and date range off of the root scope and into transactionService
 */
 
@@ -41,6 +40,8 @@ app.run(['$rootScope', function($rootScope) {
     console.log('route error', e, curr, prev, rejection);
   });
 }]);
+
+app.constant('storageDateFormat', 'YYYY-MM-DD');
 
 }).call(this);
 
