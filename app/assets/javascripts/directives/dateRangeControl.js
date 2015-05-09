@@ -13,6 +13,12 @@ app.directive('dateRangeControl', ['storageDateFormat', function(storageDateForm
       var visualDateFormat = 'll';
       var supportedDateFormats = ['YYYY-MM-DD', 'YYYY-M-D', 'MMMM D, YYYY', 'M/D/YYYY', 'M-D-YYYY'];
 
+      scope.handleKeyUp = function(event) {
+        if (event.keyCode === 13) {
+          scope.apply(scope.getParams());
+        }
+      };
+
       scope.getParams = function() {
         var startM = moment(scope.start, supportedDateFormats);
         var endM = moment(scope.end, supportedDateFormats);

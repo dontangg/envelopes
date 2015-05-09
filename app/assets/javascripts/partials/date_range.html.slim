@@ -1,6 +1,6 @@
 .input-group data-ng-class="{'has-error': hasError}"
-  input.form-control data-ng-model="start" data-ng-blur="format('start')"
+  input.form-control data-ng-model="start" data-ng-blur="format('start')" data-ng-keyup="handleKeyUp($event)"
   span.input-group-addon<> to
-  input.form-control data-ng-model="end" data-ng-blur="format('end')"
+  input.form-control data-ng-model="end" data-ng-blur="format('end')" data-ng-keyup="handleKeyUp($event)"
   span.input-group-btn
     button.btn.btn-default data-ng-click="apply(getParams())" data-ng-class="{'btn-info':hasChanged && !hasError}" data-ng-disabled="!hasChanged || hasError" Apply
