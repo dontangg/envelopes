@@ -1,0 +1,46 @@
+/*
+# TODO:
+# * Handle authorization
+# * Organize CSS better
+# * Register constants for date formats
+# * Move show transfers and date range off of the root scope and into transactionService
+*/
+
+
+(function() {
+
+var app = angular.module('envelopes', ['ngRoute']);
+
+app.config(function($routeProvider, $locationProvider) {
+
+  if (window.history && window.history.pushState) {
+    $locationProvider.html5Mode(true);
+  }
+
+  $routeProvider.when("/envelopes/:envelopeId", {
+    templateUrl: '<%= asset_path('partials/envelope.html') %>',
+    controller: 'EnvelopeCtrl',
+    resolve: {
+      data: ['envelopeCtrlPreloader', function(envelopeCtrlPreloader) {
+        return envelopeCtrlPreloader.load();
+      }]
+    }
+  });
+
+});
+
+app.run(['$rootScope', function($rootScope) {
+  $rootScope.$on('$routeChangeStart', function() {
+    $rootScope.loading = true;
+  });
+  $rootScope.$on('$routeChangeSuccess', function() {
+    $rootScope.loading = false;
+  });
+  $rootScope.$on('$routeChangeError', function(e, curr, prev, rejection) {
+    $rootScope.loading = false;
+    console.log('route error', e, curr, prev, rejection);
+  });
+}]);
+
+}).call(this);
+

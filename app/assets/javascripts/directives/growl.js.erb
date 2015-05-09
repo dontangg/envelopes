@@ -1,0 +1,49 @@
+(function() {
+
+var app = angular.module('envelopes');
+app.directive('growl', ['notificationService', function(notificationService) {
+  return {
+    templateUrl: '<%= asset_path('partials/growl.html') %>',
+    scope: {
+      notification: '='
+    },
+    link: function(scope, element, attrs) {
+      var n = scope.notification;
+
+      var validAlertTypes = ['success', 'info', 'warning', 'danger'];
+      var type = validAlertTypes.indexOf(n.type) === -1 ? 'info' : n.type;
+      element.addClass("growl alert alert-" + type);
+
+      scope.remove = function() {
+        notificationService.remove(n);
+      };
+      
+      if (n.useTimer) {
+        var whichTransitionEvent = function() {
+          var el = document.createElement('fakeelement');
+
+          var transitions = {
+            'animation': 'animationend',
+            'OAnimation': 'oAnimationEnd',
+            'MozAnimation': 'animationend',
+            'WebkitAnimation': 'webkitAnimationEnd'
+          };
+          for (var t in transitions) {
+            if (el.style[t] !== void 0) {
+              return transitions[t];
+            }
+          }
+        };
+        
+        var transitionEvent = whichTransitionEvent();
+        element[0].addEventListener(transitionEvent, function() {
+          scope.$apply(function() {
+            scope.remove();
+          });
+        });
+      }
+    }
+  };
+}]);
+
+})();

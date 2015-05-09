@@ -1,0 +1,16 @@
+(function() {
+
+var app = angular.module('envelopes');
+app.directive('leftPanel', ['envelopeService', function(envelopeService) {
+  return {
+    templateUrl: '<%= asset_path('partials/left_panel.html') %>',
+    link: function(scope, element, attrs) {
+      envelopeService.all()
+        .then(function(envelopes) {
+          scope.envelopes = envelopes;
+        });
+    }
+  };
+}]);
+
+})();

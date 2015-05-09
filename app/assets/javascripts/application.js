@@ -7,8 +7,6 @@
 //= require jquery
 //= require angular.min
 //= require angular-route.min
-// require jquery.masonry
-// require jquery-ui-1.8.16.custom.min
 // require jquery.select-to-autocomplete
 // require jquery.select-on-focus
 // require jquery_ujs
@@ -19,3 +17,7 @@
 // require_tree .
 //
 //= require app
+//= require_tree ./controllers
+//= require_tree ./directives
+//= require_tree ./filters
+//= require_tree ./services
