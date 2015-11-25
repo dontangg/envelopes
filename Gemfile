@@ -6,6 +6,7 @@ gem 'unicorn' unless RUBY_PLATFORM =~ /mingw32/i
 gem 'jquery-rails'
 gem 'cancan', '~> 1.6'
 gem 'syrup', git: 'git://github.com/dontangg/syrup.git'
+gem 'nokogiri', '1.6.5' # Locking version because of trouble updating
 gem 'gibberish'
 gem 'bcrypt-ruby', '~> 3.1.2' # To use ActiveModel has_secure_password
 
