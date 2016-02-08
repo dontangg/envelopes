@@ -132,7 +132,7 @@ $ ->
       associated_transaction.find('.amount input').val(newAmount.toFixed(2).replace /([.0-9]+)/g, "$$$1")
 
   $('#envelope_aside .transfer').click ->
-    modal = '#transfer-modal'
+    modal = $('#transfer-modal')
 
     modal.find('form').on('ajax:beforeSend', ->
       modal.find('.loading').show()
