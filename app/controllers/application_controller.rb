@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
-  before_filter :authenticate
-  before_filter :check_new_experience
+  before_action :authenticate
+  before_action :check_new_experience
   protect_from_forgery
 
   rescue_from CanCan::AccessDenied do |exception|

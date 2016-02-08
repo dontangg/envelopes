@@ -185,9 +185,9 @@ class Envelope < ActiveRecord::Base
 
     case Rails.configuration.database_configuration[Rails.env]['adapter']
     when 'postgresql'
-      month_func = Arel::Nodes::NamedFunction.new('to_char', [tt[:posted_at], 'YYYY-MM'])
+      month_func = Arel::Nodes::NamedFunction.new('to_char', [tt[:posted_at], Arel::Nodes.build_quoted('YYYY-MM')])
     when 'sqlite3'
-      month_func = Arel::Nodes::NamedFunction.new('strftime', ['%Y-%m', tt[:posted_at]])
+      month_func = Arel::Nodes::NamedFunction.new('strftime', [Arel::Nodes.build_quoted('%Y-%m'), tt[:posted_at]])
     end
 
     beginning_of_this_month = Date.today.beginning_of_month

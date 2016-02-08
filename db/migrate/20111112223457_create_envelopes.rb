@@ -8,7 +8,7 @@ class CreateEnvelopes < ActiveRecord::Migration
       t.integer :parent_envelope_id
       t.string  :expense
 
-      t.timestamps
+      t.timestamps, null: false
     end
   end
 end

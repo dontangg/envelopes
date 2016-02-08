@@ -10,7 +10,7 @@ class CreateTransactions < ActiveRecord::Migration
       t.string :unique_id
       t.boolean :pending
 
-      t.timestamps
+      t.timestamps, null: false
     end
 
     change_table :transactions do |t|

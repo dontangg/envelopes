@@ -7,7 +7,7 @@ class CreateRules < ActiveRecord::Migration
       t.integer :envelope_id
       t.integer :order
 
-      t.timestamps
+      t.timestamps, null: false
     end
 
     change_table :rules do |t|
