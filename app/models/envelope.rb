@@ -193,7 +193,7 @@ class Envelope < ActiveRecord::Base
     beginning_of_this_month = Date.today.beginning_of_month
     start_date = beginning_of_this_month - 12.months
 
-    arel = tt.project(tt[:amount].sum, month_func.as('month'))
+    arel = tt.project(tt[:amount].sum.as('sum_id'), month_func.as('month'))
       .where((type == :spending ? tt[:amount].lt(0) : tt[:amount].gt(0))
         .and(tt[:posted_at].gteq(start_date)))
       .group('month')
