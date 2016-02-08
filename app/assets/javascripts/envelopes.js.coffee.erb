@@ -134,10 +134,13 @@ $ ->
   $('#envelope_aside .transfer').click ->
     modal = $('#transfer-modal')
 
-    modal.find('form').on('ajax:beforeSend', ->
+    form = modal.find('form')
+    form[0].reset()
+    form.on('ajax:beforeSend', ->
       modal.find('.loading').show()
     ).on('ajax:error', (event, xhr, status, error) ->
       showAlert error
+    ).on('ajax:complete', () ->
       modal.find('.loading').hide()
     )
 
