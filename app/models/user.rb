@@ -5,6 +5,7 @@ class User < ActiveRecord::Base
   validates_uniqueness_of :email, :on => :create
 
   has_many :rules
+  has_many :transfer_rules
   has_many :envelopes
 
   serialize :bank_secret_questions

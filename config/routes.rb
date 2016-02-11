@@ -3,6 +3,8 @@ Envelopes::Application.routes.draw do
   # Default actions for resources:
   #   index, new, create, show, edit, update, destroy
 
+  resources :transfer_rules, only: [:index, :create, :update, :destroy]
+
   resources :rules, only: [:index, :create, :update, :destroy] do
     collection do
       post 'run_all'

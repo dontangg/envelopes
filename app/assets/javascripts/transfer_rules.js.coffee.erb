@@ -1,0 +1,79 @@
+# Place all the behaviors and hooks related to the matching controller here.
+<% url = Envelopes::Application.routes.url_helpers %>
+
+$ ->
+  $('#transfer_rules select').selectToAutocomplete
+    'remove-valueless-options': false
+
+  $('#transfer_rules input[type=text], #transfer_rules input:not([type])').selectOnFocus()
+
+  $('#transfer_rules .search-terms input').autocomplete
+    source: "<%= CGI.unescape url.suggest_payee_transactions_path %>?original=1"
+    minLength: 2
+
+  autosave '#transfer_rules', 'blur', '.search-terms input, .payee input, .percentage input', "<%= CGI.unescape url.transfer_rule_path('{id}') %>"
+  autosave '#transfer_rules', 'change', 'select', "<%= CGI.unescape url.transfer_rule_path('{id}') %>"
+
+  $('#new-transfer-rule-modal').on 'show.bs.modal', ->
+    modal = $('#new-transfer-rule-modal')
+
+    modal.find('form').on('ajax:beforeSend', ->
+      modal.find('.loading').css 'display', 'inline-block'
+    ).on('ajax:success', (event, data, status, xhr) ->
+      setAltRowClass()
+    ).on('ajax:error', (event, xhr, status, error) ->
+      try
+        errors = $.parseJSON(xhr.responseText)
+        errorMessage = "The transfer rule wasn't saved!<ul>"
+        for errorField of errors
+          errorMessage += "<li>" + errorField + " " + errors[errorField].join(' and ') + "</li>"
+        errorMessage += "</ul>"
+      catch ex
+        errorMessage = xhr.responseText
+
+      showAlert errorMessage
+      modal.find('.loading').hide()
+    )[0].reset()
+
+    # Remove the selectToAutocomplete HTML if it was added previously, then setup selectToAutocomplete again
+    modal.find('.ui-helper-hidden-accessible, .ui-autocomplete-input').remove()
+    modal.find('select').show().selectToAutocomplete
+      'remove-valueless-options': false
+
+    modal.find('input[type=text], input:not([type])').selectOnFocus()
+
+  setAltRowClass = ->
+    helper = $(".ui-sortable-helper")
+    rowClasses = ['', 'alt']
+    passedHelper = false
+    $('#transfer_rules li').each (index, item) ->
+      $item = $(item)
+      if $item.hasClass 'ui-sortable-helper'
+        passedHelper = true
+      else
+        position = if passedHelper then index - 1 else index
+        $item.removeClass().addClass rowClasses[position % 2]
+
+  $('#transfer_rules').on 'click', '.destroy', ->
+    $this = $(this)
+    if confirm("Do you want to delete the transfer rule for " + $this.closest('tr').find('.search-terms input').val() + "?")
+      item = $this.closest('li')
+      id = item.data('transfer-rule-id')
+      $.ajax
+        type: 'DELETE'
+        url: "<%= CGI.unescape url.transfer_rule_path('{id}') %>".replace(/{id}/, id)
+      .done ->
+        item.slideUp ->
+          item.remove()
+          setAltRowClass()
+      .fail (jqXHR) ->
+        try
+          errors = $.parseJSON(jqXHR.responseText)
+          errorMessage = "The " + modelName + " wasn't saved!<ul>"
+          for errorField of errors
+            errorMessage += "<li>" + errorField + " " + errors[errorField].join(' and ') + "</li>"
+          errorMessage += "</ul>"
+        catch ex
+          errorMessage = jqXHR.responseText
+
+        showAlert errorMessage

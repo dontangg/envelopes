@@ -1,0 +1,13 @@
+<%= fields_for "transfer_rule[]", transfer_rule do |f| %>
+  <li<%= raw cycle("", " class='alt'") %> data-transfer-rule-id='<%= transfer_rule.id %>'>
+    <table>
+      <tr>
+        <td class='search-terms col-sm-4'><%= f.text_field :search_terms, 'data-saved-value' => transfer_rule.search_terms, class: 'form-control'%></td>
+        <td class='payee col-sm-2'><%= f.text_field :payee, 'data-saved-value' => transfer_rule.payee, class:'form-control' %></td>
+        <td class='envelope col-sm-4'><%= f.select :envelope_id, envelope_options_for_select, {}, { 'data-saved-value' => transfer_rule.envelope_id, class: 'form-control' }%></td>
+        <td class='percentage col-sm-1'><%= f.text_field :percentage, 'data-saved-value' => transfer_rule.percentage, class:'form-control' %></td>
+        <td class='transfer-rule-actions'><button class='destroy btn btn-link' title='Remove this transfer rule'><span class='glyphicon glyphicon-trash'></span></button></td>
+      </tr>
+    </table>
+  </li>
+<% end %>

@@ -1,0 +1,23 @@
+<% url = Envelopes::Application.routes.url_helpers %>
+
+newItem = $("<%= escape_javascript(render partial: 'transfer_rules/transfer_rule', locals: {transfer_rule: @transfer_rule, envelope_options_for_select: @envelope_options_for_select}, status: :created) %>");
+newItem.hide();
+
+$('#transfer_rules ul').append(newItem);
+
+newItem.find('select').selectToAutocomplete({ 'remove-valueless-options': false });
+newItem.find('input[type=text], input:not([type])').selectOnFocus();
+
+newItem.find('.replacement-text input').autocomplete({
+  source: "<%= CGI.unescape url.suggest_payee_transactions_path %>",
+  minLength: 2
+});
+
+newItem.find('.search-text input').autocomplete({
+  source: "<%= CGI.unescape url.suggest_payee_transactions_path %>?original=1",
+  minLength: 2
+});
+
+//setAltRowClass()
+$('#new-transfer-rule-modal').modal('hide');
+newItem.slideDown();

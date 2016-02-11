@@ -25,7 +25,7 @@ class TransactionImporter
         config.secret_questions = user.bank_secret_questions
       end
 
-      import_count = 0
+      imported_transactions = []
       id_cache = {}
       account = bank.find_account_by_id user.bank_account_id
       account.find_transactions(starting_at, ending_at).each do |raw_transaction|
@@ -50,7 +50,13 @@ class TransactionImporter
         transaction.unique_id = uniq_str + num.to_s
         id_cache[transaction.unique_id] = true
 
-        import_count = import_count.next if import(transaction, user.rules)
+        imported_transactions << transaction if import(transaction, user.rules)
+      end
+
+      transfer_list = TransferRule.run_all(user.transfer_rules, imported_transactions)
+      transfer_list.each do |transfer|
+        # We might want to take the money from the envelope the transaction is in rather than assuming we want to take it from the income envelope
+        Transaction.create_transfer(transfer[:amount], income_envelope_id, transfer[:envelope_id], transfer[:payee], transfer[:payee])
       end
 
       # Make sure that our balance matches the bank's balance
@@ -68,7 +74,7 @@ class TransactionImporter
       user.imported_transactions_at = DateTime.now
       user.save
 
-      import_count
+      imported_transactions.length
     end
 
     def import(transaction, rules = [])

@@ -9,6 +9,7 @@ class Ability
       transaction.envelope.user_id == user.id
     end
     can :manage, Rule, user_id: user.id
+    can :manage, TransferRule, user_id: user.id
 
   end
 

@@ -32,6 +32,7 @@
     <ul class='actions list-unstyled'>
       <li><a class='btn btn-primary new' data-toggle="modal" data-target="#new-rule-modal">New Rule</a></li>
       <li><%= link_to 'Run Rules Now', run_all_rules_path, method: :post, remote: true, class: 'btn btn-primary transfer', title: 'Run the rules on any currently unassigned transactions' %></li>
+      <li><a class='btn btn-primary' href="<%= transfer_rules_path %>">Transfer Rules</a></li>
     </ul>
   </section>
 </div>

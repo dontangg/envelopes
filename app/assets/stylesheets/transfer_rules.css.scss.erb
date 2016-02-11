@@ -1,0 +1,74 @@
+// Place all the styles related to the rules controller here.
+
+#transfer_rules {
+  header {
+    padding-bottom: 2%;
+  }
+
+  ul {
+    border-top: solid 1px #ccc;
+
+    li {
+      &.alt {
+        background: #f1f1f1;
+
+        &.ui-sortable-helper {
+          background: transparent;
+        }
+      }
+      &:hover .destroy {
+        visibility: visible;
+      }
+    }
+  }
+
+  table {
+    width: 100%;
+
+    .rule-actions {
+      min-width: 40px;
+      text-align: right;
+      padding: 3px 0;
+      vertical-align: middle;
+    }
+
+    th {
+      font-weight: 300;
+      text-align: left;
+    }
+
+    td {
+      .destroy {
+        visibility: hidden;
+      }
+
+      input, select {
+        width: 95%;
+        background-color: transparent;
+        border: 1px solid transparent;
+        border-collapse: separate; /* needed for IE to display box-shadow */
+        -webkit-box-shadow: none;
+        box-shadow: none;
+
+        -webkit-appearance: initial;
+
+        &:hover, &:focus {
+          border-color: #6d9c00;
+        }
+      }
+    }
+  }
+}
+
+#transfer_rules_aside {
+  ul {
+    a {
+      display: block;
+    }
+
+    li {
+      padding-bottom: 15px;
+    }
+  }
+}
+
