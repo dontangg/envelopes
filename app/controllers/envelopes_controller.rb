@@ -49,6 +49,13 @@ class EnvelopesController < ApplicationController
 
       @budgeted_percent = max_amount == 0 ? 0 : @budgeted_amount * 100 / max_amount
 
+      num_months = (@spending_months.count - 1)
+      total_for_avg = 0
+      for i in 0...num_months
+        total_for_avg += @spending_months[i][:amount]
+      end
+      @average_per_month = (total_for_avg / num_months).abs
+
       @spending_months.each do |month_data|
         month_data[:amount] = month_data[:amount].abs
         month_data[:percent] = max_amount == 0 ? 0 : month_data[:amount] * 100 / max_amount
