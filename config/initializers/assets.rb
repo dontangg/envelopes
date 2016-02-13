@@ -16,6 +16,7 @@ Rails.application.config.assets.precompile += %w(
   glyphicons-halflings-regular.svg
   glyphicons-halflings-regular.ttf
   glyphicons-halflings-regular.woff
+  glyphicons-halflings-regular.woff2
   ui-bg_flat_0_aaaaaa_40x100.png
   ui-bg_flat_75_ffffff_40x100.png
   ui-bg_glass_55_fbf9ee_1x400.png
