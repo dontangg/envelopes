@@ -8,7 +8,7 @@
           <button class='btn btn-link collapse-button' title='Expand'><span class='glyphicon glyphicon-collapse-down'></span></button>
         <% end %>
         <%= envelope.name %>
-        <button class='info btn btn-link' title='Coming someday: More information on this envelope'><span class='glyphicon glyphicon-info-sign'></span></button>
+        <a class='info btn btn-link' title='View this envelope in another tab' target='_blank' href='<%= envelope_path(envelope) %>'><span class='glyphicon glyphicon-info-sign'></span></button>
       </td>
       <td class='amount balance<%= ' negative-number' if envelope.inclusive_total_amount(organized_envelopes) < 0 %>'>
         <%= number_to_currency(envelope.inclusive_total_amount(organized_envelopes)) %>
