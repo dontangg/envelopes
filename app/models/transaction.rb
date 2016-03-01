@@ -39,8 +39,10 @@ class Transaction < ActiveRecord::Base
     end
 
     def create_transfer(amount, from_envelope_id, to_envelope_id, from_txn_payee, to_txn_payee)
-      from_txn = Transaction.create posted_at: Date.today, payee: from_txn_payee, original_payee: from_txn_payee, envelope_id: from_envelope_id, amount: -amount
-      to_txn = Transaction.create posted_at: Date.today, payee: to_txn_payee, original_payee: to_txn_payee, envelope_id: to_envelope_id, amount: amount, associated_transaction_id: from_txn.id
+      today = Time.now.in_time_zone('Mountain Time (US & Canada)').to_date
+
+      from_txn = Transaction.create posted_at: today, payee: from_txn_payee, original_payee: from_txn_payee, envelope_id: from_envelope_id, amount: -amount
+      to_txn = Transaction.create posted_at: today, payee: to_txn_payee, original_payee: to_txn_payee, envelope_id: to_envelope_id, amount: amount, associated_transaction_id: from_txn.id
 
       from_txn.update_column :associated_transaction_id, to_txn.id
 
