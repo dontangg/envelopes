@@ -14,7 +14,7 @@ class TransferRule < ActiveRecord::Base
       transfer_cache = Hash.new(0)
 
       transactions.each do |txn|
-        next if txn.amount <= 0
+        next if txn.amount <= 0 || txn.pending?
 
         rules.each do |rule|
           transfer_cache[rule] += txn.amount if rule.match?(txn.payee)
