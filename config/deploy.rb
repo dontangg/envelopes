@@ -2,7 +2,7 @@
 # To setup access to a private repo, check under 'From our servers to the repository host' here: http://www.capistranorb.com/documentation/getting-started/authentication-and-authorisation/#toc_2
 
 set :application, 'envelopes'
-set :repo_url, 'git@github.com:dontangg/envelopes.git'
+set :repo_url, 'https://github.com/dontangg/envelopes.git'
 
 # To have it deploy the branch that you're currently on
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }
@@ -11,7 +11,6 @@ set :repo_url, 'git@github.com:dontangg/envelopes.git'
 set :branch, 'master'
 
 set :deploy_to, '~/apps/envelopes'
-set :scm, :git
 
 # set :format, :pretty
 # set :log_level, :debug
