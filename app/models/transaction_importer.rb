@@ -43,7 +43,7 @@ class TransactionImporter
         end
 
         # Find a truly unique id for this transaction
-        uniq_str = transaction.uniq_str
+        uniq_str = "#{transaction.uniq_str}#{user_id}~"
         num = 0
         num = num.next while id_cache[uniq_str + num.to_s]
 
