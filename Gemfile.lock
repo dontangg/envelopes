@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/dontangg/syrup.git
-  revision: a7dcb4f79d78f744610e233aefb04e765a5418e4
+  revision: 7908fff6f04da42cd0a2915435882bdcd330b140
   specs:
     syrup (0.0.14)
       mechanize (>= 1.0.0)
@@ -80,7 +80,7 @@ GEM
     concurrent-ruby (1.0.0)
     debug_inspector (0.0.2)
     docile (1.1.5)
-    domain_name (0.5.20170223)
+    domain_name (0.5.20170404)
       unf (>= 0.0.5, < 1.0.0)
     erubis (2.7.0)
     execjs (2.6.0)
