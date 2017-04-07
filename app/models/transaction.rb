@@ -89,8 +89,6 @@ class Transaction < ActiveRecord::Base
     str = ''
     str += posted_at.strftime('%F') if posted_at.respond_to? :strftime
     str += '~'
-    str += (original_payee || payee).strip.gsub(/\s+/, ' ')
-    str += '~'
     str += amount.to_s unless amount.nil?
     str += '~'
     str += pending?.to_s
