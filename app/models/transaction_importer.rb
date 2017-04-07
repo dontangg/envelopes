@@ -95,7 +95,7 @@ class TransactionImporter
 
         if transaction.payee == transaction.original_payee
           # Clean the payee
-          strings_to_remove = [/[A-Z0-9]{17}\s*/, /P\.O\.S\.\s*PURCHASE\s*/i, /REF # \d{15}\s*/, /\b\d{3}-?\d{3}-?\d{4}\s+/, /\s#[^\s]+/, /\d{5,}/]
+          strings_to_remove = [/[A-Z0-9]{17}\s*/, /^External Withdrawal\s/, /^Pos\s/, /^Point Of Sale Withdrawal/, /P\.O\.S\.\s*PURCHASE\s*/i, /REF # \d{15}\s*/, /\b\d{3}-?\d{3}-?\d{4}\s+/, /\s#[^\s]+/, /\d{5,}/]
           strings_to_remove.each { |str| transaction.payee.gsub! str, '' }
 
           # Correct the case of the payee
