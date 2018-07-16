@@ -8,6 +8,8 @@ module EnvelopesHelper
         str += "on the #{day} day of "
       end
       str += "every month"
+    elsif expense.frequency == :bimonthly
+      str += "twice a month"
     else
       if expense.occurs_on_month
         if expense.occurs_on_day
@@ -24,6 +26,10 @@ module EnvelopesHelper
     form_for(envelope, remote: true, html: { class: 'form-horizontal' }) do |f|
       f.fields_for(:expense) do |f2|
         content_tag(:div, class: 'form-group col-sm-11', style: 'width:200px') do
+          f2.label(:frequency_bimonthly, class: 'radio-inline') do
+            f2.radio_button(:frequency, :bimonthly, checked: envelope.expense.frequency == :bimonthly) +
+            " Bi-Monthly"
+          end +
           f2.label(:frequency_monthly, class: 'radio-inline') do
             f2.radio_button(:frequency, :monthly, checked: envelope.expense.frequency == :monthly) +
             " Monthly"

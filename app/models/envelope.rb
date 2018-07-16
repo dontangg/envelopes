@@ -169,10 +169,10 @@ class Envelope < ActiveRecord::Base
       organized_envelopes[self.id].inject(0) { |sum, envelope| sum + envelope.simple_monthly_budget(organized_envelopes) }
     else
       if self.expense
-        if self.expense.frequency == :monthly
-          self.expense.amount
-        else
+        if self.expense.frequency == :yearly
           self.expense.amount / 12
+        else
+          self.expense.amount
         end
       else
         0

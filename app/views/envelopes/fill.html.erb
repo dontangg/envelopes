@@ -22,6 +22,7 @@
         <%= render partial: 'envelope_for_fill', collection: @organized_envelopes[nil], as: :envelope, locals: {organized_envelopes: @organized_envelopes} %>
       </ul>
 
+      <button class='btn btn-primary' id="populate-suggestions">Populate Suggestions</button>
       <%= submit_tag "Fill", class: 'btn btn-primary' %>
 
     <% end %>
