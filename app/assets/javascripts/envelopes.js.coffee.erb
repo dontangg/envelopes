@@ -359,10 +359,10 @@ $ ->
       else
         icon.addClass('glyphicon-expand').removeClass('glyphicon-collapse-down')
 
-  $('#populate-suggestions').click (event) ->
+  $('#populate_suggestions').click (event) ->
     event.preventDefault()
     leafEnvelopes = $('#fill_envelopes .amount.input').not('.sum')
     leafEnvelopes.each (i, env) ->
       $env = $(env)
-      toFund = $env.parent().find('.to-fund')[0].innerHTML.trim()
-      $env.children()[0].setAttribute('value', toFund)
+      toFund = $env.parent().find('.to-fund').text().trim()
+      $env.children().val(toFund)
