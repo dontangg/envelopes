@@ -139,6 +139,7 @@ GEM
       webrobots (>= 0.0.9, < 0.2)
     method_source (0.8.2)
     mime-types (2.99.3)
+    mime-types-data (3.2016.0521)
     mini_portile (0.6.2)
     minitest (5.8.4)
     multi_json (1.12.1)
@@ -280,4 +281,4 @@ DEPENDENCIES
   web-console (~> 2.0)
 
 BUNDLED WITH
-   1.14.6
+   1.10.6
