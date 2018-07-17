@@ -14,7 +14,10 @@ class SuggestionCalculator
         if current_envelope.expense.nil?
           current_envelope.suggested_amount = 0.to_d
         else
-          if current_envelope.expense.frequency == :monthly
+          if current_envelope.expense.frequency == :bimonthly
+            # If it is a bimonthly envelope, suggest the full amount divided by 2
+            current_envelope.suggested_amount = current_envelope.expense.amount / 2
+          elsif current_envelope.expense.frequency == :monthly
             # If it is a monthly envelope, suggest the full amount
             current_envelope.suggested_amount = current_envelope.expense.amount
           else
