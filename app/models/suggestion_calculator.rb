@@ -32,7 +32,7 @@ class SuggestionCalculator
         end
 
         # don't modify suggestion for bimonthly envelopes
-        if current_envelope.exepense.frequency != :bimonthly
+        if current_envelope.expense.frequency != :bimonthly
           # If they have already funded some, take that away from what we're suggesting
           current_envelope.suggested_amount = [current_envelope.suggested_amount - current_envelope.amount_funded_this_month, 0.to_d].max
         end
